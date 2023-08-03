@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	message := "👋 Wasm TinyGo Landed! 🌍"
+	message := "👋 Wasm TinyGo Landed! 🌍 Тестирование Gо в браузере"
 
   	fmt.Println(message)
   
@@ -32,8 +32,8 @@ func main() {
 	//button = document.Call("getElementById", "runButton")
 
 	canvas = document.Call("createElement", "canvas")
-	canvas.Set("width", 800)
-	canvas.Set("height", 600)
+	canvas.Set("width", 640)
+	canvas.Set("height", 480)
 
 	body.Call("appendChild", canvas)
 	//body.Call("insertBefore", canvas)
@@ -41,13 +41,13 @@ func main() {
 	//body.Call("removeChild", button)
 
 	ctx = canvas.Call("getContext", "2d")
-	grd = ctx.Call("createLinearGradient", 0, 0, 800, 0)
+	grd = ctx.Call("createLinearGradient", 0, 0, 640, 0)
 	//grd.Call("addColorStop", 0, "#ffc107")
 	//grd.Call("addColorStop", 0.33, "#ffc107")
 	//grd.Call("addColorStop", 0.66, "#ffc107")
-	grd.Call("addColorStop", 1, "#ffc107")
+	grd.Call("addColorStop", 1, "#000000")
 	ctx.Set("fillStyle", grd)
-	ctx.Call("fillRect", 0, 0, 800, 600)
+	ctx.Call("fillRect", 0, 0, 640, 480)
 
 	ctx.Call("moveTo", 0, 0)
 	/*for i := 0; i < 799; i++ {
@@ -73,8 +73,72 @@ func main() {
 	
 	
     
-    
-	
+   var flag string = "                                                                                                                                 " +
+    "                                                                                                                                 "+
+    "                                                                                                                                 "+
+    "                                                                                                                                 "+
+    "                                                                                                                                 "+
+    "                                                                                                                                 "+
+    "                                                                                                                                 "+
+    "                                                                                                                                 "+
+    "                                                                                                                                 "+
+    "                                                                                                                                 "+
+    "                                                                                                                                 "+
+    "                                                                                                                                 "+
+    "                                                                                                                                 "+
+    "                                                                                                                                 "+
+    "                                                                                                                                 "+
+    "                                                                                                                                 "+
+    "                                                                                                                                 "+
+    "                                                                                                                                 "+
+    "                                                                                                                                 "+
+    "             ppppppppppp      ppppppp      pppppppppp      pppppppppp    ppp     ppp    ppppppppppp    pppppppppp                " +
+    "             ppppppppppp    ppppppppppp    ppppppppppp    ppppppppppp    ppp     ppp    ppppppppppp    ppppppppppp               " +
+    "             ppp            ppp     ppp    ppp     ppp    ppp     ppp    ppp     ppp    ppp            ppp     ppp               " +
+    "             ppp            ppp     ppp    ppp     ppp    ppp     ppp    ppp     ppp    ppp            ppp     ppp               "+
+    "             ppp            ppp     ppp    ppp     ppp    ppp     ppp    ppp     ppp    ppppppppppp    pppppppppp                "+
+    "             ppp            ppp     ppp    ppppppppppp    ppppppppppp    ppp     ppp    ppppppppppp    pppppppppp                "+
+    "             ppp            ppp     ppp    pppppppppp      pppppppppp     pppppppppp    ppp            ppp     ppp               "+
+    "             ppp            ppp     ppp    ppp                ppp ppp            ppp    ppp            ppp     ppp               "+
+    "             ppp            ppppppppppp    ppp              ppp   ppp            ppp    ppppppppppp    ppppppppppp               "+
+    "             ppp             ppppppppp     ppp            ppp     ppp            ppp    ppppppppppp    pppppppppp                "+
+    "                                                                                                                                 "+
+    "                                                                                                                                 "+
+    "                                                                                                                                 "+
+    "                                                                                                                                 "+
+    "                                                                                                                                 "+
+    "                                                                                                                                 "+
+    "                                                                                                                                 "+
+    "                                                                                                                                 "+
+    "                                                                                                                                 "+
+    "                                                                                                                                 "+
+    "                                                                                                                                 "+
+    "                                                                                                                                 "+
+    "                                                                                                                                 "+
+    "                                                                                                                                 "+
+    "                                                                                                                                 "+
+    "                                                                                                                                 "+
+    "                                                                                                                                 "+
+    "                                                                                                                                 "+
+    "                                                                                                                                 "+
+    "                                                                                                                                 "+
+    "                                                                                                                                 "+
+    "                                                                                                                                 "+
+    "                                                                                                                                 "+
+    "                                                                                                                                 "+
+    "                                                                                                                                 "+
+    "                                                                                                                                 "+
+    "                                                                                                                                 "+
+    "                                                                                                                                 "+
+    "                                                                                                                                 "+
+    "                                                                                                                                 "+
+    "                                                                                                                                 "+
+    "                                                                                                                                 "+
+    "                                                                                                                                 "+
+    "                                                                                                                                 "+
+    "                                                                                                                                 "+
+    "                                                                                                                                 "+
+    "                                                                                                                                 "	
  
     
     
@@ -97,27 +161,31 @@ func main() {
     if t > 1000  {t = -3.14*12}
     
     ctx.Set("fillStyle", grd)
-    ctx.Call("fillRect", 0, 0, 800, 600)
+    ctx.Call("fillRect", 0, 0, 640, 480)
 	
     for i := 0; i < 66; i++ {
         for j := 0; j < 129; j++ {
-                /*if(flag[i*129 + j] == 'p'){
-                    PutPixel(x + j, (int)(y + i + 2*sin(j/12.+t)), 0xFFFF00);
+                if(flag[i*129 + j] == byte('p')){
+                    ctx.Set("fillStyle", "#ffc107")
+                    ctx.Call("fillRect", (x+j + int(8*math.Cos(float64(j)/12.0+t))), (y+i + int(8*math.Sin(float64(j)/12.0+t))), 2, 2)
+                    //PutPixel(x + j, (int)(y + i + 2*sin(j/12.+t)), 0xFFFF00);
                 } else{
-                    PutPixel(x + j, (int)(y + i + 2*sin(j/12.+t)), 0xFF0000);
-                }*/
-                ctx.Set("fillStyle", "#dc3545")
-		ctx.Call("fillRect", (x+j + int(8*math.Cos(float64(j)/12.0+t))), (y+i + int(8*math.Sin(float64(j)/12.0+t))), 1, 1)
-                //x += 2
+                    ctx.Set("fillStyle", "#dc3545")
+                    ctx.Call("fillRect", (x+j + int(8*math.Cos(float64(j)/12.0+t))), (y+i + int(8*math.Sin(float64(j)/12.0+t))), 2, 2)
+                    //PutPixel(x + j, (int)(y + i + 2*sin(j/12.+t)), 0xFF0000);
+                }
+                
+		
+                x += 2
                 if x%4 == 0 {y++}
         }
         x = xstart
-        dy += 0 //2
+        dy += 2
         y = ystart + dy
     }
     
     
-    time.Sleep(1 * time.Millisecond)
+    time.Sleep(time.Millisecond)
 	
 }
 	
