@@ -3,9 +3,10 @@ package main
 import (
     "fmt"
     //"math/rand"
-    "math"
+    //"math"
     "syscall/js"
-    "time"
+    //"time"
+    //"strconv"
 )
 
 func main() {
@@ -61,17 +62,38 @@ func main() {
 		
 		//ctx.Set("fillStyle", "#0d6efd")
 		//ctx.Call("fillRect", x, y, 1, 1)
-		
-		
-		
-		
-		
-		
-		
+
 		time.Sleep(50 * time.Millisecond)
 	}*/
 	
+	SetColor(0xFF0000)
+	fmt.Println("CC: " + fmt.Sprintf("%x", CC))
 	
+	SetBackColor(0x0000FF)
+	fmt.Println("BC: " + fmt.Sprintf("%x", BC))
+	
+	FillLB(0, 500, BC)
+	fmt.Println("LB: " + fmt.Sprintf("%x", pBmp[10]))
+	
+	//ctx.Call("putImageData", pBmp,0,0)
+	
+
+imgData := canvas.Call("createImageData", 640, 480)
+//const imgData = ctx.createImageData(100, 100);
+
+/*for i := 0; i < 200; i += 4 {
+  imgData[i+0] = 255
+  imgData[i+1] = 0
+  imgData[i+2] = 0
+  imgData[i+3] = 255
+}*/
+ctx.Call("putImageData", imgData, 0, 0)
+//ctx.putImageData(imgData, 10, 10);
+
+	
+	
+	
+/*	
     
    var flag string = "                                                                                                                                 " +
     "                                                                                                                                 "+
@@ -188,7 +210,7 @@ func main() {
     time.Sleep(time.Millisecond)
 	
 }
-	
+*/	
  
     // Prevent the function from returning, which is required in a wasm module
     <-make(chan bool)
