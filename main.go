@@ -3,99 +3,79 @@ package main
 import (
     "fmt"
     //"math/rand"
-    //"math"
-    "syscall/js"
+    "math"
+    //"syscall/js"
     //"time"
-    //"strconv"
+    "strconv"
+    //"net/http"
+    //"io"
 )
 
+
+
+//const CHECKERBOARD_SIZE int = 640;
+const BUFFER_SIZE int = SIZE * 4;
+var graphicsBuffer [BUFFER_SIZE]uint8;
+
+
 func main() {
-	message := "👋 Wasm TinyGo Landed! 🌍 Тестирование Gо в браузере"
-
+	message := "👋 Wasm started OK! 🌍"
   	fmt.Println(message)
+  	
+	//res, _ := http.DefaultClient.Get("http://localhost:8000")
+	//if err != nil {
+	//	fmt.Println("error making http request: \n")
+	//}
+
+	//fmt.Println("client: got response!\n")
+	//fmt.Println("client: status code: " + strconv.Itoa(res.StatusCode))
+	
+/*js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+
+	go func(){
+
+			res, _ := http.DefaultClient.Get("http://localhost:8000")
+			defer res.Body.Close()
+			
+
+			b, _ := io.ReadAll(res.Body)
+
+			fmt.Println("client: got response!")
+			fmt.Println(string(b))
+	}()
+	
+	return nil
+})*/
+
+	//FillLB(0, 200, 0xFF0000)
   
-    document := js.Global().Get("document")
-    h2 := document.Call("createElement", "p")
-    h2.Set("innerHTML", message)
-    //document.Get("body").Call("appendChild", h2)
-    
-    body := document.Call("getElementById", "body_wasm")
-    body.Call("appendChild", h2)
-	//body.Set("innerHTML", "Dynamic Content")
-	
-	
-	
-	var (
-		canvas, ctx, grd js.Value
-	)
-	//dombase = js.Global().Get("document")
+    <-make(chan bool)
+}
 
-	//button = document.Call("getElementById", "runButton")
 
-	canvas = document.Call("createElement", "canvas")
-	canvas.Set("width", 640)
-	canvas.Set("height", 480)
+// Function to return a pointer (Index) to our buffer in wasm memory
+//export getGraphicsBufferPointer
+func getGraphicsBufferPointer() *[BUFFER_SIZE]uint8 {
+  return &graphicsBuffer
+}
 
-	body.Call("appendChild", canvas)
-	//body.Call("insertBefore", canvas)
 
-	//body.Call("removeChild", button)
+// Function to return the size of our buffer in wasm memory
+//export getGraphicsBufferSize
+func getGraphicsBufferSize() int {
+  return BUFFER_SIZE;
+}
 
-	ctx = canvas.Call("getContext", "2d")
-	grd = ctx.Call("createLinearGradient", 0, 0, 640, 0)
-	//grd.Call("addColorStop", 0, "#ffc107")
-	//grd.Call("addColorStop", 0.33, "#ffc107")
-	//grd.Call("addColorStop", 0.66, "#ffc107")
-	grd.Call("addColorStop", 1, "#000000")
-	ctx.Set("fillStyle", grd)
-	ctx.Call("fillRect", 0, 0, 640, 480)
 
-	ctx.Call("moveTo", 0, 0)
-	/*for i := 0; i < 799; i++ {
-		x := rand.Intn(800)
-		y := rand.Intn(600)
+//export eventClick
+func eventClick(x int, y int)  {
+	fmt.Println("Event: " + strconv.Itoa(x) + " " + strconv.Itoa(y))
+}
 
-		//ctx.Call("lineTo", i+x, (i*2/3)+y)
-		//ctx.Call("stroke")
-		//ctx.Set("strokeStyle", "#0d6efd")
-		
-		
-		//ctx.Set("fillStyle", "#0d6efd")
-		//ctx.Call("fillRect", x, y, 1, 1)
 
-		time.Sleep(50 * time.Millisecond)
-	}*/
-	
-	SetColor(0xFF0000)
-	fmt.Println("CC: " + fmt.Sprintf("%x", CC))
-	
-	SetBackColor(0x0000FF)
-	fmt.Println("BC: " + fmt.Sprintf("%x", BC))
-	
-	FillLB(0, 500, BC)
-	fmt.Println("LB: " + fmt.Sprintf("%x", pBmp[10]))
-	
-	//ctx.Call("putImageData", pBmp,0,0)
-	
 
-imgData := canvas.Call("createImageData", 640, 480)
-//const imgData = ctx.createImageData(100, 100);
 
-/*for i := 0; i < 200; i += 4 {
-  imgData[i+0] = 255
-  imgData[i+1] = 0
-  imgData[i+2] = 0
-  imgData[i+3] = 255
-}*/
-ctx.Call("putImageData", imgData, 0, 0)
-//ctx.putImageData(imgData, 10, 10);
-
-	
-	
-	
-/*	
-    
-   var flag string = "                                                                                                                                 " +
+var flag string = "                                                                                                                                 " +
     "                                                                                                                                 "+
     "                                                                                                                                 "+
     "                                                                                                                                 "+
@@ -162,17 +142,26 @@ ctx.Call("putImageData", imgData, 0, 0)
     "                                                                                                                                 "+
     "                                                                                                                                 "	
  
-    
-    
-    
-    
-    var t  float64 = 0
-    
-    for  {
-    
-    
-    
-    var x int = 100
+var t  float64 = 0
+
+
+//export generateCheckerBoard
+func generateCheckerBoard() {
+	//FillLB(0, 700, 0xFF0000) 
+	//FillLBrnd()  
+	
+	SetColor(0xFFFF00)
+	//ClearDevice()
+	
+	PutPixel(100, 100, 0xFF0000)
+	Line(200, 300, 100, 20)
+	HLine(50, 400, 120)
+	Circle(80, 80, 15)
+}
+
+
+func flagDraw() {
+	var x int = 100
     var y int = 100
     
     var xstart int = x
@@ -182,22 +171,37 @@ ctx.Call("putImageData", imgData, 0, 0)
     t += 20;
     if t > 1000  {t = -3.14*12}
     
-    ctx.Set("fillStyle", grd)
-    ctx.Call("fillRect", 0, 0, 640, 480)
-	
+    for y := 0; y < BITMAP_WIDTH; y++ {
+    	for x := 0; x < BITMAP_HEIGHT; x++ {
+    			squareNumber := (y * BITMAP_WIDTH) + x;
+      			squareRgbaIndex := squareNumber * 4;
+
+      			graphicsBuffer[squareRgbaIndex + 0] = 17; 	// Red
+      			graphicsBuffer[squareRgbaIndex + 1] = 17; 	// Green
+      			graphicsBuffer[squareRgbaIndex + 2] = 17; 	// Blue
+      			graphicsBuffer[squareRgbaIndex + 3] = 255; 	// Alpha
+    	}
+    }
+    
     for i := 0; i < 66; i++ {
         for j := 0; j < 129; j++ {
-                if(flag[i*129 + j] == byte('p')){
-                    ctx.Set("fillStyle", "#ffc107")
-                    ctx.Call("fillRect", (x+j + int(8*math.Cos(float64(j)/12.0+t))), (y+i + int(8*math.Sin(float64(j)/12.0+t))), 2, 2)
-                    //PutPixel(x + j, (int)(y + i + 2*sin(j/12.+t)), 0xFFFF00);
-                } else{
-                    ctx.Set("fillStyle", "#dc3545")
-                    ctx.Call("fillRect", (x+j + int(8*math.Cos(float64(j)/12.0+t))), (y+i + int(8*math.Sin(float64(j)/12.0+t))), 2, 2)
-                    //PutPixel(x + j, (int)(y + i + 2*sin(j/12.+t)), 0xFF0000);
-                }
+        	xi := (x+j + int(8*math.Cos(float64(j)/12.0+t)))
+            yi := (y+i + int(8*math.Sin(float64(j)/12.0+t)))
+            squareNumber := (yi * BITMAP_WIDTH) + xi;
+      		squareRgbaIndex := squareNumber * 4;
                 
-		
+                if(flag[i*129 + j] == byte('p')){
+                    graphicsBuffer[squareRgbaIndex + 0] = 0xFF; 	// Red
+      				graphicsBuffer[squareRgbaIndex + 1] = 0xFF; 	// Green
+      				graphicsBuffer[squareRgbaIndex + 2] = 0x00; 	// Blue
+      				graphicsBuffer[squareRgbaIndex + 3] = 255; 		// Alpha
+                } else{
+                	graphicsBuffer[squareRgbaIndex + 0] = 0xFF; 	// Red
+      				graphicsBuffer[squareRgbaIndex + 1] = 0x00; 	// Green
+      				graphicsBuffer[squareRgbaIndex + 2] = 0x00; 	// Blue
+      				graphicsBuffer[squareRgbaIndex + 3] = 255; 		// Alpha
+                }
+
                 x += 2
                 if x%4 == 0 {y++}
         }
@@ -205,18 +209,45 @@ ctx.Call("putImageData", imgData, 0, 0)
         dy += 2
         y = ystart + dy
     }
-    
-    
-    time.Sleep(time.Millisecond)
-	
-}
-*/	
- 
-    // Prevent the function from returning, which is required in a wasm module
-    <-make(chan bool)
 }
 
+//export generateCheckerBoard
+/*func generateCheckerBoard(
+  darkValueRed uint8,
+  darkValueGreen uint8,
+  darkValueBlue uint8,
+  lightValueRed uint8,
+  lightValueGreen uint8,
+  lightValueBlue uint8,
+) {
+  for y := 0; y < CHECKERBOARD_SIZE; y++ {
+    for x := 0; x < CHECKERBOARD_SIZE; x++ {
+      isDarkSquare := true;
 
+      if y % 2 == 0 {
+        isDarkSquare = false;
+      }
 
+      if x % 2 == 0 {
+        isDarkSquare = !isDarkSquare;
+      }
 
+      squareValueRed := darkValueRed;
+      squareValueGreen := darkValueGreen;
+      squareValueBlue := darkValueBlue;
+      if !isDarkSquare {
+      squareValueRed = lightValueRed;
+      squareValueGreen = lightValueGreen;
+      squareValueBlue = lightValueBlue;
+      }
 
+      squareNumber := (y * CHECKERBOARD_SIZE) + x;
+      squareRgbaIndex := squareNumber * 4;
+
+      graphicsBuffer[squareRgbaIndex + 0] = squareValueRed; 	// Red
+      graphicsBuffer[squareRgbaIndex + 1] = squareValueGreen; 	// Green
+      graphicsBuffer[squareRgbaIndex + 2] = squareValueBlue; 	// Blue
+      graphicsBuffer[squareRgbaIndex + 3] = 255; 				// Alpha 
+    }
+  }
+}*/

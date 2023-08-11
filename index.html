@@ -1,43 +1,68 @@
 <html>
     <head>
         <meta charset="utf-8"/>
-        <script src="wasm_exec.js"></script>
+        
+<!-- Wasm -->
+    <script src="wasm_exec.js"></script>
+    <script src="instantiateWasm.js"></script>
 
-    </head>
-    <body>
-        <h1>WASM Experiments</h1>
-        <script>
-            // This is a polyfill for FireFox and Safari
-            if (!WebAssembly.instantiateStreaming) { 
-                WebAssembly.instantiateStreaming = async (resp, importObject) => {
-                    const source = await (await resp).arrayBuffer()
-                    return await WebAssembly.instantiate(source, importObject)
-                }
-            }
+</head>
+<body>
 
-            // Promise to load the wasm file
-           function loadWasm(path) {
-             const go = new Go()
+<canvas id="cnvs" width="640" height="480"></canvas>
+<script>
+const go = new Go();
 
-             return new Promise((resolve, reject) => {
-               WebAssembly.instantiateStreaming(fetch(path), go.importObject)
-               .then(result => {
-                 go.run(result.instance)
-                 resolve(result.instance)
-               })
-               .catch(error => {
-                 reject(error)
-               })
-             })
-           }
+const runWasm = async () => {
+  const importObject = go.importObject;
+  const wasmModule = await wasmBrowserInstantiate("wasm_GUI.wasm", importObject);
+  go.run(wasmModule.instance);
 
-         // Load the wasm file
-         loadWasm("main.wasm").then(wasm => {
-             console.log("main.wasm is loaded 👋")
-         }).catch(error => {
-             console.log("ouch", error)
-         }) 
+  // Get our exports object, with all of our exported Wasm Properties
+  const exports = wasmModule.instance.exports;
 
-        </script>
-    </body>
+  // Get our memory object from the exports
+  const memory = exports.memory;
+
+  // Create a Uint8Array to give us access to Wasm Memory
+  const wasmByteMemoryArray = new Uint8Array(memory.buffer);
+
+  // Get the pointer (index) to where our graphics buffer is located in wasm linear memory
+  const graphicsBufferPointer = exports.getGraphicsBufferPointer();
+  const graphicsBufferSize = exports.getGraphicsBufferSize();
+
+  const canvasElement = document.querySelector("canvas");
+  const canvasContext = canvasElement.getContext("2d");
+  const canvasImageData = canvasContext.createImageData(canvasElement.width, canvasElement.height);
+  
+  canvasElement.onclick = function() {
+  		exports.eventClick(event.offsetX, event.offsetY);
+	}
+
+  // Clear the canvas
+  canvasContext.clearRect(0, 0, canvasElement.width, canvasElement.height);
+
+  const drawCheckerBoard = () => {
+    const checkerBoardSize = 20;
+
+    // Generate a new checkboard in wasm
+    exports.generateCheckerBoard();
+
+    // Pull out the RGBA values from Wasm memory, the we wrote to in wasm,
+    // starting at the checkerboard pointer (memory array index)
+    const imageDataArray = wasmByteMemoryArray.slice(graphicsBufferPointer, graphicsBufferPointer + graphicsBufferSize);
+    canvasImageData.data.set(imageDataArray);
+
+    canvasContext.clearRect(0, 0, canvasElement.width, canvasElement.height);
+    canvasContext.putImageData(canvasImageData, 0, 0);
+  };
+
+  //drawCheckerBoard();
+  setInterval(() => {
+    drawCheckerBoard();
+  }, 150);
+};
+runWasm();
+</script> 
+</body>
 </html>
