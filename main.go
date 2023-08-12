@@ -17,6 +17,8 @@ import (
 const BUFFER_SIZE int = SIZE * 4;
 var graphicsBuffer [BUFFER_SIZE]uint8;
 
+var layout = Node{parent: nil, previous: nil, children: nil}
+var list []*Node
 
 func main() {
 	message := "👋 Wasm started OK! 🌍"
@@ -46,8 +48,48 @@ func main() {
 	
 	return nil
 })*/
+	
+	//layout = Node{parent: nil, previous: nil, children: nil}
+	btnStart := CreateBtn(&layout, 0+2, BITMAP_HEIGHT - 30 + 2, 50, 28 - 4, 0x50A0F8, 0xF8FCF8, "START", btnStartClick) 
+	btnEnter := CreateBtn(btnStart, 100 + 80, 100 + 20 + 30 + 30, 300, 240, 0xD8DCC0, 0x000000, "ENTER", nil)
+	btnCancel := CreateBtn(btnStart, 100 + 80 + 60, 100 + 20 + 30 + 30, 60, 24, 0xD8DCC0, 0x000000, "CANCEL", nil)
+	btnOther := CreateBtn(btnEnter, 100 + 80 + 60, 100 + 20 + 30 + 30 + 30, 60, 24, 0xD8DCC0, 0x000000, "OTHER", nil)
+	btnEnter.obj.x++
+	btnCancel.obj.x++
+	btnOther.obj.x++
+	
+	
+	/*SetBackColor(0x111111)
+	ClearDevice()
+ 
+	DrawDesktop(0x0080C0)
+	DrawTaskbar(0, BITMAP_HEIGHT - 30, BITMAP_WIDTH - 1, 28, 0x30B410);
+	//btnStart.obj.Draw()
+	
+	DrawWindow(100, 100, 300, 200, 0xD8DCC0, "WINDOW 1")
+	DrawLabel(100 + 12, 100 + 28, 80, 20, 0xD8DCC0, 0x000000, "USER NAME")
+	DrawEdit(100 + 80, 100 + 20, 80, 20, 0xF8FCF8, 0x000000, "MYUSERNAME")
+	DrawLabel(100 + 12, 100 + 28 + 30, 80, 20, 0xD8DCC0, 0x000000, "PASSWORD")
+	DrawEdit(100 + 80, 100 + 20 + 30, 80, 20, 0xF8FCF8, 0x000000, "PSWD")
+	//btnEnter.obj.Draw()
 
-	//FillLB(0, 200, 0xFF0000)
+	DrawLayout(&layout)
+	fmt.Println("Draw: END")
+	
+	PutPixel(100, 100, 0xFF0000)
+	SetColor(0xFFFF00)
+	//LinePP(200, 300, 100, 20)
+	//HLine(50, 400, 120)
+	Circle(80, 80, 15)
+	
+	SetColor(0xFF0000)
+	fmt.Println("Pixel: " + strconv.FormatUint(0xFFFFFFFF & uint64(GetPixelgl(100, 100)),16))
+	if (uint32(GetPixelgl(100, 100))) == 0xFF0000 {
+		fmt.Println("YES") 
+	}
+	FloodFillgl(80, 80, 0xFFFF00)
+  */
+  
   
     <-make(chan bool)
 }
@@ -70,8 +112,39 @@ func getGraphicsBufferSize() int {
 //export eventClick
 func eventClick(x int, y int)  {
 	fmt.Println("Event: " + strconv.Itoa(x) + " " + strconv.Itoa(y))
+	list = nil
+	Click(&layout, x, y)
+	//fmt.Println(list)
+	fmt.Println("CLICKED: " + list[len(list)-1].obj.caption)
+	if list[len(list)-1].obj.onClick != nil {
+		list[len(list)-1].obj.onClick(list[len(list)-1])
+	}
 }
 
+func Click(node *Node, x int, y int) {
+	
+	if node.obj != nil {
+		if node.obj.x < x && (node.obj.x + node.obj.sizeX) > x && node.obj.y < y && (node.obj.y + node.obj.sizeY) > y {
+			list = append(list, node)
+			//fmt.Println("Click: " + list[len(list)-1].obj.caption)
+		}
+	} else {
+		//fmt.Println("Click: none")
+	}
+	if node.children != nil {
+		for i := 0; i < len(node.children); i++ { 
+			Click(node.children[i], x, y)
+		}
+	}
+	//fmt.Println(list)
+	return
+}
+
+
+func btnStartClick(node *Node){
+	node.obj.visible = false
+	fmt.Println("IT WORKED !!! Click: START")
+}
 
 
 
@@ -147,16 +220,35 @@ var t  float64 = 0
 
 //export generateCheckerBoard
 func generateCheckerBoard() {
-	//FillLB(0, 700, 0xFF0000) 
-	//FillLBrnd()  
+	SetBackColor(0x111111)
+	ClearDevice()
+ 
+	DrawDesktop(0x0080C0)
+	DrawTaskbar(0, BITMAP_HEIGHT - 30, BITMAP_WIDTH - 1, 28, 0x30B410);
+	//btnStart.obj.Draw()
 	
-	SetColor(0xFFFF00)
-	//ClearDevice()
+	DrawWindow(100, 100, 300, 200, 0xD8DCC0, "WINDOW 1")
+	DrawLabel(100 + 12, 100 + 28, 80, 20, 0xD8DCC0, 0x000000, "USER NAME")
+	DrawEdit(100 + 80, 100 + 20, 80, 20, 0xF8FCF8, 0x000000, "MYUSERNAME")
+	DrawLabel(100 + 12, 100 + 28 + 30, 80, 20, 0xD8DCC0, 0x000000, "PASSWORD")
+	DrawEdit(100 + 80, 100 + 20 + 30, 80, 20, 0xF8FCF8, 0x000000, "PSWD")
+	//btnEnter.obj.Draw()
+
+	DrawLayout(&layout)
+	fmt.Println("Draw: END")
 	
 	PutPixel(100, 100, 0xFF0000)
-	Line(200, 300, 100, 20)
-	HLine(50, 400, 120)
+	SetColor(0xFFFF00)
+	//LinePP(200, 300, 100, 20)
+	//HLine(50, 400, 120)
 	Circle(80, 80, 15)
+	
+	SetColor(0xFF0000)
+	fmt.Println("Pixel: " + strconv.FormatUint(0xFFFFFFFF & uint64(GetPixelgl(100, 100)),16))
+	if (uint32(GetPixelgl(100, 100))) == 0xFF0000 {
+		fmt.Println("YES") 
+	}
+	FloodFillgl(80, 80, 0xFFFF00)	
 }
 
 

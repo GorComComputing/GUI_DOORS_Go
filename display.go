@@ -38,6 +38,20 @@ func FillLBrnd(){
 }
 
 
+func GetPixelgl(x int, y int) int {
+    var val int = 0
+    squareNumber := (y * BITMAP_WIDTH) + x;
+    squareRgbaIndex := squareNumber * 4;
+    
+    val += int(graphicsBuffer[squareRgbaIndex + 0]) << 16	// Red
+    val += int(graphicsBuffer[squareRgbaIndex + 1]) << 8	// Green
+    val += int(graphicsBuffer[squareRgbaIndex + 2])			// Blue
+    //val += int(graphicsBuffer[squareRgbaIndex + 3]) << 24 // Alpha
+      	
+    return val;
+}
+
+
 func Draw(){
     
     //BitBlt(dc, 0, 0, BITMAP_WIDTH, BITMAP_HEIGHT, hBmpDC, 0, 0, SRCCOPY);
