@@ -9,6 +9,9 @@ import (
 )
 
 
+const BUFFER_SIZE int = SIZE * 4;
+var graphicsBuffer [BUFFER_SIZE]uint8;
+
 const BITMAP_WIDTH int = 640   
 const BITMAP_HEIGHT int = 480
 const SIZE int = BITMAP_WIDTH*BITMAP_HEIGHT  
@@ -58,5 +61,17 @@ func Draw(){
 }
 
 
+// Function to return a pointer (Index) to our buffer in wasm memory
+//export getGraphicsBufferPointer
+func getGraphicsBufferPointer() *[BUFFER_SIZE]uint8 {
+  return &graphicsBuffer
+}
+
+
+// Function to return the size of our buffer in wasm memory
+//export getGraphicsBufferSize
+func getGraphicsBufferSize() int {
+  return BUFFER_SIZE;
+}
 
 
