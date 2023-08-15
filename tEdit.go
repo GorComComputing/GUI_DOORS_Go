@@ -30,32 +30,32 @@ func CreateEdit(parent *Node, x int, y int, sizeX int, sizeY int, BC int, TC int
 }
 
 
-func (obj tEdit) Draw(){
+func (obj tEdit) Draw(parX int, parY int){
     SetColor(obj.BC);
     var p []tPoint
 
-    p1 := tPoint{x: obj.x, y: obj.y}
+    	p1 := tPoint{x: parX+obj.x, y: parY+obj.y}
 	p = append(p, p1)
 	
-	p2 := tPoint{x: obj.x + obj.sizeX, y: obj.y}
+	p2 := tPoint{x: parX+obj.x + obj.sizeX, y: parY+obj.y}
 	p = append(p, p2)
 	
-	p3 := tPoint{x: obj.x + obj.sizeX, y: obj.y + obj.sizeY}
+	p3 := tPoint{x: parX+obj.x + obj.sizeX, y: parY+obj.y + obj.sizeY}
 	p = append(p, p3)
 	
-	p4 := tPoint{x: obj.x, y: obj.y + obj.sizeY}
+	p4 := tPoint{x: parX+obj.x, y: parY+obj.y + obj.sizeY}
 	p = append(p, p4)
 
-    FillPoly(4, p);
+    FillPoly(nil, 4, p);
 
     SetColor(obj.TC);
     SetBackColor(obj.BC);
-    TextOutgl(obj.text, obj.x + 4, obj.y + 8, 1);
+    TextOutgl(nil, obj.text, parX+obj.x + 4, parY+obj.y + obj.sizeY/2-4, 1);
 
     
     SetColor(0x000000);
-    LinePP(obj.x, obj.y, obj.x + obj.sizeX, obj.y);
-    LinePP(obj.x, obj.y, obj.x, obj.y + obj.sizeY);
+    LinePP(nil, parX+obj.x, parY+obj.y, parX+obj.x + obj.sizeX, parY+obj.y);
+    LinePP(nil, parX+obj.x, parY+obj.y, parX+obj.x, parY+obj.y + obj.sizeY);
 }
 
 

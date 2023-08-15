@@ -28,36 +28,36 @@ func CreatePanel(parent *Node, x int, y int, sizeX int, sizeY int, BC int, onCli
 }
 
 
-func (obj tPanel) Draw(){
+func (obj tPanel) Draw(parX int, parY int){
     SetColor(obj.BC);
     var p []tPoint
 
-    p1 := tPoint{x: obj.x, y: obj.y}
+    	p1 := tPoint{x: parX+obj.x, y: parY+obj.y}
 	p = append(p, p1)
 	
-	p2 := tPoint{x: obj.x + obj.sizeX, y: obj.y}
+	p2 := tPoint{x: parX+obj.x + obj.sizeX, y: parY+obj.y}
 	p = append(p, p2)
 	
-	p3 := tPoint{x: obj.x + obj.sizeX, y: obj.y + obj.sizeY}
+	p3 := tPoint{x: parX+obj.x + obj.sizeX, y: parY+obj.y + obj.sizeY}
 	p = append(p, p3)
 	
-	p4 := tPoint{x: obj.x, y: obj.y + obj.sizeY}
+	p4 := tPoint{x: parX+obj.x, y: parY+obj.y + obj.sizeY}
 	p = append(p, p4)
 
-    FillPoly(4, p);
+    FillPoly(nil, 4, p);
     
     SetColor(0xF8FCF8);
-    LinePP(obj.x, obj.y, obj.x + obj.sizeX, obj.y);
-    LinePP(obj.x, obj.y, obj.x, obj.y + obj.sizeY);
+    LinePP(nil, parX+obj.x, parY+obj.y, parX+obj.x + obj.sizeX, parY+obj.y);
+    LinePP(nil, parX+obj.x, parY+obj.y, parX+obj.x, parY+obj.y + obj.sizeY);
     SetColor(0xE0E0E0);
-    LinePP(obj.x+1, obj.y+1, obj.x + obj.sizeX - 2, obj.y+1);
-    LinePP(obj.x+1, obj.y+1, obj.x+1, obj.y + obj.sizeY - 1);
+    LinePP(nil, parX+obj.x+1, parY+obj.y+1, parX+obj.x + obj.sizeX - 2, parY+obj.y+1);
+    LinePP(nil, parX+obj.x+1, parY+obj.y+1, parX+obj.x+1, parY+obj.y + obj.sizeY - 1);
     SetColor(0x787C78);
-    LinePP(obj.x+2, obj.y + obj.sizeY - 1, obj.x + obj.sizeX - 1, obj.y + obj.sizeY - 1);
-    LinePP(obj.x + obj.sizeX - 1, obj.y + 1, obj.x + obj.sizeX - 1, obj.y + obj.sizeY - 1);
+    LinePP(nil, parX+obj.x+2, parY+obj.y + obj.sizeY - 1, parX+obj.x + obj.sizeX - 1, parY+obj.y + obj.sizeY - 1);
+    LinePP(nil, parX+obj.x + obj.sizeX - 1, parY+obj.y + 1, parX+obj.x + obj.sizeX - 1, parY+obj.y + obj.sizeY - 1);
     SetColor(0x000000);
-    LinePP(obj.x, obj.y + obj.sizeY, obj.x + obj.sizeX, obj.y + obj.sizeY);
-    LinePP(obj.x + obj.sizeX, obj.y, obj.x + obj.sizeX, obj.y + obj.sizeY);
+    LinePP(nil, parX+obj.x, parY+obj.y + obj.sizeY, parX+obj.x + obj.sizeX, parY+obj.y + obj.sizeY);
+    LinePP(nil, parX+obj.x + obj.sizeX, parY+obj.y, parX+obj.x + obj.sizeX, parY+obj.y + obj.sizeY);
 }
 
 
