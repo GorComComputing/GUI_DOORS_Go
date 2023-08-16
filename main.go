@@ -4,11 +4,13 @@ import (
     "fmt"
     //"math/rand"
     //"math"
-    //"syscall/js"
+    "syscall/js"
     //"time"
     //"strconv"
     //"net/http"
     //"io"
+    //"bytes"
+    //"io/ioutil"
 )
 
 var frmFlag *Node
@@ -33,32 +35,6 @@ var cnvFlag *Node
 func main() {
 	message := "👋 Wasm started OK! 🌍"
   	fmt.Println(message)
-  	
-	//res, _ := http.DefaultClient.Get("http://localhost:8000")
-	//if err != nil {
-	//	fmt.Println("error making http request: \n")
-	//}
-
-	//fmt.Println("client: got response!\n")
-	//fmt.Println("client: status code: " + strconv.Itoa(res.StatusCode))
-	
-/*js.FuncOf(func(this js.Value, args []js.Value) interface{} {
-
-	go func(){
-
-			res, _ := http.DefaultClient.Get("http://localhost:8000")
-			defer res.Body.Close()
-			
-
-			b, _ := io.ReadAll(res.Body)
-
-			fmt.Println("client: got response!")
-			fmt.Println(string(b))
-	}()
-	
-	return nil
-})*/
-
 
 	frmDesktop = CreateForm(&layout, 0, 0, BITMAP_WIDTH-1, BITMAP_HEIGHT-2, 0x0080C0, NONE, "", true, nil)
 	pnlTask = CreatePanel(frmDesktop, 0, frmDesktop.obj.(*tForm).sizeY - 28, BITMAP_WIDTH - 1, 28, 0x30B410, nil)
@@ -82,13 +58,16 @@ func main() {
 	cnvFlag = CreateCanvas(frmFlag, 2, 17, 376, 321, nil)
 
 
- 
     <-make(chan bool)
 }
 
 
 func btnStartClick(node *Node){
 	node.obj.(*tBtn).visible = false
+	
+	result := js.Global().Call("log", "Message from Go").Get("msg").String()
+	fmt.Println("Responsed: ", result)
+	frmWin1.obj.(*tForm).caption = result
 }
 
 
@@ -116,6 +95,11 @@ func onTimer() {
 	//LinePP(cnvFlag.obj, 10, 10, 100, 100)
 	//Circle(cnvFlag.obj, 50, 50, 30)
 }
+
+
+
+
+
 
 
 
