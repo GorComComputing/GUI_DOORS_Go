@@ -18,6 +18,7 @@ type tForm struct{
     mode tMode
     caption string
     visible bool
+    focused bool
     onClick func(*Node)
 }
 
@@ -65,8 +66,12 @@ func (obj tForm) Draw(parX int, parY int){
     FillPoly(nil, 4, p);
     
     if obj.mode == WIN {
+    	if obj.focused {
+    		SetColor(0xFF0000)
+    	} else {
+    		SetColor(0x0054E0)
+    	}
     	p = nil
-    	SetColor(0x0054E0);
     	p1 = tPoint{x: obj.x, y: obj.y}
 		p = append(p, p1)
 	

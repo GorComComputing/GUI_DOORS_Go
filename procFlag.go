@@ -12,6 +12,16 @@ import (
 )
 
 
+var frmFlag *Node
+var cnvFlag *Node
+
+
+func startFlag(){
+	frmFlag = CreateForm(&layout, 50, 50, 380, 340, 0x000000, WIN, "FLAGS", false, nil)
+	cnvFlag = CreateCanvas(frmFlag, 2, 17, 376, 321, nil)
+}
+
+
 var flag string = 
 	"                                                                                                                                 "+
     "                                                                                                                                 "+

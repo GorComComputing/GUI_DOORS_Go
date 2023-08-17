@@ -111,7 +111,7 @@ func eventClick(x int, y int)  {
 	switch list[len(list)-1].obj.(type) {
 	case *tBtn:
 		fmt.Println("CLICKED: " + list[len(list)-1].obj.(*tBtn).caption)
-		if list[len(list)-1].obj.(*tBtn).onClick != nil {
+		if list[len(list)-1].obj.(*tBtn).onClick != nil && list[len(list)-1].obj.(*tBtn).enabled {
 			list[len(list)-1].obj.(*tBtn).onClick(list[len(list)-1])
 		}
 		
@@ -213,11 +213,14 @@ func sortChildren(i int) {
 	tmp := layout.children[i]
 	copy(layout.children[i:], layout.children[i+1:])
 	layout.children[len(layout.children)-1] = tmp
+	layout.children[len(layout.children)-2].obj.(*tForm).focused = false
+	layout.children[len(layout.children)-1].obj.(*tForm).focused = true
 }
 
 
 var downX int = 0
 var downY int = 0
+var btnPressed *tBtn = nil
 
 //export eventMouseDown
 func eventMouseDown(x int, y int)  {
@@ -238,9 +241,14 @@ func eventMouseDown(x int, y int)  {
 			(obj.y) < y && 
 			(obj.y + 17) > y {
 				downX = x 
-    			downY = y 
-    			mouseIsDown = true
-    	}
+    				downY = y 
+    				mouseIsDown = true
+    		}
+    case *tBtn:
+    	if obj.enabled {
+    		btnPressed = obj
+			obj.pressed = true	
+		}
 	}
 }
 
@@ -249,6 +257,12 @@ func eventMouseDown(x int, y int)  {
 func eventMouseUp(x int, y int)  {
 	//if(mouseIsDown) mouseClick(e)
     mouseIsDown = false
+
+	if btnPressed != nil {
+		btnPressed.pressed = false
+		btnPressed = nil
+	}
+
 }
 
 
@@ -268,4 +282,10 @@ func eventMouseMove(x int, y int)  {
     downX = x 
     downY = y
     return
+}
+
+
+//export keyDown
+func keyDown(key int){
+	fmt.Println(key)
 }
