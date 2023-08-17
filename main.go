@@ -50,11 +50,11 @@ func main() {
 	
 	lblTime = CreateLabel(pnlTask, pnlTask.obj.(*tPanel).sizeX - 45, 6, 40, 20, 0x30B410, 0xF8FCF8, "", nil)
 	
-	frmMenuStart = CreateForm(&layout, 0, BITMAP_HEIGHT-115, 104, 100-16, 0xD8DCC0, NONE, "", false, nil)
-	btnMenuFlag = CreateBtn(frmMenuStart, 2, 2, 100, 20, 0xD8DCC0, 0x000000, "Flag", btnMenuFlagClick)
-	btnMenuTrap = CreateBtn(frmMenuStart, 2, 2 + 20, 100, 20, 0xD8DCC0, 0x000000, "Trap", btnMenuTrapClick)
-	btnMenuUsers = CreateBtn(frmMenuStart, 2, 2 + 20 + 20, 100, 20, 0xD8DCC0, 0x000000, "Users", btnMenuUsersClick)
-	btnMenuEvents = CreateBtn(frmMenuStart, 2, 2 + 20 + 20 + 20, 100, 20, 0xD8DCC0, 0x000000, "Events", btnMenuEventsClick)
+	frmMenuStart = CreateForm(&layout, 0, BITMAP_HEIGHT-116, 107, 85, 0xD8DCC0, NONE, "", false, nil)
+	btnMenuFlag = CreateBtn(frmMenuStart, 4, 3, 100, 20, 0xD8DCC0, 0x000000, "Flag", btnMenuFlagClick)
+	btnMenuTrap = CreateBtn(frmMenuStart, 4, 3 + 20, 100, 20, 0xD8DCC0, 0x000000, "Trap", btnMenuTrapClick)
+	btnMenuUsers = CreateBtn(frmMenuStart, 4, 3 + 20 + 20, 100, 20, 0xD8DCC0, 0x000000, "Users", btnMenuUsersClick)
+	btnMenuEvents = CreateBtn(frmMenuStart, 4, 3 + 20 + 20 + 20, 100, 20, 0xD8DCC0, 0x000000, "Events", btnMenuEventsClick)
 	
 	
 	startTrap()
@@ -154,7 +154,7 @@ func onTimer() {
 	flagDraw(cnvFlag.obj.(*tCanvas).x+50, cnvFlag.obj.(*tCanvas).y+50)
 	
 	t := time.Now()
-	lblTime.obj.(*tLabel).caption = strconv.Itoa(t.Hour()) + " " + fmt.Sprintf("%02d", t.Minute())
+	lblTime.obj.(*tLabel).caption = strconv.Itoa(t.Hour()) + ":" + fmt.Sprintf("%02d", t.Minute())
 	
 
 	

@@ -67,9 +67,9 @@ func (obj tForm) Draw(parX int, parY int){
     
     if obj.mode == WIN {
     	if obj.focused {
-    		SetColor(0xFF0000)
-    	} else {
     		SetColor(0x0054E0)
+    	} else {
+    		SetColor(0x80A8E8)
     	}
     	p = nil
     	p1 = tPoint{x: obj.x, y: obj.y}
@@ -85,9 +85,14 @@ func (obj tForm) Draw(parX int, parY int){
 		p = append(p, p4)
 	
 		FillPoly(nil, 4, p);
-
-    	SetColor(0xF8FCF8);
-    	SetBackColor(obj.BC);
+		
+		if obj.focused {
+    		SetColor(0xF8FCF8)
+    		SetBackColor(0x0054E0);
+    	} else {
+    		SetColor(0x787C78)
+    		SetBackColor(0x80A8E8);
+    	}
     	TextOutgl(nil, obj.caption, obj.x + 9, obj.y + 6, 1);
     }
 
