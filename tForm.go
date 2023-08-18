@@ -19,6 +19,7 @@ type tForm struct{
     caption string
     visible bool
     focused bool
+    focus *Node
     onClick func(*Node)
 }
 
@@ -31,19 +32,65 @@ const (
 
 
 func CreateForm(parent *Node, x int, y int, sizeX int, sizeY int, BC int, mode tMode, caption string, visible bool, onClick func(*Node)) *Node {
-	obj := tForm{x: x, y: y, sizeX: sizeX, sizeY: sizeY, BC: BC, mode: mode, caption: caption, visible: visible, onClick: onClick}
+	obj := tForm{x: x, y: y, sizeX: sizeX, sizeY: sizeY, BC: BC, mode: mode, caption: caption, visible: visible, focus: nil, onClick: onClick}
 	node := Node{typ: FORM, parent: parent, previous: nil, children: nil, obj: &obj}
 	parent.children = append(parent.children, &node)
 	
 	if obj.mode == WIN {
-		CreateBtn(&node, obj.sizeX - 17, 2, 15, 15, 0xD8DCC0, 0x000000, "X", formClose)
+		CreateBitBtn(&node, obj.sizeX - 17, 2, 15, 15, 0xD8DCC0, 0x000000, "X", formClose)
 	}
 	return &node
 }
 
 
 func formClose(node *Node){
-	node.parent.obj.(*tForm).visible = false
+	//node.parent.obj.(*tForm).visible = false
+	
+	
+	var btn *Node
+	var i int
+	for i = 0; i < len(process); i++ {
+		if node.parent == process[i].form {
+			btn = process[i].btn
+			copy(process[i:], process[i+1:])
+			process[len(process)-1] = nil
+			process = process[:len(process)-1]
+			//process[i].form.obj.(*tForm).visible = !(process[i].form.obj.(*tForm).visible)
+			break
+		}
+	}
+	
+	for i = 0; i < len(pnlTask.children); i++ {
+		if btn == pnlTask.children[i] {
+			copy(pnlTask.children[i:], pnlTask.children[i+1:])
+			pnlTask.children[len(pnlTask.children)-1] = nil
+			pnlTask.children = pnlTask.children[:len(pnlTask.children)-1]
+			break
+		}
+	}
+
+	xTask = 2 
+	for i = 1; i < len(pnlTask.children); i++ {
+		switch obj := pnlTask.children[i].obj.(type) {
+		case *tBtn:
+			obj.x = xTask
+		}
+		xTask += 51
+	}
+	
+	layout.children[len(layout.children)-3].obj.(*tForm).focused = true
+	for i = 0; i < len(layout.children); i++ {
+		if node.parent == layout.children[i] {
+			copy(layout.children[i:], layout.children[i+1:])
+			layout.children[len(layout.children)-1] = nil
+			layout.children = layout.children[:len(layout.children)-1]
+			break
+		}
+	}
+	
+	
+	
+
 }
 
 

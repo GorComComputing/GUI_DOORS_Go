@@ -12,13 +12,29 @@ import (
 )
 
 
-var frmFlag *Node
+//var frmFlag *Node
 var cnvFlag *Node
 
 
-func startFlag(){
-	frmFlag = CreateForm(&layout, 50, 50, 380, 340, 0x000000, WIN, "FLAG", false, nil)
-	cnvFlag = CreateCanvas(frmFlag, 2, 17, 376, 321, nil)
+func startFlag(frmMain *Node){
+	//frmFlag = CreateForm(&layout, 50, 50, 380, 340, 0x000000, WIN, "Flag", false, nil)
+	frmMain.obj.(*tForm).x = 50
+	frmMain.obj.(*tForm).y = 50
+	frmMain.obj.(*tForm).sizeX = 380
+	frmMain.obj.(*tForm).sizeY = 340
+	
+	cnvFlag = CreateCanvas(frmMain, 2, 17, 376, 321, nil)
+	for y := 0; y < cnvFlag.obj.(*tCanvas).sizeY; y++ {
+    	for x := 0; x < cnvFlag.obj.(*tCanvas).sizeX; x++ {
+    			squareNumber := (y * cnvFlag.obj.(*tCanvas).sizeX) + x;
+      			squareRgbaIndex := squareNumber * 4;
+
+      			cnvFlag.obj.(*tCanvas).buffer[squareRgbaIndex + 0] = 0; 	// Red
+      			cnvFlag.obj.(*tCanvas).buffer[squareRgbaIndex + 1] = 0; 	// Green
+      			cnvFlag.obj.(*tCanvas).buffer[squareRgbaIndex + 2] = 0; 	// Blue
+      			cnvFlag.obj.(*tCanvas).buffer[squareRgbaIndex + 3] = 255; 	// Alpha
+    	}
+    }
 }
 
 

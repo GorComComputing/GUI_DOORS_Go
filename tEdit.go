@@ -18,12 +18,14 @@ type tEdit struct{
     TC int
     text string
     visible bool
+    focused bool
+    enabled bool
     onClick func(*Node)
 }
 
 
 func CreateEdit(parent *Node, x int, y int, sizeX int, sizeY int, BC int, TC int, text string, onClick func(*Node)) *Node {
-	obj := tEdit{x: x, y: y, sizeX: sizeX, sizeY: sizeY, BC: BC, TC: TC, text: text, visible: true, onClick: onClick}
+	obj := tEdit{x: x, y: y, sizeX: sizeX, sizeY: sizeY, BC: BC, TC: TC, text: text, visible: true, enabled: true, onClick: onClick}
 	node := Node{typ: EDIT, parent: parent, previous: nil, children: nil, obj: &obj}
 	parent.children = append(parent.children, &node)
 	return &node
@@ -51,6 +53,9 @@ func (obj tEdit) Draw(parX int, parY int){
     SetColor(obj.TC);
     SetBackColor(obj.BC);
     TextOutgl(nil, obj.text, parX+obj.x + 4, parY+obj.y + obj.sizeY/2-4, 1);
+    if obj.focused && cursor {
+    	TextOutgl(nil, "|", parX+obj.x + 4+len(obj.text)*7, parY+obj.y + obj.sizeY/2-4, 1);
+    }
 
     
     SetColor(0x000000);

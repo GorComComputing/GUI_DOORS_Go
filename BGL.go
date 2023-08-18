@@ -672,6 +672,15 @@ var char2points string =
     "   pp  " +
     "       "
     ;//7x7
+var char_vert_line string =
+    "   pp  " +
+    "   pp  " +
+    "   pp  " +
+    "   pp  " +
+    "   pp  " +
+    "   pp  " +
+    "   pp  "
+    ;//7x7
 
 
 	str = strings.ToUpper(str)
@@ -716,6 +725,7 @@ var char2points string =
         } else if str[i] == '8' { DrawBitmapTransparent(buffer, char8, x+7*i*scale, y, 7, 7, scale);
         } else if str[i] == '9' { DrawBitmapTransparent(buffer, char9, x+7*i*scale, y, 7, 7, scale);
         } else if str[i] == ':' { DrawBitmapTransparent(buffer, char2points, x+7*i*scale, y, 7, 7, scale);
+        } else if str[i] == '|' { DrawBitmapTransparent(buffer, char_vert_line, x+7*i*scale, y, 7, 7, scale);
         } else { DrawBitmapTransparent(buffer, charUndefined, x+7*i*scale, y, 7, 7, scale);}
     }
 }

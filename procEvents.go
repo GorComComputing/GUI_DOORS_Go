@@ -15,7 +15,7 @@ import (
 )
 
 
-var frmEvents *Node
+//var frmEvents *Node
 var btnAddEvent *Node
 var btnRefreshEvents *Node
 
@@ -46,35 +46,39 @@ type EventsFromDB struct {
 var CurEventsPage = 13
 
 
-func startEvents(){
-	frmEvents = CreateForm(&layout, 100, 100, 500, 220, 0xD8DCC0, WIN, "Events", false, nil)
+func startEvents(frmMain *Node){
+	//frmEvents = CreateForm(&layout, 100, 100, 500, 220, 0xD8DCC0, WIN, "Events", false, nil)
+	frmMain.obj.(*tForm).x = 100
+	frmMain.obj.(*tForm).y = 100
+	frmMain.obj.(*tForm).sizeX = 500
+	frmMain.obj.(*tForm).sizeY = 220
 	
-	btnAddEvent = CreateBtn(frmEvents, 12, 22, 60, 20, 0xD8DCC0, 0x000000, "Add", nil)
-	btnRefreshEvents = CreateBtn(frmEvents, 12 + 64, 22, 60, 20, 0xD8DCC0, 0x000000, "Refresh", btnRefreshEventsClick)
+	btnAddEvent = CreateBtn(frmMain, 12, 22, 60, 20, 0xD8DCC0, 0x000000, "Add", nil)
+	btnRefreshEvents = CreateBtn(frmMain, 12 + 64, 22, 60, 20, 0xD8DCC0, 0x000000, "Refresh", btnRefreshEventsClick)
 	
-	lblCap1 = CreateLabel(frmEvents, 12, 22 + 22, 50, 20, 0xD8DCC0, 0x0000FF, "Id", nil)
-	lblCap2 = CreateLabel(frmEvents, 12 + 20, 22 + 22, 50, 20, 0xD8DCC0, 0x0000FF, "Level", nil)
-	lblCap3 = CreateLabel(frmEvents, 12 + 20 + 50, 22 + 22, 50, 20, 0xD8DCC0, 0x0000FF, "Obj", nil)
-	lblCap4 = CreateLabel(frmEvents, 12 + 20 + 50 + 30, 22 + 22, 50, 20, 0xD8DCC0, 0x0000FF, "Source", nil)
-	lblCap5 = CreateLabel(frmEvents, 12 + 20 + 50 + 50 + 50, 22 + 22, 50, 20, 0xD8DCC0, 0x0000FF, "Event", nil)
-	lblCap6 = CreateLabel(frmEvents, 12 + 20 + 50 + 50 + 50 + 50, 22 + 22, 50, 20, 0xD8DCC0, 0x0000FF, "Body", nil)
+	lblCap1 = CreateLabel(frmMain, 12, 22 + 22, 50, 20, 0xD8DCC0, 0x0000FF, "Id", nil)
+	lblCap2 = CreateLabel(frmMain, 12 + 20, 22 + 22, 50, 20, 0xD8DCC0, 0x0000FF, "Level", nil)
+	lblCap3 = CreateLabel(frmMain, 12 + 20 + 50, 22 + 22, 50, 20, 0xD8DCC0, 0x0000FF, "Obj", nil)
+	lblCap4 = CreateLabel(frmMain, 12 + 20 + 50 + 30, 22 + 22, 50, 20, 0xD8DCC0, 0x0000FF, "Source", nil)
+	lblCap5 = CreateLabel(frmMain, 12 + 20 + 50 + 50 + 50, 22 + 22, 50, 20, 0xD8DCC0, 0x0000FF, "Event", nil)
+	lblCap6 = CreateLabel(frmMain, 12 + 20 + 50 + 50 + 50 + 50, 22 + 22, 50, 20, 0xD8DCC0, 0x0000FF, "Body", nil)
 	
 	paginatorY := 0
 	for i:=0; i < 5; i++ {
-		eventsTable[i][0] = CreateLabel(frmEvents, 12, 22*(i+3), 50, 20, 0xD8DCC0, 0x000000, "", nil)
-		eventsTable[i][1] = CreateLabel(frmEvents, 12 + 20, 22*(i+3), 50, 20, 0xD8DCC0, 0x000000, "", nil)
-		eventsTable[i][2] = CreateLabel(frmEvents, 12 + 20 + 50, 22*(i+3), 50, 20, 0xD8DCC0, 0x000000, "", nil)
-		eventsTable[i][3] = CreateLabel(frmEvents, 12 + 20 + 50 + 30, 22*(i+3), 50, 20, 0xD8DCC0, 0x000000, "", nil)
-		eventsTable[i][4] = CreateLabel(frmEvents, 12 + 20 + 50 + 50 + 50, 22*(i+3), 50, 20, 0xD8DCC0, 0x000000,  "", nil)
-		eventsTable[i][5] = CreateLabel(frmEvents, 12 + 20 + 50 + 50 + 50 + 50, 22*(i+3), 50, 20, 0xD8DCC0, 0x000000, "", nil)
-		eventsTable[i][6] = CreateBtn(frmEvents, 12 + 20 + 50 + 50 + 50 + 50 + 30, 22*(i+3), 40, 20, 0xD8DCC0, 0x000000, "Upd", nil)
-		eventsTable[i][7] = CreateBtn(frmEvents, 12 + 20 + 50 + 50 + 50 + 50 + 30 + 44, 22*(i+3), 40, 20, 0xD8DCC0, 0x000000, "Del", nil)
+		eventsTable[i][0] = CreateLabel(frmMain, 12, 22*(i+3), 50, 20, 0xD8DCC0, 0x000000, "", nil)
+		eventsTable[i][1] = CreateLabel(frmMain, 12 + 20, 22*(i+3), 50, 20, 0xD8DCC0, 0x000000, "", nil)
+		eventsTable[i][2] = CreateLabel(frmMain, 12 + 20 + 50, 22*(i+3), 50, 20, 0xD8DCC0, 0x000000, "", nil)
+		eventsTable[i][3] = CreateLabel(frmMain, 12 + 20 + 50 + 30, 22*(i+3), 50, 20, 0xD8DCC0, 0x000000, "", nil)
+		eventsTable[i][4] = CreateLabel(frmMain, 12 + 20 + 50 + 50 + 50, 22*(i+3), 50, 20, 0xD8DCC0, 0x000000,  "", nil)
+		eventsTable[i][5] = CreateLabel(frmMain, 12 + 20 + 50 + 50 + 50 + 50, 22*(i+3), 50, 20, 0xD8DCC0, 0x000000, "", nil)
+		eventsTable[i][6] = CreateBtn(frmMain, 12 + 20 + 50 + 50 + 50 + 50 + 30, 22*(i+3), 40, 20, 0xD8DCC0, 0x000000, "Upd", nil)
+		eventsTable[i][7] = CreateBtn(frmMain, 12 + 20 + 50 + 50 + 50 + 50 + 30 + 44, 22*(i+3), 40, 20, 0xD8DCC0, 0x000000, "Del", nil)
 	}
 
-	btnPrevEvents = CreateBtn(frmEvents, 12 + 50, 22*(paginatorY+4), 40, 20, 0xD8DCC0, 0x000000, "Prev", btnPrevEventsClick)
+	btnPrevEvents = CreateBtn(frmMain, 12 + 50, 22*(paginatorY+4), 40, 20, 0xD8DCC0, 0x000000, "Prev", btnPrevEventsClick)
 	//btnPrevEvents.obj.(*tBtn).enabled = false
-	lblCurEventsPage = CreateLabel(frmEvents, 12 + 50 + 50, 22*(paginatorY+4), 20, 20, 0xD8DCC0, 0x0000FF, strconv.Itoa(CurEventsPage), nil)
-	btnNextEvents = CreateBtn(frmEvents, 12 + 50 + 50 + 15, 22*(paginatorY+4), 40, 20, 0xD8DCC0, 0x000000, "Next", btnNextEventsClick)
+	lblCurEventsPage = CreateLabel(frmMain, 12 + 50 + 50, 22*(paginatorY+4), 20, 20, 0xD8DCC0, 0x0000FF, strconv.Itoa(CurEventsPage), nil)
+	btnNextEvents = CreateBtn(frmMain, 12 + 50 + 50 + 15, 22*(paginatorY+4), 40, 20, 0xD8DCC0, 0x000000, "Next", btnNextEventsClick)
 	
 	refreshEventsTable()
 }

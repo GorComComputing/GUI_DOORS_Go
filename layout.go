@@ -11,7 +11,7 @@ import (
 
 
 var mouseIsDown bool = false
-
+var cursor bool
 
 var layout_obj = tForm{x: 0, y: 0, sizeX: BITMAP_WIDTH-1, sizeY: BITMAP_HEIGHT-2, BC: 0x0080C0, mode: NONE, caption: "", visible: true, onClick: nil}
 var layout = Node{parent: nil, previous: nil, children: nil, obj: &layout_obj}
@@ -27,6 +27,7 @@ const (
     LABEL
     PANEL
     CANVAS
+    BIT_BUTTON
 )
 
 type tWinComponents interface {
@@ -60,6 +61,8 @@ func DrawNode(node *Node){
 			visible = obj.visible
 		case *tCanvas:
 			visible = obj.visible
+		case *tBitBtn:
+			visible = obj.visible
 		}
 	}
 	
@@ -83,6 +86,9 @@ func DrawNode(node *Node){
 			parX = obj.x
 			parY = obj.y
 		case *tCanvas:
+			parX = obj.x
+			parY = obj.y
+		case *tBitBtn:
 			parX = obj.x
 			parY = obj.y
 		}
@@ -114,6 +120,11 @@ func eventClick(x int, y int)  {
 		if list[len(list)-1].obj.(*tBtn).onClick != nil && list[len(list)-1].obj.(*tBtn).enabled {
 			list[len(list)-1].obj.(*tBtn).onClick(list[len(list)-1])
 		}
+	case *tBitBtn:
+		fmt.Println("CLICKED: " + list[len(list)-1].obj.(*tBitBtn).caption)
+		if list[len(list)-1].obj.(*tBitBtn).onClick != nil && list[len(list)-1].obj.(*tBitBtn).enabled {
+			list[len(list)-1].obj.(*tBitBtn).onClick(list[len(list)-1])
+		}
 		
 	}
 }
@@ -135,6 +146,8 @@ func ClickRecurs(node *Node, x int, y int, parX int, parY int) {
 		case *tLabel:
 			visible = obj.visible
 		case *tCanvas:
+			visible = obj.visible
+		case *tBitBtn:
 			visible = obj.visible
 		}
 	}
@@ -159,6 +172,9 @@ func ClickRecurs(node *Node, x int, y int, parX int, parY int) {
 		case *tCanvas:
 			parX = obj.x
 			parY = obj.y
+		case *tBitBtn:
+			parX = obj.x
+			parY = obj.y
 		}
 	}
 	
@@ -176,6 +192,41 @@ func ClickRecurs(node *Node, x int, y int, parX int, parY int) {
 			(parX+node.obj.(*tForm).x + node.obj.(*tForm).sizeX) > x && 
 			(parY+node.obj.(*tForm).y) < y && 
 			(parY+node.obj.(*tForm).y + node.obj.(*tForm).sizeY) > y {
+				list = append(list, node)
+			}
+		case *tEdit:
+			if (parX+node.obj.(*tEdit).x) < x && 
+			(parX+node.obj.(*tEdit).x + node.obj.(*tEdit).sizeX) > x && 
+			(parY+node.obj.(*tEdit).y) < y && 
+			(parY+node.obj.(*tEdit).y + node.obj.(*tEdit).sizeY) > y {
+				list = append(list, node)
+			}
+		case *tLabel:
+			if (parX+node.obj.(*tLabel).x) < x && 
+			(parX+node.obj.(*tLabel).x + node.obj.(*tLabel).sizeX) > x && 
+			(parY+node.obj.(*tLabel).y) < y && 
+			(parY+node.obj.(*tLabel).y + node.obj.(*tLabel).sizeY) > y {
+				list = append(list, node)
+			}
+		case *tPanel:
+			if (parX+node.obj.(*tPanel).x) < x && 
+			(parX+node.obj.(*tPanel).x + node.obj.(*tPanel).sizeX) > x && 
+			(parY+node.obj.(*tPanel).y) < y && 
+			(parY+node.obj.(*tPanel).y + node.obj.(*tPanel).sizeY) > y {
+				list = append(list, node)
+			}
+		case *tCanvas:
+			if (parX+node.obj.(*tCanvas).x) < x && 
+			(parX+node.obj.(*tCanvas).x + node.obj.(*tCanvas).sizeX) > x && 
+			(parY+node.obj.(*tCanvas).y) < y && 
+			(parY+node.obj.(*tCanvas).y + node.obj.(*tCanvas).sizeY) > y {
+				list = append(list, node)
+			}
+		case *tBitBtn:
+			if (parX+node.obj.(*tBitBtn).x) < x && 
+			(parX+node.obj.(*tBitBtn).x + node.obj.(*tBitBtn).sizeX) > x && 
+			(parY+node.obj.(*tBitBtn).y) < y && 
+			(parY+node.obj.(*tBitBtn).y + node.obj.(*tBitBtn).sizeY) > y {
 				list = append(list, node)
 			}
 		}
@@ -221,6 +272,7 @@ func sortChildren(i int) {
 var downX int = 0
 var downY int = 0
 var btnPressed *tBtn = nil
+var bitbtnPressed *tBitBtn = nil
 
 //export eventMouseDown
 func eventMouseDown(x int, y int)  {
@@ -232,6 +284,13 @@ func eventMouseDown(x int, y int)  {
 	if i > 0 {
 		sortChildren(i)
 	}
+	if layout.children[len(layout.children)-1].obj.(*tForm).focus != nil {
+		switch obj := layout.children[len(layout.children)-1].obj.(*tForm).focus.obj.(type) {
+    	case *tEdit:
+			obj.focused = false
+		}
+	}
+	layout.children[len(layout.children)-1].obj.(*tForm).focus = list[len(list)-1]
 	
 	switch obj := list[len(list)-1].obj.(type) {
 	case *tForm:
@@ -241,12 +300,21 @@ func eventMouseDown(x int, y int)  {
 			(obj.y) < y && 
 			(obj.y + 17) > y {
 				downX = x 
-    				downY = y 
-    				mouseIsDown = true
+    			downY = y 
+    			mouseIsDown = true
     		}
     case *tBtn:
     	if obj.enabled {
     		btnPressed = obj
+			obj.pressed = true	
+		}
+	case *tEdit:
+    	if obj.enabled {
+			obj.focused = true	
+		}
+	case *tBitBtn:
+    	if obj.enabled {
+    		bitbtnPressed = obj
 			obj.pressed = true	
 		}
 	}
@@ -261,6 +329,7 @@ func eventMouseUp(x int, y int)  {
 	if btnPressed != nil {
 		btnPressed.pressed = false
 		btnPressed = nil
+		bitbtnPressed = nil
 	}
 
 }
@@ -287,5 +356,18 @@ func eventMouseMove(x int, y int)  {
 
 //export keyDown
 func keyDown(key int){
-	fmt.Println(key)
+	if layout.children[len(layout.children)-1].obj.(*tForm).focus != nil {
+		switch obj := layout.children[len(layout.children)-1].obj.(*tForm).focus.obj.(type) {
+    	case *tEdit:
+    		if key == 8 {
+    			if len(obj.text) > 0 {
+    				obj.text = obj.text[:len(obj.text)-1]
+    			}
+    		} else {
+				obj.text += string(key)
+			}
+		}
+		fmt.Println(key)
+		fmt.Println(string(key))
+	}
 }

@@ -19,139 +19,137 @@ import (
 var frmDesktop *Node
 var pnlTask *Node
 var btnStart *Node
-var btnFlag *Node
+/*var btnFlag *Node
 var btnTrap *Node
 var btnUsers *Node
-var btnEvents *Node
+var btnEvents *Node*/
 var lblTime *Node
 
 var frmMenuStart *Node
+var cnvMenuStart *Node
 var btnMenuFlag *Node
 var btnMenuTrap *Node
 var btnMenuUsers *Node
 var btnMenuEvents *Node
 
 
+var process []*tProc
+
+type tProc struct {
+	name string 
+    form *Node 
+    btn  *Node
+}
 
 
 
 
 func main() {
-	message := "👋 Wasm started OK! 🌍"
+	message := "👋 GUI started OK! 🌍"
   	fmt.Println(message)
 
 	frmDesktop = CreateForm(&layout, 0, 0, BITMAP_WIDTH-1, BITMAP_HEIGHT-2, 0x0080C0, NONE, "", true, nil)
 	pnlTask = CreatePanel(frmDesktop, 0, frmDesktop.obj.(*tForm).sizeY - 28, BITMAP_WIDTH - 1, 28, 0x30B410, nil)
 	btnStart = CreateBtn(pnlTask, 2, 2, 50, 28 - 4, 0x50A0F8, 0xF8FCF8, "START", btnStartClick)
-	btnFlag = CreateBtn(pnlTask, 2 + 52, 2, 50, 28 - 4, 0xD8DCC0, 0x000000, "FLAG", btnFlagClick)
-	btnTrap = CreateBtn(pnlTask, 2 + 52 + 52, 2, 50, 28 - 4, 0xD8DCC0, 0x000000, "Trap", btnTrapClick)
-	btnUsers = CreateBtn(pnlTask, 2 + 52 + 52 + 52, 2, 50, 28 - 4, 0xD8DCC0, 0x000000, "Users", btnUsersClick)
-	btnEvents = CreateBtn(pnlTask, 2 + 52 + 52 + 52 + 52, 2, 50, 28 - 4, 0xD8DCC0, 0x000000, "Events", btnEventsClick)
 	
 	lblTime = CreateLabel(pnlTask, pnlTask.obj.(*tPanel).sizeX - 45, 6, 40, 20, 0x30B410, 0xF8FCF8, "", nil)
 	
-	frmMenuStart = CreateForm(&layout, 0, BITMAP_HEIGHT-116, 107, 85, 0xD8DCC0, NONE, "", false, nil)
-	btnMenuFlag = CreateBtn(frmMenuStart, 4, 3, 100, 20, 0xD8DCC0, 0x000000, "Flag", btnMenuFlagClick)
-	btnMenuTrap = CreateBtn(frmMenuStart, 4, 3 + 20, 100, 20, 0xD8DCC0, 0x000000, "Trap", btnMenuTrapClick)
-	btnMenuUsers = CreateBtn(frmMenuStart, 4, 3 + 20 + 20, 100, 20, 0xD8DCC0, 0x000000, "Users", btnMenuUsersClick)
-	btnMenuEvents = CreateBtn(frmMenuStart, 4, 3 + 20 + 20 + 20, 100, 20, 0xD8DCC0, 0x000000, "Events", btnMenuEventsClick)
+	frmMenuStart = CreateForm(&layout, 0, BITMAP_HEIGHT-116, 127, 85, 0xD8DCC0, NONE, "", false, nil)
+	cnvMenuStart = CreateCanvas(frmMenuStart, 2, 2, 20, 80, nil)
+	for y := 0; y < cnvMenuStart.obj.(*tCanvas).sizeY; y++ {
+    	for x := 0; x < cnvMenuStart.obj.(*tCanvas).sizeX; x++ {
+    			squareNumber := (y * cnvMenuStart.obj.(*tCanvas).sizeX) + x;
+      			squareRgbaIndex := squareNumber * 4;
+
+      			cnvMenuStart.obj.(*tCanvas).buffer[squareRgbaIndex + 0] = 0; 	// Red
+      			cnvMenuStart.obj.(*tCanvas).buffer[squareRgbaIndex + 1] = 0; 	// Green
+      			cnvMenuStart.obj.(*tCanvas).buffer[squareRgbaIndex + 2] = 255; 	// Blue
+      			cnvMenuStart.obj.(*tCanvas).buffer[squareRgbaIndex + 3] = 255; 	// Alpha
+    	}
+    }
 	
 	
-	startTrap()
-	startFlag()
-	startUsers()
-	startEvents()
+	btnMenuFlag = CreateBtn(frmMenuStart, 24, 3, 100, 20, 0xD8DCC0, 0x000000, "Flag", btnMenuFlagClick)
+	btnMenuTrap = CreateBtn(frmMenuStart, 24, 3 + 20, 100, 20, 0xD8DCC0, 0x000000, "Trap", btnMenuTrapClick)
+	btnMenuUsers = CreateBtn(frmMenuStart, 24, 3 + 20 + 20, 100, 20, 0xD8DCC0, 0x000000, "Users", btnMenuUsersClick)
+	btnMenuEvents = CreateBtn(frmMenuStart, 24, 3 + 20 + 20 + 20, 100, 20, 0xD8DCC0, 0x000000, "Events", btnMenuEventsClick)
+	
+startProcess("Flag", startFlag)
+startProcess("Trap", startTrap)
+startProcess("Users", startUsers)
+startProcess("Events", startEvents)
+
 	
     <-make(chan bool)
 }
 
+var xTask int = 2 + 51
 
-
+func startProcess(name string, onStart func(*Node)){
+	obj := tBtn{x: xTask, y: 2, sizeX: 50, sizeY: 28 - 4, BC: 0xD8DCC0, TC: 0x000000, caption: name, visible: true, pressed: false, enabled: true, onClick: btnTaskClick}
+	node := Node{typ: BUTTON, parent: pnlTask, previous: nil, children: nil, obj: &obj}
+	pnlTask.children = append(pnlTask.children, &node)
+	
+	frm := CreateForm(&layout, 400, 400, 200, 130, 0xD8DCC0, WIN, name, true, nil)
+	
+	proc := tProc{name: name, form: frm, btn: &node}
+	process = append(process, &proc)
+	xTask += 51
+	layout.children[len(layout.children)-2].obj.(*tForm).focused = false
+	layout.children[len(layout.children)-1].obj.(*tForm).focused = true
+	onStart(frm)
+}
 
 
 func btnStartClick(node *Node){
-	frmMenuStart.obj.(*tForm).visible = true	
+	frmMenuStart.obj.(*tForm).visible = !(frmMenuStart.obj.(*tForm).visible)
 }
 
 
 func btnMenuFlagClick(node *Node){
-	frmMenuStart.obj.(*tForm).visible = false
-	i := findNode(frmFlag)
-	if i > 0 {
-		sortChildren(i)
-	}
-	frmFlag.obj.(*tForm).visible = true
+	startProcess("Flag", startFlag)
 }
 
 
 func btnMenuTrapClick(node *Node){
-	frmMenuStart.obj.(*tForm).visible = false
-	i := findNode(frmTrap)
-	if i > 0 {
-		sortChildren(i)
-	}
-	frmTrap.obj.(*tForm).visible = true
+	startProcess("Trap", startTrap)
 }
 
 
 func btnMenuUsersClick(node *Node){
-	frmMenuStart.obj.(*tForm).visible = false
-	i := findNode(frmUsers)
-	if i > 0 {
-		sortChildren(i)
-	}
-	frmUsers.obj.(*tForm).visible = true
+	startProcess("Users", startUsers)
 }
 
 
 func btnMenuEventsClick(node *Node){
-	frmMenuStart.obj.(*tForm).visible = false
-	i := findNode(frmEvents)
-	if i > 0 {
-		sortChildren(i)
-	}
-	frmEvents.obj.(*tForm).visible = true
+	startProcess("Events", startEvents)
 }
 
 
-func btnFlagClick(node *Node){
-	i := findNode(frmFlag)
-	if i > 0 {
-		sortChildren(i)
+func btnTaskClick(node *Node){
+	var i int = 0
+	for ; i < len(process); i++ {
+		if node == process[i].btn {
+			process[i].form.obj.(*tForm).visible = !(process[i].form.obj.(*tForm).visible)
+			break
+		}
 	}
-	frmFlag.obj.(*tForm).visible = !(frmFlag.obj.(*tForm).visible)
 }
 
 
-func btnTrapClick(node *Node){
-	i := findNode(frmTrap)
-	if i > 0 {
-		sortChildren(i)
-	}
-	frmTrap.obj.(*tForm).visible = !(frmTrap.obj.(*tForm).visible)
-}
 
 
-func btnUsersClick(node *Node){
-	i := findNode(frmUsers)
-	if i > 0 {
-		sortChildren(i)
-	}
-	frmUsers.obj.(*tForm).visible = !(frmUsers.obj.(*tForm).visible)
-}
 
 
-func btnEventsClick(node *Node){
-	i := findNode(frmEvents)
-	if i > 0 {
-		sortChildren(i)
-	}
-	frmEvents.obj.(*tForm).visible = !(frmEvents.obj.(*tForm).visible)
-}
+
+
+
 
 
 func onTimer() {
-	flagDraw(cnvFlag.obj.(*tCanvas).x+50, cnvFlag.obj.(*tCanvas).y+50)
+	//flagDraw(cnvFlag.obj.(*tCanvas).x+50, cnvFlag.obj.(*tCanvas).y+50)
+	
+	cursor = !(cursor)
 	
 	t := time.Now()
 	lblTime.obj.(*tLabel).caption = strconv.Itoa(t.Hour()) + ":" + fmt.Sprintf("%02d", t.Minute())

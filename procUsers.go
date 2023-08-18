@@ -15,7 +15,7 @@ import (
 )
 
 
-var frmUsers *Node
+//var frmUsers *Node
 var btnAddUser *Node
 var btnRefreshUser *Node
 var lblId *Node
@@ -42,33 +42,37 @@ type UsersFromDB struct {
 var CurUsersPage = 1
 
 
-func startUsers(){
-	frmUsers = CreateForm(&layout, 100, 100, 400, 220, 0xD8DCC0, WIN, "Users", false, nil)
+func startUsers(frmMain *Node){
+	//frmUsers = CreateForm(&layout, 100, 100, 400, 220, 0xD8DCC0, WIN, "Users", false, nil)
+	frmMain.obj.(*tForm).x = 150
+	frmMain.obj.(*tForm).y = 150
+	frmMain.obj.(*tForm).sizeX = 400
+	frmMain.obj.(*tForm).sizeY = 220
 	
-	btnAddUser = CreateBtn(frmUsers, 12, 22, 60, 20, 0xD8DCC0, 0x000000, "Add", nil)
-	btnRefreshUser = CreateBtn(frmUsers, 12 + 64, 22, 60, 20, 0xD8DCC0, 0x000000, "Refresh", btnRefreshClick)
+	btnAddUser = CreateBtn(frmMain, 12, 22, 60, 20, 0xD8DCC0, 0x000000, "Add", nil)
+	btnRefreshUser = CreateBtn(frmMain, 12 + 64, 22, 60, 20, 0xD8DCC0, 0x000000, "Refresh", btnRefreshClick)
 	
-	lblId = CreateLabel(frmUsers, 12, 22 + 22, 50, 20, 0xD8DCC0, 0x0000FF, "Id", nil)
-	lblUserName = CreateLabel(frmUsers, 12 + 20, 22 + 22, 50, 20, 0xD8DCC0, 0x0000FF, "Name", nil)
-	lblLogin = CreateLabel(frmUsers, 12 + 20 + 50, 22 + 22, 50, 20, 0xD8DCC0, 0x0000FF, "Login", nil)
-	lblUserPswd = CreateLabel(frmUsers, 12 + 20 + 50 + 50, 22 + 22, 50, 20, 0xD8DCC0, 0x0000FF, "Pswd", nil)
-	lblUserRole = CreateLabel(frmUsers, 12 + 20 + 50 + 50 + 50, 22 + 22, 50, 20, 0xD8DCC0, 0x0000FF, "Role", nil)
+	lblId = CreateLabel(frmMain, 12, 22 + 22, 50, 20, 0xD8DCC0, 0x0000FF, "Id", nil)
+	lblUserName = CreateLabel(frmMain, 12 + 20, 22 + 22, 50, 20, 0xD8DCC0, 0x0000FF, "Name", nil)
+	lblLogin = CreateLabel(frmMain, 12 + 20 + 50, 22 + 22, 50, 20, 0xD8DCC0, 0x0000FF, "Login", nil)
+	lblUserPswd = CreateLabel(frmMain, 12 + 20 + 50 + 50, 22 + 22, 50, 20, 0xD8DCC0, 0x0000FF, "Pswd", nil)
+	lblUserRole = CreateLabel(frmMain, 12 + 20 + 50 + 50 + 50, 22 + 22, 50, 20, 0xD8DCC0, 0x0000FF, "Role", nil)
 	
 	paginatorY := 0
 	for i:=0; i < 5; i++ {
-		usersTable[i][0] = CreateLabel(frmUsers, 12, 22*(i+3), 50, 20, 0xD8DCC0, 0x000000, "", nil)
-		usersTable[i][1] = CreateLabel(frmUsers, 12 + 20, 22*(i+3), 50, 20, 0xD8DCC0, 0x000000, "", nil)
-		usersTable[i][2] = CreateLabel(frmUsers, 12 + 20 + 50, 22*(i+3), 50, 20, 0xD8DCC0, 0x000000, "", nil)
-		usersTable[i][3] = CreateLabel(frmUsers, 12 + 20 + 50 + 50, 22*(i+3), 50, 20, 0xD8DCC0, 0x000000, "", nil)
-		usersTable[i][4] = CreateLabel(frmUsers, 12 + 20 + 50 + 50 + 50, 22*(i+3), 50, 20, 0xD8DCC0, 0x000000,  "", nil)
-		usersTable[i][5] = CreateBtn(frmUsers, 12 + 20 + 50 + 50 + 50 + 30, 22*(i+3), 40, 20, 0xD8DCC0, 0x000000, "Upd", nil)
-		usersTable[i][6] = CreateBtn(frmUsers, 12 + 20 + 50 + 50 + 50 + 30 + 44, 22*(i+3), 40, 20, 0xD8DCC0, 0x000000, "Del", nil)
+		usersTable[i][0] = CreateLabel(frmMain, 12, 22*(i+3), 50, 20, 0xD8DCC0, 0x000000, "", nil)
+		usersTable[i][1] = CreateLabel(frmMain, 12 + 20, 22*(i+3), 50, 20, 0xD8DCC0, 0x000000, "", nil)
+		usersTable[i][2] = CreateLabel(frmMain, 12 + 20 + 50, 22*(i+3), 50, 20, 0xD8DCC0, 0x000000, "", nil)
+		usersTable[i][3] = CreateLabel(frmMain, 12 + 20 + 50 + 50, 22*(i+3), 50, 20, 0xD8DCC0, 0x000000, "", nil)
+		usersTable[i][4] = CreateLabel(frmMain, 12 + 20 + 50 + 50 + 50, 22*(i+3), 50, 20, 0xD8DCC0, 0x000000,  "", nil)
+		usersTable[i][5] = CreateBtn(frmMain, 12 + 20 + 50 + 50 + 50 + 30, 22*(i+3), 40, 20, 0xD8DCC0, 0x000000, "Upd", nil)
+		usersTable[i][6] = CreateBtn(frmMain, 12 + 20 + 50 + 50 + 50 + 30 + 44, 22*(i+3), 40, 20, 0xD8DCC0, 0x000000, "Del", nil)
 	}
 
-	btnPrev = CreateBtn(frmUsers, 12 + 50, 22*(paginatorY+4), 40, 20, 0xD8DCC0, 0x000000, "Prev", btnPrevClick)
+	btnPrev = CreateBtn(frmMain, 12 + 50, 22*(paginatorY+4), 40, 20, 0xD8DCC0, 0x000000, "Prev", btnPrevClick)
 	btnPrev.obj.(*tBtn).enabled = false
-	lblCurPage = CreateLabel(frmUsers, 12 + 50 + 50, 22*(paginatorY+4), 20, 20, 0xD8DCC0, 0x0000FF, strconv.Itoa(CurUsersPage), nil)
-	btnNext = CreateBtn(frmUsers, 12 + 50 + 50 + 15, 22*(paginatorY+4), 40, 20, 0xD8DCC0, 0x000000, "Next", btnNextClick)
+	lblCurPage = CreateLabel(frmMain, 12 + 50 + 50, 22*(paginatorY+4), 20, 20, 0xD8DCC0, 0x0000FF, strconv.Itoa(CurUsersPage), nil)
+	btnNext = CreateBtn(frmMain, 12 + 50 + 50 + 15, 22*(paginatorY+4), 40, 20, 0xD8DCC0, 0x000000, "Next", btnNextClick)
 	
 	refreshUsersTable()
 }
