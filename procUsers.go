@@ -48,6 +48,7 @@ func startUsers(frmMain *Node){
 	frmMain.obj.(*tForm).y = 150
 	frmMain.obj.(*tForm).sizeX = 400
 	frmMain.obj.(*tForm).sizeY = 220
+	frmMain.children[0].obj.(*tBitBtn).x = frmMain.obj.(*tForm).sizeX - 17
 	
 	btnAddUser = CreateBtn(frmMain, 12, 22, 60, 20, 0xD8DCC0, 0x000000, "Add", nil)
 	btnRefreshUser = CreateBtn(frmMain, 12 + 64, 22, 60, 20, 0xD8DCC0, 0x000000, "Refresh", btnRefreshClick)

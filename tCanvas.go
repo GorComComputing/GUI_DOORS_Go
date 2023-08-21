@@ -29,7 +29,8 @@ func CreateCanvas(parent *Node, x int, y int, sizeX int, sizeY int, onClick func
 }
 
 
-func (obj tCanvas) Draw(parX int, parY int){
+func (obj tCanvas) Draw(parX int, parY int, parSizeX int, parSizeY int){
+	//SetViewPort(parX, parY, parX + parSizeX, parY + parSizeY)
 	i := (((parY+obj.y+1) * BITMAP_WIDTH) + (parX+obj.x))*4
 
 	for j := 0; j < obj.sizeX*obj.sizeY*4; j+=4 {
@@ -42,6 +43,8 @@ func (obj tCanvas) Draw(parX int, parY int){
       	graphicsBuffer[i + 3] = 255 				// Alpha
       	i+=4
     }
+    
+    //SetViewPort(0, 0, GETMAX_X, GETMAX_Y)
 }
 
 

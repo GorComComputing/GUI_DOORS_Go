@@ -94,20 +94,21 @@ func formClose(node *Node){
 }
 
 
-func (obj tForm) Draw(parX int, parY int){
+func (obj tForm) Draw(parX int, parY int, parSizeX int, parSizeY int){
+	SetLocalViewPort(parX + obj.x+2, parY + obj.y+2, parX + obj.x + obj.sizeX-2, parY + obj.y + obj.sizeY-2)
     SetColor(obj.BC);
     var p []tPoint
 
-    p1 := tPoint{x: obj.x, y: obj.y}
+    p1 := tPoint{x: parX + obj.x, y: parY + obj.y}
 	p = append(p, p1)
 	
-	p2 := tPoint{x: obj.x + obj.sizeX, y: obj.y}
+	p2 := tPoint{x: parX + obj.x + obj.sizeX, y: parY + obj.y}
 	p = append(p, p2)
 	
-	p3 := tPoint{x: obj.x + obj.sizeX, y: obj.y + obj.sizeY}
+	p3 := tPoint{x: parX + obj.x + obj.sizeX, y: parY + obj.y + obj.sizeY}
 	p = append(p, p3)
 	
-	p4 := tPoint{x: obj.x, y: obj.y + obj.sizeY}
+	p4 := tPoint{x: parX + obj.x, y: parY + obj.y + obj.sizeY}
 	p = append(p, p4)
 
     FillPoly(nil, 4, p);
@@ -119,16 +120,16 @@ func (obj tForm) Draw(parX int, parY int){
     		SetColor(0x80A8E8)
     	}
     	p = nil
-    	p1 = tPoint{x: obj.x, y: obj.y}
+    	p1 = tPoint{x: parX + obj.x, y: parY + obj.y}
 		p = append(p, p1)
 	
-		p2 = tPoint{x: obj.x + obj.sizeX, y: obj.y}
+		p2 = tPoint{x: parX + obj.x + obj.sizeX, y: parY + obj.y}
 		p = append(p, p2)
 	
-		p3 = tPoint{x: obj.x + obj.sizeX, y: obj.y + 17}
+		p3 = tPoint{x: parX + obj.x + obj.sizeX, y: parY + obj.y + 17}
 		p = append(p, p3)
 	
-		p4 = tPoint{x: obj.x, y: obj.y + 17}
+		p4 = tPoint{x: parX + obj.x, y: parY + obj.y + 17}
 		p = append(p, p4)
 	
 		FillPoly(nil, 4, p);
@@ -140,20 +141,29 @@ func (obj tForm) Draw(parX int, parY int){
     		SetColor(0x787C78)
     		SetBackColor(0x80A8E8);
     	}
-    	TextOutgl(nil, obj.caption, obj.x + 9, obj.y + 6, 1);
+    	TextOutgl(nil, obj.caption, parX + obj.x + 9, parY + obj.y + 6, 1);
     }
 
     SetColor(0xF8FCF8);
-    LinePP(nil, obj.x, obj.y, obj.x + obj.sizeX, obj.y);
-    LinePP(nil, obj.x, obj.y, obj.x, obj.y + obj.sizeY);
+    LinePP(nil, parX + obj.x, parY + obj.y, parX + obj.x + obj.sizeX, parY + obj.y);
+    LinePP(nil, parX + obj.x, parY + obj.y, parX + obj.x, parY + obj.y + obj.sizeY);
     SetColor(0xE0E0E0);
-    LinePP(nil, obj.x+1, obj.y+1, obj.x + obj.sizeX - 2, obj.y+1);
-    LinePP(nil, obj.x+1, obj.y+1, obj.x+1, obj.y + obj.sizeY - 1);
+    LinePP(nil, parX + obj.x+1, parY + obj.y+1, parX + obj.x + obj.sizeX - 2, parY + obj.y+1);
+    LinePP(nil, parX + obj.x+1, parY + obj.y+1, parX + obj.x+1, parY + obj.y + obj.sizeY - 1);
     SetColor(0x787C78);
-    LinePP(nil, obj.x+2, obj.y + obj.sizeY - 1, obj.x + obj.sizeX - 1, obj.y + obj.sizeY - 1);
-    LinePP(nil, obj.x + obj.sizeX - 1, obj.y + 1, obj.x + obj.sizeX - 1, obj.y + obj.sizeY - 1);
+    LinePP(nil, parX + obj.x+2, parY + obj.y + obj.sizeY - 1, parX + obj.x + obj.sizeX - 1, parY + obj.y + obj.sizeY - 1);
+    LinePP(nil, parX + obj.x + obj.sizeX - 1, parY + obj.y + 1, parX + obj.x + obj.sizeX - 1, parY + obj.y + obj.sizeY - 1);
     SetColor(0x000000);
-    LinePP(nil, obj.x, obj.y + obj.sizeY, obj.x + obj.sizeX, obj.y + obj.sizeY);
-    LinePP(nil, obj.x + obj.sizeX, obj.y, obj.x + obj.sizeX, obj.y + obj.sizeY);    
+    LinePP(nil, parX + obj.x, parY + obj.y + obj.sizeY, parX + obj.x + obj.sizeX, parY + obj.y + obj.sizeY);
+    LinePP(nil, parX + obj.x + obj.sizeX, parY + obj.y, parX + obj.x + obj.sizeX, parY + obj.y + obj.sizeY);  
+    
+    //SetViewPort(0, 0, GETMAX_X, GETMAX_Y)  
 }
+
+
+/*func (obj tForm) SetSize(width int, height int){
+	obj.sizeX = width
+	obj.sizeY = height
+	
+}*/
 

@@ -22,6 +22,7 @@ func startFlag(frmMain *Node){
 	frmMain.obj.(*tForm).y = 50
 	frmMain.obj.(*tForm).sizeX = 380
 	frmMain.obj.(*tForm).sizeY = 340
+	frmMain.children[0].obj.(*tBitBtn).x = frmMain.obj.(*tForm).sizeX - 17
 	
 	cnvFlag = CreateCanvas(frmMain, 2, 17, 376, 321, nil)
 	for y := 0; y < cnvFlag.obj.(*tCanvas).sizeY; y++ {

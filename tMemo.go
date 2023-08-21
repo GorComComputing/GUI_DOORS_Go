@@ -9,7 +9,7 @@ import (
 )
 
 
-type tEdit struct{
+type tMemo struct{
     x int
     y int
     sizeX int
@@ -21,19 +21,22 @@ type tEdit struct{
     focused bool
     enabled bool
     curX int
+    curY int
+    pos int
+    line_start int
     onClick func(*Node)
 }
 
 
-func CreateEdit(parent *Node, x int, y int, sizeX int, sizeY int, BC int, TC int, text string, onClick func(*Node)) *Node {
-	obj := tEdit{x: x, y: y, sizeX: sizeX, sizeY: sizeY, BC: BC, TC: TC, text: text, visible: true, enabled: true, curX: 0, onClick: onClick}
-	node := Node{typ: EDIT, parent: parent, previous: nil, children: nil, obj: &obj}
+func CreateMemo(parent *Node, x int, y int, sizeX int, sizeY int, BC int, TC int, text string, onClick func(*Node)) *Node {
+	obj := tMemo{x: x, y: y, sizeX: sizeX, sizeY: sizeY, BC: BC, TC: TC, text: text, visible: true, enabled: true, curX: 0, curY: 0, pos: 0, line_start: 0, onClick: onClick}
+	node := Node{typ: MEMO, parent: parent, previous: nil, children: nil, obj: &obj}
 	parent.children = append(parent.children, &node)
 	return &node
 }
 
 
-func (obj tEdit) Draw(parX int, parY int, parSizeX int, parSizeY int){
+func (obj tMemo) Draw(parX int, parY int, parSizeX int, parSizeY int){
 	SetLocalViewPort(parX + obj.x, parY + obj.y, parX + obj.x + obj.sizeX, parY + obj.y + obj.sizeY)
     SetColor(obj.BC);
     var p []tPoint
@@ -55,17 +58,9 @@ func (obj tEdit) Draw(parX int, parY int, parSizeX int, parSizeY int){
 
     SetColor(obj.TC);
     SetBackColor(obj.BC);
-    if (len(obj.text)+1)*7 > obj.sizeX {
-    	TextOutgl(nil, obj.text, parX+obj.x + obj.sizeX - (len(obj.text)+1)*7, parY+obj.y + obj.sizeY/2-4, 1);
-    } else {
-    	TextOutgl(nil, obj.text, parX+obj.x + 4, parY+obj.y + obj.sizeY/2-4, 1);
-    }
+    TextOutgl(nil, obj.text, parX+obj.x + 4, parY+obj.y + 4, 1);
     if obj.focused && cursor {
-    	if (len(obj.text)+1)*7 > obj.sizeX {
-    		TextOutgl(nil, "|", parX+obj.x + 4+obj.curX*7 + obj.sizeX - (len(obj.text)+1)*7, parY+obj.y + obj.sizeY/2-4, 1);
-    	} else {
-    		TextOutgl(nil, "|", parX+obj.x + 4+obj.curX*7, parY+obj.y + obj.sizeY/2-4, 1);
-    	}
+    	TextOutgl(nil, "|", parX+obj.x + 4 + obj.curX*7, parY+obj.y + 4 + (7+2)*obj.curY, 1);
     }
 
     
@@ -73,5 +68,6 @@ func (obj tEdit) Draw(parX int, parY int, parSizeX int, parSizeY int){
     LinePP(nil, parX+obj.x, parY+obj.y, parX+obj.x + obj.sizeX, parY+obj.y);
     LinePP(nil, parX+obj.x, parY+obj.y, parX+obj.x, parY+obj.y + obj.sizeY);
 }
+
 
 

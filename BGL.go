@@ -3,6 +3,7 @@ package main
 import (
 	"math"
 	"strings"
+	//"fmt"
 )
 
 
@@ -34,12 +35,12 @@ func ClearDevice(buffer []uint8){
 }
 
 
-func PutPixel(buffer []uint8, x int, y int, Color int){
+func DrawPutPixel(buffer []uint8, x int, y int, Color int){
     FillLB(buffer, (BITMAP_WIDTH*y + x), 1, Color);
 }
 
 
-func LinePP(buffer []uint8, x1 int, y1 int, x2 int, y2 int){
+func DrawLinePP(buffer []uint8, x1 int, y1 int, x2 int, y2 int){
     var dx int = int(math.Abs(float64(x2-x1)));
     var dy int= int(math.Abs(float64(y2-y1)));
         var x int;
@@ -113,6 +114,68 @@ func LinePP(buffer []uint8, x1 int, y1 int, x2 int, y2 int){
             PutPixel(buffer, x, y, CC);
         }
     }
+}
+
+
+func LinePP(buffer []uint8, x1 int, y1 int, x2 int, y2 int){
+	var code, x, y int
+	x1 += xleft
+	x2 += xleft
+	y1 += ytop
+	y2 += ytop
+	
+	code1 := Coding(x1, y1)
+	code2 := Coding(x2, y2)
+	inside := (code1 | code2) == 0
+	for ; !(inside) && ((code1 & code2) == 0); {
+		if code1 == 0 {
+			x = x1
+			x1 = x2
+			x2 = x
+			y = y1
+			y1 = y2
+			y2 = y
+			code = code1
+			code1 = code2
+			code2 = code
+		}
+		// Здесь x1, y1 - снаружи
+		if x1 < xleft {
+			y1 = y1 + int(math.Round(float64((y2-y1)/(x2-x1)*(xleft-x1))))
+			x1 = xleft
+		} else if x1 > xright {
+			y1 = y1 + int(math.Round(float64((y2-y1)/(x2-x1)*(xright-x1))))
+			x1 = xright
+		} else if y1 < ytop {
+			x1 = x1 + int(math.Round(float64((x2-x1)/(y2-y1)*(ytop-y1))))
+			y1 = ytop
+		} else { // y1 > ybottom
+			x1 = x1 + int(math.Round(float64((x2-x1)/(y2-y1)*(ybottom-y1))))
+			y1 = ybottom
+		}
+		code1 = Coding(x1, y1)
+		inside = (code1 | code2) == 0
+	} 
+	if inside {
+		DrawLinePP(buffer, x1, y1, x2, y2)
+	}
+}
+
+
+func Coding(x int, y int) int{
+	code := 0
+	if x < xleft {
+		code += 8 
+	} else if x > xright {
+		code += 4
+	}
+	
+	if y < ytop {
+		code += 2
+	} else if y > ybottom {
+		code += 1
+	}
+	return code
 }
 
 
@@ -210,7 +273,7 @@ type tXbuf struct{
 }
 
 
-func FillPoly(buffer []uint8, n int,  p []tPoint){
+func DrawFillPoly(buffer []uint8, n int,  p []tPoint){
     //for i := 0; i < n; i++ {
         //p[i].y = BITMAP_HEIGHT - p[i].y;
     //}
@@ -243,6 +306,158 @@ func FillPoly(buffer []uint8, n int,  p []tPoint){
             HLine(buffer, YXbuf[y].x[i], y, YXbuf[y].x[i + 1]);
         }
     }
+}
+
+
+func FillPoly(buffer []uint8, n int,  p []tPoint){
+	//var p1 []tPoint
+	//var p2 []tPoint
+	var m1, m2 int
+	
+	p1 := make([]tPoint, 2*n)
+	p2 := make([]tPoint, 2*n)
+	//fmt.Println(len(p1))
+	
+	/*for i := 0; i < 2*n-1; i++ {
+		pnew := tPoint{x: 0, y: 0}
+		p1 = append(p1, pnew)
+		p2 = append(p2, pnew)
+	}*/
+	
+	//SetLength(p1, 2*n)
+	//SetLength(p2, 2*n)
+	for i := 0; i < n; i++ {
+		p1[i].x = p[i].x + xleft
+		p1[i].y = p[i].y + ytop
+		//pnew := tPoint{x: p[i].x + xleft, y: p[i].y + ytop}
+		//p1 = append(p1, pnew)
+	}
+	//fmt.Println(p1)
+	//fmt.Println(p2)
+	ClipLeft(n, p1, &m2, p2)
+	//fmt.Println(p2)
+	//DrawFillPoly(buffer, m1, p1)
+	if m2 > 0 {
+		ClipTop(m2, p2, &m1, p1)
+		if m1 > 0 {
+			ClipRight(m1, p1, &m2, p2)
+			if m2 > 0 {
+				ClipBottom(m2, p2, &m1, p1)
+				if m1 > 0 {
+				//fmt.Println("m1 "+ string(m1))
+					DrawFillPoly(buffer, m1, p1)
+				}
+			}
+		}
+	}
+}
+
+
+func ClipLeft(n int, p1 []tPoint, m *int, p2 []tPoint) {
+	var x1, y1, x2, y2 int
+	var inside1, inside2 bool
+	*m = 0
+	x1 = p1[n-1].x
+	y1 = p1[n-1].y
+	inside1 = x1 >= xleft
+	for i := 0; i < n; i++ {
+		x2 = p1[i].x
+		y2 = p1[i].y
+		inside2 = x2 >= xleft
+		if inside1 != inside2 {
+			p2[*m].y = y2 + int(math.Round(float64((y1-y2)/(x1-x2)*(xleft-x2))))
+			p2[*m].x = xleft
+			*m += 1
+		}
+		if inside2 {
+			p2[*m] = p1[i]
+			*m += 1
+		}
+		x1 = x2
+		y1 = y2
+		inside1 = inside2
+	} 
+}
+
+
+func ClipRight(n int, p1 []tPoint, m *int, p2 []tPoint) {
+	var x1, y1, x2, y2 int
+	var inside1, inside2 bool
+	*m = 0
+	x1 = p1[n-1].x
+	y1 = p1[n-1].y
+	inside1 = x1 <= xright
+	for i := 0; i < n; i++ {
+		x2 = p1[i].x
+		y2 = p1[i].y
+		inside2 = x2 <= xright
+		if inside1 != inside2 {
+			p2[*m].y = y2 + int(math.Round(float64((y1-y2)/(x1-x2)*(xright-x2))))
+			p2[*m].x = xright
+			*m += 1
+		}
+		if inside2 {
+			p2[*m] = p1[i]
+			*m += 1
+		}
+		x1 = x2
+		y1 = y2
+		inside1 = inside2
+	} 
+}
+
+
+func ClipTop(n int, p1 []tPoint, m *int, p2 []tPoint) {
+	var x1, y1, x2, y2 int
+	var inside1, inside2 bool
+	*m = 0
+	x1 = p1[n-1].x
+	y1 = p1[n-1].y
+	inside1 = y1 >= ytop
+	for i := 0; i < n; i++ {
+		x2 = p1[i].x
+		y2 = p1[i].y
+		inside2 = y2 >= ytop
+		if inside1 != inside2 {
+			p2[*m].x = x1 + int(math.Round(float64((x2-x1)/(y2-y1)*(ytop-y1))))
+			p2[*m].y = ytop
+			*m += 1
+		}
+		if inside2 {
+			p2[*m] = p1[i]
+			*m += 1
+		}
+		x1 = x2
+		y1 = y2
+		inside1 = inside2
+	} 
+}
+
+
+func ClipBottom(n int, p1 []tPoint, m *int, p2 []tPoint) {
+	var x1, y1, x2, y2 int
+	var inside1, inside2 bool
+	*m = 0
+	x1 = p1[n-1].x
+	y1 = p1[n-1].y
+	inside1 = y1 <= ybottom
+	for i := 0; i < n; i++ {
+		x2 = p1[i].x
+		y2 = p1[i].y
+		inside2 = y2 <= ybottom
+		if inside1 != inside2 {
+			p2[*m].x = x1 + int(math.Round(float64((x2-x1)/(y2-y1)*(ybottom-y1))))
+			p2[*m].y = ybottom
+			*m += 1
+		}
+		if inside2 {
+			p2[*m] = p1[i]
+			*m += 1
+		}
+		x1 = x2
+		y1 = y2
+		inside1 = inside2
+	} 
 }
 
 
@@ -284,6 +499,69 @@ func Sort(a tXbuf){
 }
 
 
+func FillCircle(buffer []uint8, xc int, yc int, R int) {
+	d := 3 - 2*R
+	x := 0
+	y := R
+	Draw4(buffer, xc, yc, x, R)
+	for ; x < y; {
+		if d < 0 {
+			d = d + 4*x + 6
+		} else {
+			d = d + 4*(x - y) + 10
+			y = y - 1
+		}
+		x = x + 1
+		Draw4(buffer, xc, yc, x, y)
+	}
+}
+
+
+func Draw4(buffer []uint8, xc int, yc int, x int, y int) {
+	HLine(buffer, xc + x, yc + y, xc - x)
+	HLine(buffer, xc - y, yc + x, xc + y)
+	HLine(buffer, xc + x, yc - y, xc - x)
+	HLine(buffer, xc - y, yc - x, xc + y)
+}
+
+
+var xleft int
+var ytop int
+var xright int
+var ybottom int
+	
+	
+func SetViewPort(xl int, yt int, xr int, yb int){
+	xleft = xl
+	ytop = yt
+	xright = xr
+	ybottom = yb
+}
+
+
+var xleft_loc int = 0
+var ytop_loc int = 0
+var xright_loc int = GETMAX_X
+var ybottom_loc int = GETMAX_Y
+	
+	
+func SetLocalViewPort(xl int, yt int, xr int, yb int){
+	xleft_loc = xl
+	ytop_loc = yt
+	xright_loc = xr
+	ybottom_loc = yb
+}
+
+
+func PutPixel(buffer []uint8, x int, y int, C int){
+	x += xleft	// Переход к абсолютным координатам
+	y += ytop
+	if x >= xleft && x <= xright && y >= ytop && y <= ybottom {
+		DrawPutPixel(buffer, x, y, C)
+	}
+}
+
+
 func DrawBitmapTransparent(buffer []uint8, monster string, xstart int, ystart int, sizeX int, sizeY int, scale int){
     var x int = xstart;
     var y int = ystart;
@@ -293,7 +571,9 @@ func DrawBitmapTransparent(buffer []uint8, monster string, xstart int, ystart in
         for j := 0; j < sizeX; j++ {
             if(monster[i*sizeX + j] == 'p'){
                 for scaleX := scale; scaleX > 0; scaleX--{
-                PutPixel(buffer, x + j, y + i, CC);
+                	if x + j >= xleft_loc && x + j <= xright_loc && y + i >= ytop_loc && y + i <= ybottom_loc {
+                		PutPixel(buffer, x + j, y + i, CC);
+                	}
                 if scaleX > 1 { x++;}
                 }
             } else {
@@ -310,8 +590,7 @@ func DrawBitmapTransparent(buffer []uint8, monster string, xstart int, ystart in
 }
 
 
-
-func TextOutgl(buffer []uint8, str string, x int, y int, scale int){
+func TextOutgl(buffer []uint8, str string, x_start int, y int, scale int){
 var charA string = 
     " pppp  " +
     "pp  pp " +
@@ -673,60 +952,63 @@ var char2points string =
     "       "
     ;//7x7
 var char_vert_line string =
-    "   pp  " +
-    "   pp  " +
-    "   pp  " +
-    "   pp  " +
-    "   pp  " +
-    "   pp  " +
-    "   pp  "
+    "pp     " +
+    "pp     " +
+    "pp     " +
+    "pp     " +
+    "pp     " +
+    "pp     " +
+    "pp     "
     ;//7x7
 
-
+	var interval int = 2
+	var x = x_start
 	str = strings.ToUpper(str)
-
-    for i := 0; i < len(str); i++ {
-        if str[i] == 'A' { DrawBitmapTransparent(buffer, charA, x+7*i*scale, y, 7, 7, scale);
-        } else if str[i] == 'B' { DrawBitmapTransparent(buffer, charB, x+7*i*scale, y, 7, 7, scale);
-        } else if str[i] == 'C' { DrawBitmapTransparent(buffer, charC, x+7*i*scale, y, 7, 7, scale);
-        } else if str[i] == 'D' { DrawBitmapTransparent(buffer, charD, x+7*i*scale, y, 7, 7, scale);
-        } else if str[i] == 'E' { DrawBitmapTransparent(buffer, charE, x+7*i*scale, y, 7, 7, scale);
-        } else if str[i] == 'F' { DrawBitmapTransparent(buffer, charF, x+7*i*scale, y, 7, 7, scale);
-        } else if str[i] == 'G' { DrawBitmapTransparent(buffer, charG, x+7*i*scale, y, 7, 7, scale);
-        } else if str[i] == 'H' { DrawBitmapTransparent(buffer, charH, x+7*i*scale, y, 7, 7, scale);
-        } else if str[i] == 'I' { DrawBitmapTransparent(buffer, charI, x+7*i*scale, y, 7, 7, scale);
-        } else if str[i] == 'J' { DrawBitmapTransparent(buffer, charJ, x+7*i*scale, y, 7, 7, scale);
-        } else if str[i] == 'K' { DrawBitmapTransparent(buffer, charK, x+7*i*scale, y, 7, 7, scale);
-        } else if str[i] == 'L' { DrawBitmapTransparent(buffer, charL, x+7*i*scale, y, 7, 7, scale);
-        } else if str[i] == 'M' { DrawBitmapTransparent(buffer, charM, x+7*i*scale, y, 7, 7, scale);
-        } else if str[i] == 'N' { DrawBitmapTransparent(buffer, charN, x+7*i*scale, y, 7, 7, scale);
-        } else if str[i] == 'O' { DrawBitmapTransparent(buffer, charO, x+7*i*scale, y, 7, 7, scale);
-        } else if str[i] == 'P' { DrawBitmapTransparent(buffer, charP, x+7*i*scale, y, 7, 7, scale);
-        } else if str[i] == 'Q' { DrawBitmapTransparent(buffer, charQ, x+7*i*scale, y, 7, 7, scale);
-        } else if str[i] == 'R' { DrawBitmapTransparent(buffer, charR, x+7*i*scale, y, 7, 7, scale);
-        } else if str[i] == 'S' { DrawBitmapTransparent(buffer, charS, x+7*i*scale, y, 7, 7, scale);
-        } else if str[i] == 'T' { DrawBitmapTransparent(buffer, charT, x+7*i*scale, y, 7, 7, scale);
-        } else if str[i] == 'U' { DrawBitmapTransparent(buffer, charU, x+7*i*scale, y, 7, 7, scale);
-        } else if str[i] == 'V' { DrawBitmapTransparent(buffer, charV, x+7*i*scale, y, 7, 7, scale);
-        } else if str[i] == 'W' { DrawBitmapTransparent(buffer, charW, x+7*i*scale, y, 7, 7, scale);
-        } else if str[i] == 'X' { DrawBitmapTransparent(buffer, charX, x+7*i*scale, y, 7, 7, scale);
-        } else if str[i] == 'Y' { DrawBitmapTransparent(buffer, charY, x+7*i*scale, y, 7, 7, scale);
-        } else if str[i] == 'Z' { DrawBitmapTransparent(buffer, charZ, x+7*i*scale, y, 7, 7, scale);
-        } else if str[i] == ' ' { DrawBitmapTransparent(buffer, charSpace, x+7*i*scale, y, 7, 7, scale);
-        } else if str[i] == '-' { DrawBitmapTransparent(buffer, charLine, x+7*i*scale, y, 7, 7, scale);
-        } else if str[i] == '0' { DrawBitmapTransparent(buffer, char0, x+7*i*scale, y, 7, 7, scale);
-        } else if str[i] == '1' { DrawBitmapTransparent(buffer, char1, x+7*i*scale, y, 7, 7, scale);
-        } else if str[i] == '2' { DrawBitmapTransparent(buffer, char2, x+7*i*scale, y, 7, 7, scale);
-        } else if str[i] == '3' { DrawBitmapTransparent(buffer, char3, x+7*i*scale, y, 7, 7, scale);
-        } else if str[i] == '4' { DrawBitmapTransparent(buffer, char4, x+7*i*scale, y, 7, 7, scale);
-        } else if str[i] == '5' { DrawBitmapTransparent(buffer, char5, x+7*i*scale, y, 7, 7, scale);
-        } else if str[i] == '6' { DrawBitmapTransparent(buffer, char6, x+7*i*scale, y, 7, 7, scale);
-        } else if str[i] == '7' { DrawBitmapTransparent(buffer, char7, x+7*i*scale, y, 7, 7, scale);
-        } else if str[i] == '8' { DrawBitmapTransparent(buffer, char8, x+7*i*scale, y, 7, 7, scale);
-        } else if str[i] == '9' { DrawBitmapTransparent(buffer, char9, x+7*i*scale, y, 7, 7, scale);
-        } else if str[i] == ':' { DrawBitmapTransparent(buffer, char2points, x+7*i*scale, y, 7, 7, scale);
-        } else if str[i] == '|' { DrawBitmapTransparent(buffer, char_vert_line, x+7*i*scale, y, 7, 7, scale);
+	i := 0
+    for j := 0; j < len(str); j++ {
+        if str[j] == 'A' { DrawBitmapTransparent(buffer, charA, x+7*i*scale, y, 7, 7, scale);
+        } else if str[j] == 'B' { DrawBitmapTransparent(buffer, charB, x+7*i*scale, y, 7, 7, scale);
+        } else if str[j] == 'C' { DrawBitmapTransparent(buffer, charC, x+7*i*scale, y, 7, 7, scale);
+        } else if str[j] == 'D' { DrawBitmapTransparent(buffer, charD, x+7*i*scale, y, 7, 7, scale);
+        } else if str[j] == 'E' { DrawBitmapTransparent(buffer, charE, x+7*i*scale, y, 7, 7, scale);
+        } else if str[j] == 'F' { DrawBitmapTransparent(buffer, charF, x+7*i*scale, y, 7, 7, scale);
+        } else if str[j] == 'G' { DrawBitmapTransparent(buffer, charG, x+7*i*scale, y, 7, 7, scale);
+        } else if str[j] == 'H' { DrawBitmapTransparent(buffer, charH, x+7*i*scale, y, 7, 7, scale);
+        } else if str[j] == 'I' { DrawBitmapTransparent(buffer, charI, x+7*i*scale, y, 7, 7, scale);
+        } else if str[j] == 'J' { DrawBitmapTransparent(buffer, charJ, x+7*i*scale, y, 7, 7, scale);
+        } else if str[j] == 'K' { DrawBitmapTransparent(buffer, charK, x+7*i*scale, y, 7, 7, scale);
+        } else if str[j] == 'L' { DrawBitmapTransparent(buffer, charL, x+7*i*scale, y, 7, 7, scale);
+        } else if str[j] == 'M' { DrawBitmapTransparent(buffer, charM, x+7*i*scale, y, 7, 7, scale);
+        } else if str[j] == 'N' { DrawBitmapTransparent(buffer, charN, x+7*i*scale, y, 7, 7, scale);
+        } else if str[j] == 'O' { DrawBitmapTransparent(buffer, charO, x+7*i*scale, y, 7, 7, scale);
+        } else if str[j] == 'P' { DrawBitmapTransparent(buffer, charP, x+7*i*scale, y, 7, 7, scale);
+        } else if str[j] == 'Q' { DrawBitmapTransparent(buffer, charQ, x+7*i*scale, y, 7, 7, scale);
+        } else if str[j] == 'R' { DrawBitmapTransparent(buffer, charR, x+7*i*scale, y, 7, 7, scale);
+        } else if str[j] == 'S' { DrawBitmapTransparent(buffer, charS, x+7*i*scale, y, 7, 7, scale);
+        } else if str[j] == 'T' { DrawBitmapTransparent(buffer, charT, x+7*i*scale, y, 7, 7, scale);
+        } else if str[j] == 'U' { DrawBitmapTransparent(buffer, charU, x+7*i*scale, y, 7, 7, scale);
+        } else if str[j] == 'V' { DrawBitmapTransparent(buffer, charV, x+7*i*scale, y, 7, 7, scale);
+        } else if str[j] == 'W' { DrawBitmapTransparent(buffer, charW, x+7*i*scale, y, 7, 7, scale);
+        } else if str[j] == 'X' { DrawBitmapTransparent(buffer, charX, x+7*i*scale, y, 7, 7, scale);
+        } else if str[j] == 'Y' { DrawBitmapTransparent(buffer, charY, x+7*i*scale, y, 7, 7, scale);
+        } else if str[j] == 'Z' { DrawBitmapTransparent(buffer, charZ, x+7*i*scale, y, 7, 7, scale);
+        } else if str[j] == ' ' { DrawBitmapTransparent(buffer, charSpace, x+7*i*scale, y, 7, 7, scale);
+        } else if str[j] == '-' { DrawBitmapTransparent(buffer, charLine, x+7*i*scale, y, 7, 7, scale);
+        } else if str[j] == '0' { DrawBitmapTransparent(buffer, char0, x+7*i*scale, y, 7, 7, scale);
+        } else if str[j] == '1' { DrawBitmapTransparent(buffer, char1, x+7*i*scale, y, 7, 7, scale);
+        } else if str[j] == '2' { DrawBitmapTransparent(buffer, char2, x+7*i*scale, y, 7, 7, scale);
+        } else if str[j] == '3' { DrawBitmapTransparent(buffer, char3, x+7*i*scale, y, 7, 7, scale);
+        } else if str[j] == '4' { DrawBitmapTransparent(buffer, char4, x+7*i*scale, y, 7, 7, scale);
+        } else if str[j] == '5' { DrawBitmapTransparent(buffer, char5, x+7*i*scale, y, 7, 7, scale);
+        } else if str[j] == '6' { DrawBitmapTransparent(buffer, char6, x+7*i*scale, y, 7, 7, scale);
+        } else if str[j] == '7' { DrawBitmapTransparent(buffer, char7, x+7*i*scale, y, 7, 7, scale);
+        } else if str[j] == '8' { DrawBitmapTransparent(buffer, char8, x+7*i*scale, y, 7, 7, scale);
+        } else if str[j] == '9' { DrawBitmapTransparent(buffer, char9, x+7*i*scale, y, 7, 7, scale);
+        } else if str[j] == ':' { DrawBitmapTransparent(buffer, char2points, x+7*i*scale, y, 7, 7, scale);
+        } else if str[j] == '|' { DrawBitmapTransparent(buffer, char_vert_line, x+7*i*scale, y, 7, 7, scale);
+        } else if str[j] == 13 { i = 0; y += 7 + interval; continue;
         } else { DrawBitmapTransparent(buffer, charUndefined, x+7*i*scale, y, 7, 7, scale);}
+        i++
     }
 }
 

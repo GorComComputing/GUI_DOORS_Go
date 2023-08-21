@@ -28,11 +28,12 @@ func CreatePanel(parent *Node, x int, y int, sizeX int, sizeY int, BC int, onCli
 }
 
 
-func (obj tPanel) Draw(parX int, parY int){
+func (obj tPanel) Draw(parX int, parY int, parSizeX int, parSizeY int){
+	//SetViewPort(parX, parY, parX + parSizeX, parY + parSizeY)
     SetColor(obj.BC);
     var p []tPoint
 
-    	p1 := tPoint{x: parX+obj.x, y: parY+obj.y}
+    p1 := tPoint{x: parX+obj.x, y: parY+obj.y}
 	p = append(p, p1)
 	
 	p2 := tPoint{x: parX+obj.x + obj.sizeX, y: parY+obj.y}
@@ -58,6 +59,8 @@ func (obj tPanel) Draw(parX int, parY int){
     SetColor(0x000000);
     LinePP(nil, parX+obj.x, parY+obj.y + obj.sizeY, parX+obj.x + obj.sizeX, parY+obj.y + obj.sizeY);
     LinePP(nil, parX+obj.x + obj.sizeX, parY+obj.y, parX+obj.x + obj.sizeX, parY+obj.y + obj.sizeY);
+    
+    //SetViewPort(0, 0, GETMAX_X, GETMAX_Y)
 }
 
 

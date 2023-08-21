@@ -31,11 +31,13 @@ func startTrap(frmMain *Node){
 	frmMain.obj.(*tForm).y = 400
 	frmMain.obj.(*tForm).sizeX = 200
 	frmMain.obj.(*tForm).sizeY = 130
+	frmMain.children[0].obj.(*tBitBtn).x = frmMain.obj.(*tForm).sizeX - 17
+	
 	btnSendTrap = CreateBtn(frmMain, 70, 20 + 30 + 30, 60, 24, 0xD8DCC0, 0x000000, "Send", btnSendTrapClick)
 	//btnCancel = CreateBtn(frmTrap, 40 + 70, 20 + 30 + 30, 60, 24, 0xD8DCC0, 0x000000, "CANCEL", nil)
 	//btnOther = CreateBtn(frmTrap, 80 + 60, 20 + 30 + 30 + 30, 60, 24, 0xD8DCC0, 0x000000, "OTHER", nil)
 	
-	lblMessage = CreateLabel(frmMain, 12, 32, 80, 20, 0xD8DCC0, 0x000000, "Message", nil)
+	lblMessage = CreateLabel(frmMain, 12, 32, 120, 20, 0xD8DCC0, 0x000000, "Message", nil)
 	//lblPswd = CreateLabel(frmTrap, 12, 22 + 30, 80, 20, 0xD8DCC0, 0x000000, "PASSWORD", nil)
 	
 	editMessage = CreateEdit(frmMain, 80, 30, 100, 20, 0xF8FCF8, 0x000000, "", nil)

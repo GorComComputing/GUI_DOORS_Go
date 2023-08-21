@@ -32,6 +32,8 @@ var btnPrevEvents *Node
 var lblCurEventsPage *Node
 var btnNextEvents *Node
 
+var memTest *Node
+
 type EventsFromDB struct {
 	Id int
 	Level string
@@ -50,9 +52,10 @@ func startEvents(frmMain *Node){
 	//frmEvents = CreateForm(&layout, 100, 100, 500, 220, 0xD8DCC0, WIN, "Events", false, nil)
 	frmMain.obj.(*tForm).x = 100
 	frmMain.obj.(*tForm).y = 100
-	frmMain.obj.(*tForm).sizeX = 500
+	frmMain.obj.(*tForm).sizeX = 600
 	frmMain.obj.(*tForm).sizeY = 220
-	
+	frmMain.children[0].obj.(*tBitBtn).x = frmMain.obj.(*tForm).sizeX - 17
+					// 472, 202
 	btnAddEvent = CreateBtn(frmMain, 12, 22, 60, 20, 0xD8DCC0, 0x000000, "Add", nil)
 	btnRefreshEvents = CreateBtn(frmMain, 12 + 64, 22, 60, 20, 0xD8DCC0, 0x000000, "Refresh", btnRefreshEventsClick)
 	
@@ -79,6 +82,8 @@ func startEvents(frmMain *Node){
 	//btnPrevEvents.obj.(*tBtn).enabled = false
 	lblCurEventsPage = CreateLabel(frmMain, 12 + 50 + 50, 22*(paginatorY+4), 20, 20, 0xD8DCC0, 0x0000FF, strconv.Itoa(CurEventsPage), nil)
 	btnNextEvents = CreateBtn(frmMain, 12 + 50 + 50 + 15, 22*(paginatorY+4), 40, 20, 0xD8DCC0, 0x000000, "Next", btnNextEventsClick)
+	
+	memTest = CreateMemo(frmMain, 400, 30, 100, 100, 0x000000, 0xF8FCF8, "", nil)
 	
 	refreshEventsTable()
 }

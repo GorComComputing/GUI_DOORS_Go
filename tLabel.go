@@ -30,11 +30,12 @@ func CreateLabel(parent *Node, x int, y int, sizeX int, sizeY int, BC int, TC in
 }
 
 
-func (obj tLabel) Draw(parX int, parY int){
+func (obj tLabel) Draw(parX int, parY int, parSizeX int, parSizeY int){
+	SetLocalViewPort(parX + obj.x, parY + obj.y, parX + obj.x + obj.sizeX, parY + obj.y + obj.sizeY)
     SetColor(obj.BC);
     var p []tPoint
 
-    	p1 := tPoint{x: parX+obj.x, y: parY+obj.y}
+    p1 := tPoint{x: parX+obj.x, y: parY+obj.y}
 	p = append(p, p1)
 	
 	p2 := tPoint{x: parX+obj.x + obj.sizeX, y: parY+obj.y}
@@ -50,7 +51,8 @@ func (obj tLabel) Draw(parX int, parY int){
 
     SetColor(obj.TC);
     SetBackColor(obj.BC);
-    TextOutgl(nil, obj.caption, parX+obj.x, parY+obj.y + obj.sizeY/2-4, 1);
+    TextOutgl(nil, obj.caption, parX + obj.x+1, parY + obj.y + obj.sizeY/2 - 4, 1);
+    
 }
 
 

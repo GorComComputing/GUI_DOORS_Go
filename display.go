@@ -67,9 +67,30 @@ func GetPixelgl(buffer []uint8, x int, y int) int {
 //export Draw
 func Draw() {
 	SetBackColor(0xFFFFFF) //0x111111
+	SetColor(0xFF0000)
+	SetViewPort(0, 0, GETMAX_X, GETMAX_Y)
 	//ClearDevice()
 	DrawNode(&layout)
+	//FillCircle(nil, 0, 100, 30)
+	//Circle(nil, 0, 200, 30)
 	onTimer()
+	
+	/*SetColor(0xFF00FF)
+    	var p []tPoint
+
+    	p1 := tPoint{x: 100, y: 100}
+		p = append(p, p1)
+	
+		p2 := tPoint{x: 400, y: 100}
+		p = append(p, p2)
+	
+		p3 := tPoint{x: 400, y: 400}
+		p = append(p, p3)
+	
+		p4 := tPoint{x: 100, y: 400}
+		p = append(p, p4)
+
+    	FillPoly(nil, 4, p);*/
 }
 
 

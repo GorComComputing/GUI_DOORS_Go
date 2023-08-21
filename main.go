@@ -54,7 +54,7 @@ func main() {
 	
 	lblTime = CreateLabel(pnlTask, pnlTask.obj.(*tPanel).sizeX - 45, 6, 40, 20, 0x30B410, 0xF8FCF8, "", nil)
 	
-	frmMenuStart = CreateForm(&layout, 0, BITMAP_HEIGHT-116, 127, 85, 0xD8DCC0, NONE, "", false, nil)
+	frmMenuStart = CreateForm(&layout, 0, BITMAP_HEIGHT-136, 127, 105, 0xD8DCC0, NONE, "", false, nil)
 	cnvMenuStart = CreateCanvas(frmMenuStart, 2, 2, 20, 80, nil)
 	for y := 0; y < cnvMenuStart.obj.(*tCanvas).sizeY; y++ {
     	for x := 0; x < cnvMenuStart.obj.(*tCanvas).sizeX; x++ {
@@ -62,8 +62,8 @@ func main() {
       			squareRgbaIndex := squareNumber * 4;
 
       			cnvMenuStart.obj.(*tCanvas).buffer[squareRgbaIndex + 0] = 0; 	// Red
-      			cnvMenuStart.obj.(*tCanvas).buffer[squareRgbaIndex + 1] = 0; 	// Green
-      			cnvMenuStart.obj.(*tCanvas).buffer[squareRgbaIndex + 2] = 255; 	// Blue
+      			cnvMenuStart.obj.(*tCanvas).buffer[squareRgbaIndex + 1] = 0x54; 	// Green
+      			cnvMenuStart.obj.(*tCanvas).buffer[squareRgbaIndex + 2] = 0xE0; 	// Blue
       			cnvMenuStart.obj.(*tCanvas).buffer[squareRgbaIndex + 3] = 255; 	// Alpha
     	}
     }
@@ -73,11 +73,15 @@ func main() {
 	btnMenuTrap = CreateBtn(frmMenuStart, 24, 3 + 20, 100, 20, 0xD8DCC0, 0x000000, "Trap", btnMenuTrapClick)
 	btnMenuUsers = CreateBtn(frmMenuStart, 24, 3 + 20 + 20, 100, 20, 0xD8DCC0, 0x000000, "Users", btnMenuUsersClick)
 	btnMenuEvents = CreateBtn(frmMenuStart, 24, 3 + 20 + 20 + 20, 100, 20, 0xD8DCC0, 0x000000, "Events", btnMenuEventsClick)
+	btnMenuEvents = CreateBtn(frmMenuStart, 24, 3 + 20 + 20 + 20 + 20, 100, 20, 0xD8DCC0, 0x000000, "Terminal", btnMenuTerminalClick)
 	
 startProcess("Flag", startFlag)
 startProcess("Trap", startTrap)
 startProcess("Users", startUsers)
 startProcess("Events", startEvents)
+startProcess("Terminal", startTerminal)
+
+		
 
 	
     <-make(chan bool)
@@ -125,6 +129,10 @@ func btnMenuEventsClick(node *Node){
 	startProcess("Events", startEvents)
 }
 
+func btnMenuTerminalClick(node *Node){
+	startProcess("Terminal", startTerminal)
+}
+
 
 func btnTaskClick(node *Node){
 	var i int = 0
@@ -147,7 +155,9 @@ func btnTaskClick(node *Node){
 
 
 func onTimer() {
-	//flagDraw(cnvFlag.obj.(*tCanvas).x+50, cnvFlag.obj.(*tCanvas).y+50)
+	if cnvFlag != nil {
+		flagDraw(cnvFlag.obj.(*tCanvas).x+50, cnvFlag.obj.(*tCanvas).y+50)
+	}
 	
 	cursor = !(cursor)
 	

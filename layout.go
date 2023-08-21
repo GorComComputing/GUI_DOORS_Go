@@ -28,10 +28,11 @@ const (
     PANEL
     CANVAS
     BIT_BUTTON
+    MEMO
 )
 
 type tWinComponents interface {
-   Draw(parX int, parY int)
+   Draw(parX int, parY int, parSizeX int, parSizeY int)
 }
 
 
@@ -63,46 +64,69 @@ func DrawNode(node *Node){
 			visible = obj.visible
 		case *tBitBtn:
 			visible = obj.visible
+		case *tMemo:
+			visible = obj.visible
 		}
 	}
 	
 	var parX int = 0
 	var parY int = 0
+	var parSizeX int = GETMAX_X
+	var parSizeY int = GETMAX_Y
 	if node.parent != nil && node.parent.obj != nil {
 		switch obj := node.parent.obj.(type) {
 		case *tBtn:
 			parX = obj.x
 			parY = obj.y
+			parSizeX = obj.sizeX
+			parSizeY = obj.sizeY
 		case *tForm:
 			parX = obj.x
 			parY = obj.y
+			parSizeX = obj.sizeX
+			parSizeY = obj.sizeY
 		case *tPanel:
 			parX = obj.x
 			parY = obj.y
+			parSizeX = obj.sizeX
+			parSizeY = obj.sizeY
 		case *tEdit:
 			parX = obj.x
 			parY = obj.y
+			parSizeX = obj.sizeX
+			parSizeY = obj.sizeY
 		case *tLabel:
 			parX = obj.x
 			parY = obj.y
+			parSizeX = obj.sizeX
+			parSizeY = obj.sizeY
 		case *tCanvas:
 			parX = obj.x
 			parY = obj.y
+			parSizeX = obj.sizeX
+			parSizeY = obj.sizeY
 		case *tBitBtn:
 			parX = obj.x
 			parY = obj.y
+			parSizeX = obj.sizeX
+			parSizeY = obj.sizeY
+		case *tMemo:
+			parX = obj.x
+			parY = obj.y
+			parSizeX = obj.sizeX
+			parSizeY = obj.sizeY
 		}
 	}
 	
 	if node.obj != nil && visible  {
-		node.obj.Draw(parX, parY)
+		node.obj.Draw(parX, parY, parSizeX, parSizeY)
 	}
 	
 	if node.children != nil && visible {
 			for i := 0; i < len(node.children); i++ { 
 				DrawNode(node.children[i])
 			}
-		}
+	}
 		
 	return
 }
@@ -149,6 +173,8 @@ func ClickRecurs(node *Node, x int, y int, parX int, parY int) {
 			visible = obj.visible
 		case *tBitBtn:
 			visible = obj.visible
+		case *tMemo:
+			visible = obj.visible
 		}
 	}
 	
@@ -173,6 +199,9 @@ func ClickRecurs(node *Node, x int, y int, parX int, parY int) {
 			parX = obj.x
 			parY = obj.y
 		case *tBitBtn:
+			parX = obj.x
+			parY = obj.y
+		case *tMemo:
 			parX = obj.x
 			parY = obj.y
 		}
@@ -227,6 +256,13 @@ func ClickRecurs(node *Node, x int, y int, parX int, parY int) {
 			(parX+node.obj.(*tBitBtn).x + node.obj.(*tBitBtn).sizeX) > x && 
 			(parY+node.obj.(*tBitBtn).y) < y && 
 			(parY+node.obj.(*tBitBtn).y + node.obj.(*tBitBtn).sizeY) > y {
+				list = append(list, node)
+			}
+		case *tMemo:
+			if (parX+node.obj.(*tMemo).x) < x && 
+			(parX+node.obj.(*tMemo).x + node.obj.(*tMemo).sizeX) > x && 
+			(parY+node.obj.(*tMemo).y) < y && 
+			(parY+node.obj.(*tMemo).y + node.obj.(*tMemo).sizeY) > y {
 				list = append(list, node)
 			}
 		}
@@ -288,6 +324,8 @@ func eventMouseDown(x int, y int)  {
 		switch obj := layout.children[len(layout.children)-1].obj.(*tForm).focus.obj.(type) {
     	case *tEdit:
 			obj.focused = false
+		case *tMemo:
+			obj.focused = false
 		}
 	}
 	layout.children[len(layout.children)-1].obj.(*tForm).focus = list[len(list)-1]
@@ -316,6 +354,10 @@ func eventMouseDown(x int, y int)  {
     	if obj.enabled {
     		bitbtnPressed = obj
 			obj.pressed = true	
+		}
+	case *tMemo:
+    	if obj.enabled {
+			obj.focused = true	
 		}
 	}
 }
@@ -362,12 +404,123 @@ func keyDown(key int){
     		if key == 8 {
     			if len(obj.text) > 0 {
     				obj.text = obj.text[:len(obj.text)-1]
+    				obj.curX--
     			}
+    		} else if key == 37 {
+    			if obj.curX > 0 {
+    				obj.curX--
+    			}
+    		} else if key == 39 {
+    			if obj.curX < len(obj.text) {
+    				obj.curX++
+    			}
+    		} else if key == 36 {
+    				obj.curX = 0
+    		} else if key == 35 {
+    				obj.curX = len(obj.text)
     		} else {
-				obj.text += string(key)
+    			obj.text = obj.text[:obj.curX] + string(key) + obj.text[obj.curX:]
+				obj.curX++
 			}
+		case *tMemo:
+    		if key == 8 {
+    			if len(obj.text) > 0 {
+    				obj.text = obj.text[:obj.pos-1] + obj.text[obj.pos:]
+    				obj.curX--
+    				obj.pos--
+    			}
+    		} else if key == 13 {
+    			obj.text = obj.text[:obj.line_start + obj.pos] + string(key) + obj.text[obj.line_start + obj.pos:]
+    			//obj.pos++
+    			obj.line_start += obj.pos+1
+    			obj.curY++
+    			obj.curX = 0
+    			obj.pos = 0
+    		} else if key == 37 {
+    			if obj.curX > 0 {
+    				obj.curX--
+    				obj.pos--
+    			}
+    		} else if key == 39 {
+    			if ((obj.line_start + obj.pos) < (len(obj.text)-1)) && ((obj.line_start + obj.pos+1) != 13) {
+    				obj.curX++
+    				obj.pos++
+    			}
+    		} else if key == 38 {
+    			oldNL := obj.line_start
+    			if obj.line_start != 0 { 
+    				obj.curY--
+    				obj.line_start = findLeft(obj.text, obj.line_start)
+    				if obj.curX > oldNL - obj.line_start - 1 {
+    					obj.curX = oldNL - obj.line_start - 1
+    					obj.pos = oldNL - obj.line_start - 1
+    				}
+    			}
+    			
+    		} else if key == 40 {
+    			right := findRight(obj.text, obj.line_start)
+    			if obj.line_start == right || right == len(obj.text)-1 {
+    				return
+    			}
+    			obj.line_start = right
+    			if obj.curX > len(obj.text)-1 - obj.line_start {
+    				obj.curX = len(obj.text) - obj.line_start
+    				obj.pos = len(obj.text) - obj.line_start
+    			}
+    			obj.curY++
+			} else {
+				obj.text = obj.text[:obj.line_start + obj.pos] + string(key) + obj.text[obj.line_start + obj.pos:]
+				obj.pos++
+				obj.curX++
+			}
+			
 		}
 		fmt.Println(key)
 		fmt.Println(string(key))
 	}
 }
+
+
+func findLeft(str string, current int) int {
+	if current == 0 {
+		return 0
+	}
+	for i := current - 2; i >= 0; i-- {
+		if str[i] == 13 {
+			return i + 1
+		}
+	}
+	return 0
+}
+
+
+func findRight(str string, current int) int {
+	if current == len(str)-1 {
+		return current
+	}
+	for i := current; i < len(str)-1; i++ {
+		if str[i] == 13 {
+			return i+1
+		}
+	}
+	return len(str)-1
+}
+
+
+/*func findNodeByObj(obj tWinComponents) *Node {
+	var i int
+	if node.typ == FORM {
+		for i := 0; i < len(layout.children); i++ {
+			if node == layout.children[i] {
+				return i
+			}
+		}
+	} else {
+		if node.parent != nil {
+			i = findNode(node.parent)
+		} else {
+			return -1
+		}
+	}
+	return i
+}*/
