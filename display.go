@@ -9,8 +9,8 @@ import (
 )
 
 
-const BITMAP_WIDTH int = 1024 //640   
-const BITMAP_HEIGHT int = 768 //480
+const BITMAP_WIDTH int = 1900 //1600 //1024 //640   
+const BITMAP_HEIGHT int = 1060 //900 //768 //480
 const SIZE int = BITMAP_WIDTH*BITMAP_HEIGHT  
 const GETMAX_X int = BITMAP_WIDTH - 1 
 const GETMAX_Y int = BITMAP_HEIGHT - 1

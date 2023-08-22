@@ -55,6 +55,8 @@ func startEvents(frmMain *Node){
 	frmMain.obj.(*tForm).sizeX = 600
 	frmMain.obj.(*tForm).sizeY = 220
 	frmMain.children[0].obj.(*tBitBtn).x = frmMain.obj.(*tForm).sizeX - 17
+	frmMain.obj.(*tForm).visible = false
+	
 					// 472, 202
 	btnAddEvent = CreateBtn(frmMain, 12, 22, 60, 20, 0xD8DCC0, 0x000000, "Add", nil)
 	btnRefreshEvents = CreateBtn(frmMain, 12 + 64, 22, 60, 20, 0xD8DCC0, 0x000000, "Refresh", btnRefreshEventsClick)

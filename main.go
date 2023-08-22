@@ -55,7 +55,7 @@ func main() {
 	lblTime = CreateLabel(pnlTask, pnlTask.obj.(*tPanel).sizeX - 45, 6, 40, 20, 0x30B410, 0xF8FCF8, "", nil)
 	
 	frmMenuStart = CreateForm(&layout, 0, BITMAP_HEIGHT-136, 127, 105, 0xD8DCC0, NONE, "", false, nil)
-	cnvMenuStart = CreateCanvas(frmMenuStart, 2, 2, 20, 80, nil)
+	cnvMenuStart = CreateCanvas(frmMenuStart, 2, 2, 20, 100, nil)
 	for y := 0; y < cnvMenuStart.obj.(*tCanvas).sizeY; y++ {
     	for x := 0; x < cnvMenuStart.obj.(*tCanvas).sizeX; x++ {
     			squareNumber := (y * cnvMenuStart.obj.(*tCanvas).sizeX) + x;
@@ -70,13 +70,13 @@ func main() {
 	
 	
 	btnMenuFlag = CreateBtn(frmMenuStart, 24, 3, 100, 20, 0xD8DCC0, 0x000000, "Flag", btnMenuFlagClick)
-	btnMenuTrap = CreateBtn(frmMenuStart, 24, 3 + 20, 100, 20, 0xD8DCC0, 0x000000, "Trap", btnMenuTrapClick)
+	btnMenuTrap = CreateBtn(frmMenuStart, 24, 3 + 20, 100, 20, 0xD8DCC0, 0x000000, "SNMP", btnMenuTrapClick)
 	btnMenuUsers = CreateBtn(frmMenuStart, 24, 3 + 20 + 20, 100, 20, 0xD8DCC0, 0x000000, "Users", btnMenuUsersClick)
 	btnMenuEvents = CreateBtn(frmMenuStart, 24, 3 + 20 + 20 + 20, 100, 20, 0xD8DCC0, 0x000000, "Events", btnMenuEventsClick)
 	btnMenuEvents = CreateBtn(frmMenuStart, 24, 3 + 20 + 20 + 20 + 20, 100, 20, 0xD8DCC0, 0x000000, "Terminal", btnMenuTerminalClick)
 	
 startProcess("Flag", startFlag)
-startProcess("Trap", startTrap)
+startProcess("SNMP", startSNMP)
 startProcess("Users", startUsers)
 startProcess("Events", startEvents)
 startProcess("Terminal", startTerminal)
@@ -90,7 +90,7 @@ startProcess("Terminal", startTerminal)
 var xTask int = 2 + 51
 
 func startProcess(name string, onStart func(*Node)){
-	obj := tBtn{x: xTask, y: 2, sizeX: 50, sizeY: 28 - 4, BC: 0xD8DCC0, TC: 0x000000, caption: name, visible: true, pressed: false, enabled: true, onClick: btnTaskClick}
+	obj := tBtn{x: xTask, y: 2, sizeX: 80, sizeY: 28 - 4, BC: 0xD8DCC0, TC: 0x000000, caption: name, visible: true, pressed: false, enabled: true, onClick: btnTaskClick}
 	node := Node{typ: BUTTON, parent: pnlTask, previous: nil, children: nil, obj: &obj}
 	pnlTask.children = append(pnlTask.children, &node)
 	
@@ -98,7 +98,7 @@ func startProcess(name string, onStart func(*Node)){
 	
 	proc := tProc{name: name, form: frm, btn: &node}
 	process = append(process, &proc)
-	xTask += 51
+	xTask += 81
 	layout.children[len(layout.children)-2].obj.(*tForm).focused = false
 	layout.children[len(layout.children)-1].obj.(*tForm).focused = true
 	onStart(frm)
@@ -116,7 +116,7 @@ func btnMenuFlagClick(node *Node){
 
 
 func btnMenuTrapClick(node *Node){
-	startProcess("Trap", startTrap)
+	startProcess("SNMP", startSNMP)
 }
 
 

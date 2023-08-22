@@ -49,6 +49,7 @@ func startUsers(frmMain *Node){
 	frmMain.obj.(*tForm).sizeX = 400
 	frmMain.obj.(*tForm).sizeY = 220
 	frmMain.children[0].obj.(*tBitBtn).x = frmMain.obj.(*tForm).sizeX - 17
+	frmMain.obj.(*tForm).visible = false
 	
 	btnAddUser = CreateBtn(frmMain, 12, 22, 60, 20, 0xD8DCC0, 0x000000, "Add", nil)
 	btnRefreshUser = CreateBtn(frmMain, 12 + 64, 22, 60, 20, 0xD8DCC0, 0x000000, "Refresh", btnRefreshClick)
@@ -80,7 +81,10 @@ func startUsers(frmMain *Node){
 
 
 func btnRefreshClick(node *Node){
-	refreshUsersTable()	
+	refreshUsersTable()
+	
+	result := js.Global().Call("HttpRequest", "http://localhost:8085/api?cmd=get_usr " + strconv.Itoa(CurUsersPage) + " 5").Get("response").String()
+	memTerminal.obj.(*tMemo).text = result	
 }
 
 
