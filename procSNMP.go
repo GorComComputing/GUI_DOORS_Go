@@ -16,43 +16,96 @@ import (
 )
 
 
+var lblIPaddr *Node
+var editIPaddr *Node
 var btnSendTrap *Node
-var btnTrapServer *Node
+var lblPortGet *Node
+var editPortGet *Node
+var lblPortTrap *Node
+var editPortTrap *Node
+var lblOID *Node
+var editOID *Node
 var btnSendHelp *Node
-var lblMessage *Node
-var editMessage *Node
+var lblValue *Node
+var editValue *Node
 var lblFontTest *Node
+var lblFontTest2 *Node
 var btnSendGet *Node
-var btnSendGetHex *Node
+var btnSet *Node
 var btnBrowser *Node
+var btnTrapServer *Node
+var cbxVersion1 *Node
+var cbxVersion2 *Node
+var cbxVersion3 *Node
 
 
 func startSNMP(frmMain *Node){
-	//frmTrap = CreateForm(&layout, 400, 400, 200, 130, 0xD8DCC0, WIN, "Trap", false, nil)
+	
 	frmMain.obj.(*tForm).x = 100
 	frmMain.obj.(*tForm).y = 50
 	frmMain.obj.(*tForm).sizeX = 550
 	frmMain.obj.(*tForm).sizeY = 300
 	frmMain.children[0].obj.(*tBitBtn).x = frmMain.obj.(*tForm).sizeX - 17
 	
-	btnSendTrap = CreateBtn(frmMain, 200, 30, 60, 24, 0xD8DCC0, 0x000000, "Trap", btnSendTrapClick)
-	btnTrapServer = CreateBtn(frmMain, 270, 30, 60, 24, 0xD8DCC0, 0x000000, "Server", btnTrapServerClick)
-		
-	lblMessage = CreateLabel(frmMain, 12, 32, 120, 20, 0xD8DCC0, 0x000000, "Message", nil)
-	editMessage = CreateEdit(frmMain, 80, 30, 100, 20, 0xF8FCF8, 0x000000, "", nil)
-
-	btnSendGet = CreateBtn(frmMain, 12, 100, 60, 24, 0xD8DCC0, 0x000000, "Get", btnSendGetClick)
-	btnSendGetHex = CreateBtn(frmMain, 12 + 70, 100, 70, 24, 0xD8DCC0, 0x000000, "Get Hex", btnSendGetHexClick)
-	btnSendHelp = CreateBtn(frmMain, 12 + 70 + 80, 100, 60, 24, 0xD8DCC0, 0x000000, "Help", btnSendHelpClick)
+	lblIPaddr = CreateLabel(frmMain, 12, 32, 120, 20, 0xD8DCC0, 0x000000, "IP address", nil)
+	editIPaddr = CreateEdit(frmMain, 100, 30, 100, 20, 0xF8FCF8, 0x000000, "127.0.0.1", nil)
 	
-	btnBrowser = CreateBtn(frmMain, 12, 130, 80, 24, 0xD8DCC0, 0x000000, "Browser", btnBrowserClick)
+	lblPortGet = CreateLabel(frmMain, 12, 70, 120, 20, 0xD8DCC0, 0x000000, "Port Get", nil)
+	editPortGet = CreateEdit(frmMain, 100, 68, 100, 20, 0xF8FCF8, 0x000000, "161", nil)
+	
+	lblPortTrap = CreateLabel(frmMain, 220, 70, 120, 20, 0xD8DCC0, 0x000000, "Port Trap", nil)
+	editPortTrap = CreateEdit(frmMain, 300, 68, 100, 20, 0xF8FCF8, 0x000000, "9161", nil)
+	
+	btnTrapServer = CreateBtn(frmMain, 300, 30, 100, 24, 0xD8DCC0, 0x000000, "Run Server", btnTrapServerClick)
+	
+	
+	btnSendGet = CreateBtn(frmMain, 50, 100, 70, 24, 0xD8DCC0, 0x000000, "Get", btnSendGetClick)
+	btnSet = CreateBtn(frmMain, 50 + 80, 100, 70, 24, 0xD8DCC0, 0x000000, "Set", btnSetClick)
+	btnSendTrap = CreateBtn(frmMain, 300, 100, 70, 24, 0xD8DCC0, 0x000000, "Trap", btnSendTrapClick)
+	
+	
+	lblOID = CreateLabel(frmMain, 50, 154, 120, 20, 0xD8DCC0, 0x000000, "OID", nil)
+	editOID = CreateEdit(frmMain, 100, 152, 200, 20, 0xF8FCF8, 0x000000, "1.3.6.1.2.1.1.4.0", nil)
+		
+	lblValue = CreateLabel(frmMain, 50, 182, 120, 20, 0xD8DCC0, 0x000000, "Value", nil)
+	editValue = CreateEdit(frmMain, 100, 180, 200, 20, 0xF8FCF8, 0x000000, "", nil)
 
-	lblFontTest = CreateLabel(frmMain, 12, 200, 500, 20, 0xD8DCC0, 0x000000, "abcdefghijklmnopqrstuvwxyz !\"#$%&'()*+,-./ :;<=>?@ [\\]^_`  {|}~", nil)
+	
+	btnSendHelp = CreateBtn(frmMain, 470, 270, 70, 24, 0xD8DCC0, 0x000000, "Help", btnSendHelpClick)
+	btnBrowser = CreateBtn(frmMain, 12, 270, 90, 24, 0xD8DCC0, 0x000000, "Browser", btnBrowserClick)
+	
+	cbxVersion1 = CreateCheckBox(frmMain, 430, 30, 140, 16, 0xD8DCC0, 0x000000, "Version 1", false, cbxVersion1Click)
+	cbxVersion2 = CreateCheckBox(frmMain, 430, 60, 140, 16, 0xD8DCC0, 0x000000, "Version 2", true, cbxVersion2Click)
+	cbxVersion3 = CreateCheckBox(frmMain, 430, 90, 140, 16, 0xD8DCC0, 0x000000, "Version 3", false, cbxVersion3Click)
+
+	//lblFontTest = CreateLabel(frmMain, 12, 200, 500, 20, 0xD8DCC0, 0x000000, "abcdefghijklmnopqrstuvwxyz !\"#$%&'()*+,-./ :;<=>?@ [\\]^_`  {|}~", nil)
+	//lblFontTest2 = CreateLabel(frmMain, 12, 230, 500, 20, 0xD8DCC0, 0x000000, "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890", nil)
+}
+
+
+func cbxVersion1Click(node *Node){
+	node.obj.(*tCheckBox).checked = true
+	cbxVersion2.obj.(*tCheckBox).checked = false
+	cbxVersion3.obj.(*tCheckBox).checked = false
+}
+
+
+func cbxVersion2Click(node *Node){
+	node.obj.(*tCheckBox).checked = true
+	cbxVersion1.obj.(*tCheckBox).checked = false
+	cbxVersion3.obj.(*tCheckBox).checked = false
+}
+
+
+func cbxVersion3Click(node *Node){
+	node.obj.(*tCheckBox).checked = true
+	cbxVersion1.obj.(*tCheckBox).checked = false
+	cbxVersion2.obj.(*tCheckBox).checked = false
 }
 
 
 func btnSendTrapClick(node *Node){
-	result := js.Global().Call("HttpRequest", "http://localhost:8085/api?cmd=curl_get " + "http://localhost:8087/api?cmd=trap_v2 " + editMessage.obj.(*tEdit).text).Get("response").String()
+	result := js.Global().Call("HttpRequest", "http://localhost:8085/api?cmd=curl_get " + "http://localhost:8087/api?cmd=trap_v2 "  + editIPaddr.obj.(*tEdit).text + " " + editPortGet.obj.(*tEdit).text + " " + editOID.obj.(*tEdit).text + " " + editValue.obj.(*tEdit).text).Get("response").String()
 	fmt.Println("Responsed: ", result)
 	
 	memTerminal.obj.(*tMemo).text = result
@@ -78,7 +131,7 @@ func btnSendHelpClick(node *Node){
 
 
 func btnSendGetClick(node *Node){
-	result := js.Global().Call("HttpRequest", "http://localhost:8085/api?cmd=curl_get " + "http://localhost:8087/api?cmd=get").Get("response").String()
+	result := js.Global().Call("HttpRequest", "http://localhost:8085/api?cmd=curl_get " + "http://localhost:8087/api?cmd=get_param " + editIPaddr.obj.(*tEdit).text + " " + editPortGet.obj.(*tEdit).text + " " + editOID.obj.(*tEdit).text).Get("response").String()
 	fmt.Println("Responsed: ", result)
 	
 	result = strings.Replace(result, "\n", string(13), -1)
@@ -87,8 +140,8 @@ func btnSendGetClick(node *Node){
 }
 
 
-func btnSendGetHexClick(node *Node){
-	result := js.Global().Call("HttpRequest", "http://localhost:8085/api?cmd=curl_get " + "http://localhost:8087/api?cmd=get_hex").Get("response").String()
+func btnSetClick(node *Node){
+	result := js.Global().Call("HttpRequest", "http://localhost:8085/api?cmd=curl_get " + "http://localhost:8087/api?cmd=set " + editIPaddr.obj.(*tEdit).text + " " + editPortGet.obj.(*tEdit).text + " " + editOID.obj.(*tEdit).text + " " + editValue.obj.(*tEdit).text).Get("response").String()
 	fmt.Println("Responsed: ", result)
 	
 	result = strings.Replace(result, "\n", string(13), -1)

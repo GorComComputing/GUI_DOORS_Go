@@ -33,7 +33,6 @@ func CreateBitBtn(parent *Node, x int, y int, sizeX int, sizeY int, BC int, TC i
 
 
 func (obj tBitBtn) Draw(parX int, parY int, parSizeX int, parSizeY int){
-	//SetViewPort(parX, parY, parX + parSizeX, parY + parSizeY)
 	SetLocalViewPort(parX + obj.x, parY + obj.y, parX + obj.x + obj.sizeX, parY + obj.y + obj.sizeY)
 	SetColor(obj.BC);
     	var p []tPoint
@@ -84,12 +83,10 @@ func (obj tBitBtn) Draw(parX int, parY int, parSizeX int, parSizeY int){
 	if obj.enabled {
     	SetColor(obj.TC);
     	SetBackColor(obj.BC);
-    	TextOutgl(nil, obj.caption, parX+obj.x + obj.sizeX/2-((len(obj.caption)-1)*8)/2 - 2, parY+obj.y + obj.sizeY/2-4 + 1, 1);
+    	TextOutgl(nil, obj.caption, parX+obj.x + obj.sizeX/2-((len(obj.caption)-1)*8)/2 - 3, parY+obj.y + obj.sizeY/2-4, 1);
     } else {
     	SetColor(0x787C78);
     	SetBackColor(obj.BC);
-    	TextOutgl(nil, obj.caption, parX+obj.x + obj.sizeX/2-((len(obj.caption)-1)*8)/2 - 2, parY+obj.y + obj.sizeY/2-4 + 1, 1);
+    	TextOutgl(nil, obj.caption, parX+obj.x + obj.sizeX/2-((len(obj.caption)-1)*8)/2 - 3, parY+obj.y + obj.sizeY/2-4, 1);
     }
-    
-    //SetViewPort(0, 0, GETMAX_X, GETMAX_Y)
 }

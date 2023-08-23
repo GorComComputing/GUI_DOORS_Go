@@ -45,7 +45,7 @@ type EventsFromDB struct {
 	Time string
 }
 
-var CurEventsPage = 13
+var CurEventsPage = 20
 
 
 func startEvents(frmMain *Node){

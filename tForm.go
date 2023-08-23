@@ -28,6 +28,8 @@ type tMode int
 const (
     NONE tMode = iota
     WIN
+    FLAT
+    TASK
 )
 
 
@@ -69,13 +71,13 @@ func formClose(node *Node){
 		}
 	}
 
-	xTask = 2 
+	xTask = 2-10 
 	for i = 1; i < len(pnlTask.children); i++ {
 		switch obj := pnlTask.children[i].obj.(type) {
 		case *tBtn:
 			obj.x = xTask
 		}
-		xTask += 51
+		xTask += 81
 	}
 	
 	layout.children[len(layout.children)-3].obj.(*tForm).focused = true
@@ -144,20 +146,20 @@ func (obj tForm) Draw(parX int, parY int, parSizeX int, parSizeY int){
     	TextOutgl(nil, obj.caption, parX + obj.x + 9, parY + obj.y + 6, 1);
     }
 
-    SetColor(0xF8FCF8);
-    LinePP(nil, parX + obj.x, parY + obj.y, parX + obj.x + obj.sizeX, parY + obj.y);
-    LinePP(nil, parX + obj.x, parY + obj.y, parX + obj.x, parY + obj.y + obj.sizeY);
-    SetColor(0xE0E0E0);
-    LinePP(nil, parX + obj.x+1, parY + obj.y+1, parX + obj.x + obj.sizeX - 2, parY + obj.y+1);
-    LinePP(nil, parX + obj.x+1, parY + obj.y+1, parX + obj.x+1, parY + obj.y + obj.sizeY - 1);
-    SetColor(0x787C78);
-    LinePP(nil, parX + obj.x+2, parY + obj.y + obj.sizeY - 1, parX + obj.x + obj.sizeX - 1, parY + obj.y + obj.sizeY - 1);
-    LinePP(nil, parX + obj.x + obj.sizeX - 1, parY + obj.y + 1, parX + obj.x + obj.sizeX - 1, parY + obj.y + obj.sizeY - 1);
-    SetColor(0x000000);
-    LinePP(nil, parX + obj.x, parY + obj.y + obj.sizeY, parX + obj.x + obj.sizeX, parY + obj.y + obj.sizeY);
-    LinePP(nil, parX + obj.x + obj.sizeX, parY + obj.y, parX + obj.x + obj.sizeX, parY + obj.y + obj.sizeY);  
-    
-    //SetViewPort(0, 0, GETMAX_X, GETMAX_Y)  
+	if obj.mode != FLAT {
+    	SetColor(0xF8FCF8);
+    	LinePP(nil, parX + obj.x, parY + obj.y, parX + obj.x + obj.sizeX, parY + obj.y);
+    	LinePP(nil, parX + obj.x, parY + obj.y, parX + obj.x, parY + obj.y + obj.sizeY);
+    	SetColor(0xE0E0E0);
+    	LinePP(nil, parX + obj.x+1, parY + obj.y+1, parX + obj.x + obj.sizeX - 2, parY + obj.y+1);
+    	LinePP(nil, parX + obj.x+1, parY + obj.y+1, parX + obj.x+1, parY + obj.y + obj.sizeY - 1);
+    	SetColor(0x787C78);
+    	LinePP(nil, parX + obj.x+2, parY + obj.y + obj.sizeY - 1, parX + obj.x + obj.sizeX - 1, parY + obj.y + obj.sizeY - 1);
+    	LinePP(nil, parX + obj.x + obj.sizeX - 1, parY + obj.y + 1, parX + obj.x + obj.sizeX - 1, parY + obj.y + obj.sizeY - 1);
+    	SetColor(0x000000);
+    	LinePP(nil, parX + obj.x, parY + obj.y + obj.sizeY, parX + obj.x + obj.sizeX, parY + obj.y + obj.sizeY);
+    	LinePP(nil, parX + obj.x + obj.sizeX, parY + obj.y, parX + obj.x + obj.sizeX, parY + obj.y + obj.sizeY);  
+    }  
 }
 
 

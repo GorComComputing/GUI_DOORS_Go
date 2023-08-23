@@ -9,8 +9,8 @@ import (
 )
 
 
-const BITMAP_WIDTH int = 1900 //1600 //1024 //640   
-const BITMAP_HEIGHT int = 1060 //900 //768 //480
+const BITMAP_WIDTH int = 1920 //1600 //1024 //640   
+const BITMAP_HEIGHT int = 1080 //900 //768 //480
 const SIZE int = BITMAP_WIDTH*BITMAP_HEIGHT  
 const GETMAX_X int = BITMAP_WIDTH - 1 
 const GETMAX_Y int = BITMAP_HEIGHT - 1
@@ -66,10 +66,10 @@ func GetPixelgl(buffer []uint8, x int, y int) int {
 
 //export Draw
 func Draw() {
-	SetBackColor(0xFFFFFF) //0x111111
-	SetColor(0xFF0000)
+	SetBackColor(0x000000) //0x111111 0xFFFFFF
+	SetColor(0x000000)
 	SetViewPort(0, 0, GETMAX_X, GETMAX_Y)
-	//ClearDevice()
+	ClearDevice(nil)
 	DrawNode(&layout)
 	//FillCircle(nil, 0, 100, 30)
 	//Circle(nil, 0, 200, 30)

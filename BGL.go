@@ -591,241 +591,323 @@ func DrawBitmapTransparent(buffer []uint8, monster string, xstart int, ystart in
 
 
 func TextOutgl(buffer []uint8, str string, x_start int, y int, scale int){
-var charA string = 
-    " pppp  " +
-    "pp  pp " +
-    "pp  pp " +
-    "pp  pp " +
+var char41 string = 
+    "   p   " +
+    "  ppp  " +
+    " pp pp " +
+    "pp   pp" +
+    "pp   pp" +
+    "ppppppp" +
+    "pp   pp" +
+    "pp   pp" +
+    "pp   pp" +
+    "       " 
+    ;//10x7
+var char42 string =
     "pppppp " +
-    "pp  pp " +
-    "pp  pp " 
-    ;//7x7
-var charB string =
-    "ppppp  " +
-    "pp  pp " +
-    "pp  pp " +
-    "ppppp  " +
-    "pp  pp " +
-    "pp  pp " +
-    "ppppp  "
-    ;//7x7
-var charC string =
-    " pppp  " +
-    "pp  pp " +
-    "pp  pp " +
-    "pp     " +
-    "pp  pp " +
-    "pp  pp " +
-    " pppp  "
-    ;//7x7
-var charD string =
-    "ppppp  " +
-    "pp  pp " +
-    "pp  pp " +
-    "pp  pp " +
-    "pp  pp " +
-    "pp  pp " +
-    "ppppp  "
-    ;//7x7
-var charE string =
+    " pp  pp" +
+    " pp  pp" +
+    " pp  pp" +
+    " ppppp " +
+    " pp  pp" +
+    " pp  pp" +
+    " pp  pp" +
     "pppppp " +
+    "       " 
+    ;//10x7
+var char43 string =
+    "  pppp " +
+    " pp  pp" +
+    "pp    p" +
     "pp     " +
     "pp     " +
+    "pp     " +
+    "pp    p" +
+    " pp  pp" +
+    "  pppp " +
+    "       " 
+    ;//10x7
+var char44 string =
     "ppppp  " +
-    "pp     " +
-    "pp     " +
-    "pppppp "
-    ;//7x7
-var charF string =
-    "pppppp " +
-    "pp     " +
-    "pp     " +
+    " pp pp " +
+    " pp  pp" +
+    " pp  pp" +
+    " pp  pp" +
+    " pp  pp" +
+    " pp  pp" +
+    " pp pp " +
     "ppppp  " +
-    "pp     " +
-    "pp     " +
-    "pp     "
-    ;//7x7
-var charG string =
+    "       " 
+    ;//10x7
+var char45 string =
+    "ppppppp" +
+    " pp  pp" +
+    " pp   p" +
+    " pp p  " +
     " pppp  " +
-    "pp  pp " +
-    "pp  pp " +
-    "pp     " +
-    "pp ppp " +
-    "pp  pp " +
-    " pppp  "
-    ;//7x7
-var charH string =
-    "pp  pp " +
-    "pp  pp " +
-    "pp  pp " +
-    "pppppp " +
-    "pp  pp " +
-    "pp  pp " +
-    "pp  pp "
-    ;//7x7
-var charI string =
+    " pp p  " +
+    " pp   p" +
+    " pp  pp" +
+    "ppppppp" +
+    "       " 
+    ;//10x7
+var char46 string =
+    "ppppppp" +
+    " pp  pp" +
+    " pp   p" +
+    " pp p  " +
     " pppp  " +
-    "  pp   " +
-    "  pp   " +
-    "  pp   " +
-    "  pp   " +
-    "  pp   " +
-    " pppp  "
-    ;//7x7
-var charJ string =
-    "   ppp " +
-    "    pp " +
-    "    pp " +
-    "    pp " +
-    "pp  pp " +
-    "pp  pp " +
-    " pppp  "
-    ;//7x7
-var charK string =
-    "pp  pp " +
-    "pp  pp " +
-    "pp pp  " +
-    "pppp   " +
-    "pp pp  " +
-    "pp  pp " +
-    "pp  pp "
-    ;//7x7
-var charL string =
-    "pp     " +
-    "pp     " +
-    "pp     " +
-    "pp     " +
-    "pp     " +
-    "pp     " +
-    "pppppp "
-    ;//7x7
-var charM string =
-    "p   p  " +
-    "pp pp  " +
-    "ppppp  " +
-    "p p p  " +
-    "p   p  " +
-    "p   p  " +
-    "p   p  "
-    ;//7x7
-var charN string =
-    "pp  pp " +
-    "pp  pp " +
-    "ppp pp " +
-    "pppppp " +
-    "pp ppp " +
-    "pp  pp " +
-    "pp  pp "
-    ;//7x7
-var charO string =
-    " pppp  " +
-    "pp  pp " +
-    "pp  pp " +
-    "pp  pp " +
-    "pp  pp " +
-    "pp  pp " +
-    " pppp  "
-    ;//7x7
-var charP string =
-    "ppppp  " +
-    "pp  pp " +
-    "pp  pp " +
-    "ppppp  " +
-    "pp     " +
-    "pp     " +
-    "pp     "
-    ;//7x7
-var charQ string =
-    " pppp  " +
-    "pp  pp " +
-    "pp  pp " +
-    "pp  pp " +
-    "pp  pp " +
-    " pppp  " +
-    "   ppp "
-    ;//7x7
-var charR string =
-    "ppppp  " +
-    "pp  pp " +
-    "pp  pp " +
-    "ppppp  " +
-    "pp  pp " +
-    "pp  pp " +
-    "pp  pp "
-    ;//7x7
-var charS string =
-    " pppp  " +
-    "pp  pp " +
-    "pp     " +
-    " pppp  " +
-    "    pp " +
-    "pp  pp " +
-    " pppp  "
-    ;//7x7
-var charT string =
-    "pppppp " +
-    "  pp   " +
-    "  pp   " +
-    "  pp   " +
-    "  pp   " +
-    "  pp   " +
-    "  pp   "
-    ;//7x7
-var charU string =
-    "pp  pp " +
-    "pp  pp " +
-    "pp  pp " +
-    "pp  pp " +
-    "pp  pp " +
-    "pp  pp " +
-    " pppp  "
-    ;//7x7
-var charV string =
-    "pp  pp " +
-    "pp  pp " +
-    "pp  pp " +
-    "pp  pp " +
-    " p  p  " +
-    " pppp  " +
-    "  pp   "
-    ;//7x7
-var charW string =
-    "p    p " +
-    "p    p " +
-    "p    p " +
-    "p pp p " +
-    "p pp p " +
-    " pppp  " +
-    " p  p  "
-    ;//7x7
-var charX string =
-    "pp  pp " +
-    "pp  pp " +
-    " pppp  " +
-    "  pp   " +
-    " pppp  " +
-    "pp  pp " +
-    "pp  pp "
-    ;//7x7
-var charY string =
-    "pp  pp " +
-    "pp  pp " +
-    "pp  pp " +
-    " pppp  " +
-    "  pp   " +
-    "  pp   " +
-    "  pp   "
-    ;//7x7
-var charZ string =
-    "pppppp " +
-    "    pp " +
-    "   pp  " +
-    "  pp   " +
+    " pp p  " +
     " pp    " +
+    " pp    " +
+    "pppp   " +
+    "       " 
+    ;//10x7
+var char47 string =
+    "  pppp " +
+    " pp  pp" +
+    "pp    p" +
     "pp     " +
-    "pppppp "
-    ;//7x7
-var charSpace string =
+    "pp     " +
+    "pp pppp" +
+    "pp   pp" +
+    " pp  pp" +
+    "  ppp p" +
+    "       " 
+    ;//10x7
+var char48 string =
+    "pp   pp" +
+    "pp   pp" +
+    "pp   pp" +
+    "pp   pp" +
+    "ppppppp" +
+    "pp   pp" +
+    "pp   pp" +
+    "pp   pp" +
+    "pp   pp" +
+    "       " 
+    ;//10x7
+var char49 string =
+    "  pppp " +
+    "   pp  " +
+    "   pp  " +
+    "   pp  " +
+    "   pp  " +
+    "   pp  " +
+    "   pp  " +
+    "   pp  " +
+    "  pppp " +
+    "       " 
+    ;//10x7
+var char4A string =
+    "   pppp" +
+    "    pp " +
+    "    pp " +
+    "    pp " +
+    "    pp " +
+    "    pp " +
+    "pp  pp " +
+    "pp  pp " +
+    " pppp  " +
+    "       " 
+    ;//10x7
+var char4B string =
+    "pppp pp" +
+    " pp  pp" +
+    " pp pp " +
+    " pp pp " +
+    " pppp  " +
+    " pp pp " +
+    " pp pp " +
+    " pp  pp" +
+    "pppp pp" +
+    "       " 
+    ;//10x7
+var char4C string =
+    "pppp   " +
+    " pp    " +
+    " pp    " +
+    " pp    " +
+    " pp    " +
+    " pp    " +
+    " pp   p" +
+    " pp  pp" +
+    "ppppppp" +
+    "       " 
+    ;//10x7
+var char4D string =
+    "pp    pp" +
+    "ppp  ppp" +
+    "pppppppp" +
+    "pp pp pp" +
+    "pp    pp" +
+    "pp    pp" +
+    "pp    pp" +
+    "pp    pp" +
+    "pp    pp" +
+    "        " 
+    ;//8x10
+var char4E string =
+    "pp   pp" +
+    "ppp  pp" +
+    "pppp pp" +
+    "pp pppp" +
+    "pp  ppp" +
+    "pp   pp" +
+    "pp   pp" +
+    "pp   pp" +
+    "pp   pp" +
+    "       " 
+    ;//7x10
+var char4F string =
+    "  ppp  " +
+    " pp pp " +
+    "pp   pp" +
+    "pp   pp" +
+    "pp   pp" +
+    "pp   pp" +
+    "pp   pp" +
+    " pp pp " +
+    "  ppp  " +
+    "       " 
+    ;//7x10
+var char50 string =
+    "pppppp " +
+    " pp  pp" +
+    " pp  pp" +
+    " pp  pp" +
+    " ppppp " +
+    " pp    " +
+    " pp    " +
+    " pp    " +
+    "pppp   " +
+    "       " 
+    ;//7x10
+var char51 string =
+    " ppppp " +
+    "pp   pp" +
+    "pp   pp" +
+    "pp   pp" +
+    "pp   pp" +
+    "pp p pp" +
+    "pp pppp" +
+    " ppppp " +
+    "    pp " +
+    "    ppp" 
+    ;//7x10
+var char52 string =
+    "pppppp " +
+    " pp  pp" +
+    " pp  pp" +
+    " pp  pp" +
+    " ppppp " +
+    " pp pp " +
+    " pp  pp" +
+    " pp  pp" +
+    "ppp  pp" +
+    "       " 
+    ;//7x10
+var char53 string =
+    " ppppp " +
+    "pp   pp" +
+    "pp   pp" +
+    " pp    " +
+    "  ppp  " +
+    "    pp " +
+    "pp   pp" +
+    "pp   pp" +
+    " ppppp " +
+    "       " 
+    ;//7x10
+var char54 string =
+    "pppppppp" +
+    "pp pp pp" +
+    "p  pp  p" +
+    "   pp   " +
+    "   pp   " +
+    "   pp   " +
+    "   pp   " +
+    "   pp   " +
+    "  pppp  " +
+    "        " 
+    ;//8x10
+var char55 string =
+    "pp   pp" +
+    "pp   pp" +
+    "pp   pp" +
+    "pp   pp" +
+    "pp   pp" +
+    "pp   pp" +
+    "pp   pp" +
+    "pp   pp" +
+    " ppppp " +
+    "       " 
+    ;//7x10
+var char56 string =
+    "pp    pp" +
+    "pp    pp" +
+    "pp    pp" +
+    "pp    pp" +
+    "pp    pp" +
+    "pp    pp" +
+    " pp  pp " +
+    "  pppp  " +
+    "   pp   " +
+    "        " 
+    ;//8x10
+var char57 string =
+    "pp    pp" +
+    "pp    pp" +
+    "pp    pp" +
+    "pp    pp" +
+    "pp pp pp" +
+    "pp pp pp" +
+    "pppppppp" +
+    " pp  pp " +
+    " pp  pp " +
+    "        " 
+    ;//8x10
+var char58 string =
+    "pp    pp" +
+    "pp    pp" +
+    " pp  pp " +
+    "  pppp  " +
+    "   pp   " +
+    "  pppp  " +
+    " pp  pp " +
+    "pp    pp" +
+    "pp    pp" +
+    "        " 
+    ;//8x10
+var char59 string =
+    "pp    pp" +
+    "pp    pp" +
+    "pp    pp" +
+    " pp  pp " +
+    "  pppp  " +
+    "   pp   " +
+    "   pp   " +
+    "   pp   " +
+    "  pppp  " +
+    "        " 
+    ;//8x10
+var char5A string =
+    "pppppppp" +
+    "pp    pp" +
+    "p    pp " +
+    "    pp  " +
+    "  pppp  " +
+    "  pp    " +
+    " pp    p" +
+    "pp    pp" +
+    "pppppppp" +
+    "        " 
+    ;//8x10
+var char20 string =
+    "       " +
+    "       " +
+    "       " +
+    "       " +
     "       " +
     "       " +
     "       " +
@@ -833,7 +915,7 @@ var charSpace string =
     "       " +
     "       " +
     "       "
-    ;//7x7
+    ;//7x11
 var charLine string =
     "       " +
     "       " +
@@ -843,96 +925,136 @@ var charLine string =
     "       " +
     "       "
     ;//7x7
-var char0 string =
-    " pppp  " +
-    "pp  pp " +
-    "pp  pp " +
-    "pp ppp " +
-    "ppp pp " +
-    "pp  pp " +
-    " pppp  "
-    ;//7x7
-var char1 string =
+var char30 string =
+    " ppppp " +
+    "pp   pp" +
+    "pp  ppp" +
+    "pp pppp" +
+    "pppp pp" +
+    "ppp  pp" +
+    "pp   pp" +
+    "pp   pp" +
+    " ppppp " +
+    "       " +
+    "       " 
+    ;//7x11
+var char31 string =
+    "  pp   " +
+    " ppp   " +
+    "pppp   " +
+    "  pp   " +
+    "  pp   " +
+    "  pp   " +
+    "  pp   " +
+    "  pp   " +
+    "pppppp " +
+    "       " +
+    "       " 
+    ;//7x11
+var char32 string =
+    " ppppp " +
+    "pp   pp" +
+    "     pp" +
+    "    pp " +
+    "   pp  " +
+    "  pp   " +
     " pp    " +
-    "ppp    " +
-    " pp    " +
-    " pp    " +
-    " pp    " +
-    " pp    " +
-    "pppp   "
-    ;//7x7
-var char2 string =
-    " pppp  " +
-    "pp  pp " +
+    "pp   pp" +
+    "ppppppp" +
+    "       " +
+    "       " 
+    ;//7x11
+var char33 string =
+    " ppppp " +
+    "pp   pp" +
+    "     pp" +
+    "     pp" +
+    "  pppp " +
+    "     pp" +
+    "     pp" +
+    "pp   pp" +
+    " ppppp " +
+    "       " +
+    "       " 
+    ;//7x11
+var char34 string =
     "    pp " +
     "   ppp " +
-    " ppp   " +
+    "  pppp " +
+    " pp pp " +
+    "pp  pp " +
+    "ppppppp" +
+    "    pp " +
+    "    pp " +
+    "   pppp" +
+    "       " +
+    "       " 
+    ;//7x11
+var char35 string =
+    "ppppppp" +
     "pp     " +
-    "pppppp "
-    ;//7x7
-var char3 string =
-    " pppp  " +
-    "pp  pp " +
-    "    pp " +
-    "  ppp  " +
-    "    pp " +
-    "pp  pp " +
-    " pppp  "
-    ;//7x7
-var char4 string =
-    "pp  pp " +
-    "pp  pp " +
-    "pp  pp " +
-    "pp  pp " +
+    "pp     " +
+    "pp     " +
+    "pppppp " +
+    "     pp" +
+    "     pp" +
+    "pp   pp" +
     " ppppp " +
-    "    pp " +
-    "    pp "
-    ;//7x7
-var char5 string =
-    "pppppp " +
+    "       " +
+    "       " 
+    ;//7x11
+var char36 string =
+    "  ppp  " +
+    " pp    " +
     "pp     " +
-    " ppp   " +
-    "    pp " +
-    "pp  pp " +
-    "pp  pp " +
-    " pppp  "
-    ;//7x7
-var char6 string =
-    " pppp  " +
-    "pp  pp " +
     "pp     " +
-    "ppppp  " +
-    "pp  pp " +
-    "pp  pp " +
-    " pppp  "
-    ;//7x7
-var char7 string =
     "pppppp " +
+    "pp   pp" +
+    "pp   pp" +
+    "pp   pp" +
+    " ppppp " +
+    "       " +
+    "       " 
+    ;//7x11
+var char37 string =
+    "ppppppp" +
+    "pp   pp" +
+    "     pp" +
     "    pp " +
     "   pp  " +
     "  pp   " +
     "  pp   " +
     "  pp   " +
-    "  pp   "
-    ;//7x7
-var char8 string =
-    " pppp  " +
-    "pp  pp " +
-    "pp  pp " +
-    " pppp  " +
-    "pp  pp " +
-    "pp  pp " +
-    " pppp  "
-    ;//7x7
-var char9 string =
-    " pppp  " +
-    "pp  pp " +
-    "pp  pp " +
+    "  pp   " +
+    "       " +
+    "       " 
+    ;//7x11
+var char38 string =
     " ppppp " +
-    "    pp " +
-    "pp  pp " +
-    " pppp  "
-    ;//7x7
+    "pp   pp" +
+    "pp   pp" +
+    "pp   pp" +
+    " ppppp " +
+    "pp   pp" +
+    "pp   pp" +
+    "pp   pp" +
+    " ppppp " +
+    "       " +
+    "       " 
+    ;//7x11
+var char39 string =
+    " ppppp " +
+    "pp   pp" +
+    "pp   pp" +
+    "pp   pp" +
+    " pppppp" +
+    "     pp" +
+    "     pp" +
+    "     pp" +
+    " ppppp " +
+    "       " +
+    "       " 
+    ;//7x11
 var charUndefined string =
     "ppppppp" +
     "p     p" +
@@ -942,15 +1064,19 @@ var charUndefined string =
     "p     p" +
     "ppppppp"
     ;//7x7
-var char2points string =
-    "       " +
-    "   pp  " +
-    "   pp  " +
-    "       " +
-    "   pp  " +
-    "   pp  " +
-    "       "
-    ;//7x7
+var char3A string =
+    "    " +
+    "    " +
+    " pp " +
+    " pp " +
+    "    " +
+    "    " +
+    " pp " +
+    " pp " +
+    "    " +
+    "    " +
+    "    "
+    ;//4x11 
 var char_vert_line string =
     "pp     " +
     "pp     " +
@@ -958,8 +1084,12 @@ var char_vert_line string =
     "pp     " +
     "pp     " +
     "pp     " +
-    "pp     "
-    ;//7x7
+    "pp     " +
+    "pp     " +
+    "pp     " +
+    "       " +
+    "       "
+    ;//7x11
 var char61 string =
     "       " +
     "       " +
@@ -1301,13 +1431,13 @@ var char7A string =
 var char7B string =
     "       " +
     "  pppp " +
-    " ppp   " +
-    " ppp   " +
-    " ppp   " +
+    " pp    " +
+    " pp    " +
+    " pp    " +
     "pp     " +
-    " ppp   " +
-    " ppp   " +
-    " ppp   " +
+    " pp    " +
+    " pp    " +
+    " pp    " +
     "  pppp " +
     "       " 
     ;//7x11 
@@ -1315,13 +1445,13 @@ var char7B string =
 var char7D string =
     "       " +
     "pppp   " +
-    "  ppp  " +
-    "  ppp  " +
-    "  ppp  " +
+    "   pp  " +
+    "   pp  " +
+    "   pp  " +
     "    pp " +
-    "  ppp  " +
-    "  ppp  " +
-    "  ppp  " +
+    "   pp  " +
+    "   pp  " +
+    "   pp  " +
     "pppp   " +
     "       " 
     ;//7x11 
@@ -1529,6 +1659,8 @@ var char2F string =
     ;//7x11
 
 var char3B string =
+    "    " +
+    "    " +
     " pp " +
     " pp " +
     "    " +
@@ -1536,8 +1668,6 @@ var char3B string =
     " pp " +
     " pp " +
     "pp  " +
-    "    " +
-    "    " +
     "    " +
     "    "
     ;//4x11    
@@ -1692,46 +1822,45 @@ var char60 string =
 	//str = strings.ToUpper(str)
     for j := 0; j < len(str); j++ {
     //if (str[j] >=0x20 && str[j] <= 0x7E) || str[j] == 13 {
-        if str[j] == 'A' { DrawBitmapTransparent(buffer, charA, x, y, 7, 7, scale); x += 7;
-        } else if str[j] == 'B' { DrawBitmapTransparent(buffer, charB, x, y, 7, 7, scale); x += 7;
-        } else if str[j] == 'C' { DrawBitmapTransparent(buffer, charC, x, y, 7, 7, scale); x += 7;
-        } else if str[j] == 'D' { DrawBitmapTransparent(buffer, charD, x, y, 7, 7, scale); x += 7;
-        } else if str[j] == 'E' { DrawBitmapTransparent(buffer, charE, x, y, 7, 7, scale); x += 7;
-        } else if str[j] == 'F' { DrawBitmapTransparent(buffer, charF, x, y, 7, 7, scale); x += 7;
-        } else if str[j] == 'G' { DrawBitmapTransparent(buffer, charG, x, y, 7, 7, scale); x += 7;
-        } else if str[j] == 'H' { DrawBitmapTransparent(buffer, charH, x, y, 7, 7, scale); x += 7;
-        } else if str[j] == 'I' { DrawBitmapTransparent(buffer, charI, x, y, 7, 7, scale); x += 7;
-        } else if str[j] == 'J' { DrawBitmapTransparent(buffer, charJ, x, y, 7, 7, scale); x += 7;
-        } else if str[j] == 'K' { DrawBitmapTransparent(buffer, charK, x, y, 7, 7, scale); x += 7;
-        } else if str[j] == 'L' { DrawBitmapTransparent(buffer, charL, x, y, 7, 7, scale); x += 7;
-        } else if str[j] == 'M' { DrawBitmapTransparent(buffer, charM, x, y, 7, 7, scale); x += 7;
-        } else if str[j] == 'N' { DrawBitmapTransparent(buffer, charN, x, y, 7, 7, scale); x += 7;
-        } else if str[j] == 'O' { DrawBitmapTransparent(buffer, charO, x, y, 7, 7, scale); x += 7;
-        } else if str[j] == 'P' { DrawBitmapTransparent(buffer, charP, x, y, 7, 7, scale); x += 7;
-        } else if str[j] == 'Q' { DrawBitmapTransparent(buffer, charQ, x, y, 7, 7, scale); x += 7;
-        } else if str[j] == 'R' { DrawBitmapTransparent(buffer, charR, x, y, 7, 7, scale); x += 7;
-        } else if str[j] == 'S' { DrawBitmapTransparent(buffer, charS, x, y, 7, 7, scale); x += 7;
-        } else if str[j] == 'T' { DrawBitmapTransparent(buffer, charT, x, y, 7, 7, scale); x += 7;
-        } else if str[j] == 'U' { DrawBitmapTransparent(buffer, charU, x, y, 7, 7, scale); x += 7;
-        } else if str[j] == 'V' { DrawBitmapTransparent(buffer, charV, x, y, 7, 7, scale); x += 7;
-        } else if str[j] == 'W' { DrawBitmapTransparent(buffer, charW, x, y, 7, 7, scale); x += 7;
-        } else if str[j] == 'X' { DrawBitmapTransparent(buffer, charX, x, y, 7, 7, scale); x += 7;
-        } else if str[j] == 'Y' { DrawBitmapTransparent(buffer, charY, x, y, 7, 7, scale); x += 7;
-        } else if str[j] == 'Z' { DrawBitmapTransparent(buffer, charZ, x, y, 7, 7, scale); x += 7;
-        } else if str[j] == ' ' { DrawBitmapTransparent(buffer, charSpace, x, y, 7, 7, scale); x += 7;
+        if str[j] == 'A' { DrawBitmapTransparent(buffer, char41, x, y, 7, 10, scale); x += 8;
+        } else if str[j] == 'B' { DrawBitmapTransparent(buffer, char42, x, y, 7, 10, scale); x += 8;
+        } else if str[j] == 'C' { DrawBitmapTransparent(buffer, char43, x, y, 7, 10, scale); x += 8;
+        } else if str[j] == 'D' { DrawBitmapTransparent(buffer, char44, x, y, 7, 10, scale); x += 8;
+        } else if str[j] == 'E' { DrawBitmapTransparent(buffer, char45, x, y, 7, 10, scale); x += 8;
+        } else if str[j] == 'F' { DrawBitmapTransparent(buffer, char46, x, y, 7, 10, scale); x += 8;
+        } else if str[j] == 'G' { DrawBitmapTransparent(buffer, char47, x, y, 7, 10, scale); x += 8;
+        } else if str[j] == 'H' { DrawBitmapTransparent(buffer, char48, x, y, 7, 10, scale); x += 8;
+        } else if str[j] == 'I' { DrawBitmapTransparent(buffer, char49, x, y, 7, 10, scale); x += 8;
+        } else if str[j] == 'J' { DrawBitmapTransparent(buffer, char4A, x, y, 7, 10, scale); x += 8;
+        } else if str[j] == 'K' { DrawBitmapTransparent(buffer, char4B, x, y, 7, 10, scale); x += 8;
+        } else if str[j] == 'L' { DrawBitmapTransparent(buffer, char4C, x, y, 7, 10, scale); x += 8;
+        } else if str[j] == 'M' { DrawBitmapTransparent(buffer, char4D, x, y, 8, 10, scale); x += 9;
+        } else if str[j] == 'N' { DrawBitmapTransparent(buffer, char4E, x, y, 7, 10, scale); x += 8;
+        } else if str[j] == 'O' { DrawBitmapTransparent(buffer, char4F, x, y, 7, 10, scale); x += 8;
+        } else if str[j] == 'P' { DrawBitmapTransparent(buffer, char50, x, y, 7, 10, scale); x += 8;
+        } else if str[j] == 'Q' { DrawBitmapTransparent(buffer, char51, x, y, 7, 10, scale); x += 8;
+        } else if str[j] == 'R' { DrawBitmapTransparent(buffer, char52, x, y, 7, 10, scale); x += 8;
+        } else if str[j] == 'S' { DrawBitmapTransparent(buffer, char53, x, y, 7, 10, scale); x += 8;
+        } else if str[j] == 'T' { DrawBitmapTransparent(buffer, char54, x, y, 8, 10, scale); x += 9;
+        } else if str[j] == 'U' { DrawBitmapTransparent(buffer, char55, x, y, 7, 10, scale); x += 8;
+        } else if str[j] == 'V' { DrawBitmapTransparent(buffer, char56, x, y, 8, 10, scale); x += 9;
+        } else if str[j] == 'W' { DrawBitmapTransparent(buffer, char57, x, y, 8, 10, scale); x += 9;
+        } else if str[j] == 'X' { DrawBitmapTransparent(buffer, char58, x, y, 8, 10, scale); x += 9;
+        } else if str[j] == 'Y' { DrawBitmapTransparent(buffer, char59, x, y, 8, 10, scale); x += 9;
+        } else if str[j] == 'Z' { DrawBitmapTransparent(buffer, char5A, x, y, 8, 10, scale); x += 9;
+        } else if str[j] == ' ' { DrawBitmapTransparent(buffer, char20, x, y, 7, 11, scale); x += 8;
         } else if str[j] == '-' { DrawBitmapTransparent(buffer, charLine, x, y, 7, 7, scale); x += 7;
-        } else if str[j] == '0' { DrawBitmapTransparent(buffer, char0, x, y, 7, 7, scale); x += 7;
-        } else if str[j] == '1' { DrawBitmapTransparent(buffer, char1, x, y, 7, 7, scale); x += 7;
-        } else if str[j] == '2' { DrawBitmapTransparent(buffer, char2, x, y, 7, 7, scale); x += 7;
-        } else if str[j] == '3' { DrawBitmapTransparent(buffer, char3, x, y, 7, 7, scale); x += 7;
-        } else if str[j] == '4' { DrawBitmapTransparent(buffer, char4, x, y, 7, 7, scale); x += 7;
-        } else if str[j] == '5' { DrawBitmapTransparent(buffer, char5, x, y, 7, 7, scale); x += 7;
-        } else if str[j] == '6' { DrawBitmapTransparent(buffer, char6, x, y, 7, 7, scale); x += 7;
-        } else if str[j] == '7' { DrawBitmapTransparent(buffer, char7, x, y, 7, 7, scale); x += 7;
-        } else if str[j] == '8' { DrawBitmapTransparent(buffer, char8, x, y, 7, 7, scale); x += 7;
-        } else if str[j] == '9' { DrawBitmapTransparent(buffer, char9, x, y, 7, 7, scale); x += 7;
-        } else if str[j] == ':' { DrawBitmapTransparent(buffer, char2points, x, y, 7, 7, scale); x += 7;
-        } else if str[j] == '|' { DrawBitmapTransparent(buffer, char_vert_line, x, y, 7, 7, scale); x += 7;
+        } else if str[j] == '0' { DrawBitmapTransparent(buffer, char30, x, y, 7, 11, scale); x += 8;
+        } else if str[j] == '1' { DrawBitmapTransparent(buffer, char31, x, y, 7, 11, scale); x += 8;
+        } else if str[j] == '2' { DrawBitmapTransparent(buffer, char32, x, y, 7, 11, scale); x += 8;
+        } else if str[j] == '3' { DrawBitmapTransparent(buffer, char33, x, y, 7, 11, scale); x += 8;
+        } else if str[j] == '4' { DrawBitmapTransparent(buffer, char34, x, y, 7, 11, scale); x += 8;
+        } else if str[j] == '5' { DrawBitmapTransparent(buffer, char35, x, y, 7, 11, scale); x += 8;
+        } else if str[j] == '6' { DrawBitmapTransparent(buffer, char36, x, y, 7, 11, scale); x += 8;
+        } else if str[j] == '7' { DrawBitmapTransparent(buffer, char37, x, y, 7, 11, scale); x += 8;
+        } else if str[j] == '8' { DrawBitmapTransparent(buffer, char38, x, y, 7, 11, scale); x += 8;
+        } else if str[j] == '9' { DrawBitmapTransparent(buffer, char39, x, y, 7, 11, scale); x += 8;
+        } else if str[j] == '|' { DrawBitmapTransparent(buffer, char_vert_line, x, y, 7, 11, scale); x += 7;
         
         } else if str[j] == 'a' { DrawBitmapTransparent(buffer, char61, x, y, 7, 11, scale); x += 8;
         } else if str[j] == 'b' { DrawBitmapTransparent(buffer, char62, x, y, 7, 11, scale); x += 8;
@@ -1780,6 +1909,7 @@ var char60 string =
         } else if str[j] == '.' { DrawBitmapTransparent(buffer, char2E, x, y, 4, 11, scale); x += 5;
         } else if str[j] == '/' { DrawBitmapTransparent(buffer, char2F, x, y, 7, 11, scale); x += 8;
         
+        } else if str[j] == ':' { DrawBitmapTransparent(buffer, char3A, x, y, 4, 11, scale); x += 5;
         } else if str[j] == ';' { DrawBitmapTransparent(buffer, char3B, x, y, 4, 11, scale); x += 5;
         } else if str[j] == '<' { DrawBitmapTransparent(buffer, char3C, x, y, 7, 11, scale); x += 8;
         } else if str[j] == '=' { DrawBitmapTransparent(buffer, char3D, x, y, 7, 11, scale); x += 8;

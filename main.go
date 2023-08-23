@@ -48,9 +48,9 @@ func main() {
 	message := "👋 GUI started OK! 🌍"
   	fmt.Println(message)
 
-	frmDesktop = CreateForm(&layout, 0, 0, BITMAP_WIDTH-1, BITMAP_HEIGHT-2, 0x0080C0, NONE, "", true, nil)
-	pnlTask = CreatePanel(frmDesktop, 0, frmDesktop.obj.(*tForm).sizeY - 28, BITMAP_WIDTH - 1, 28, 0x30B410, nil)
-	btnStart = CreateBtn(pnlTask, 2, 2, 50, 28 - 4, 0x50A0F8, 0xF8FCF8, "START", btnStartClick)
+	frmDesktop = CreateForm(&layout, 0, 0, BITMAP_WIDTH-1, BITMAP_HEIGHT-2, 0x0080C0, FLAT, "", true, nil)
+	pnlTask = CreatePanel(frmDesktop, 0, frmDesktop.obj.(*tForm).sizeY - 28, BITMAP_WIDTH - 1, 28, 0x30B410, TASK, nil)
+	btnStart = CreateBtn(pnlTask, 2, 2, 70, 28 - 4, 0x50A0F8, 0xF8FCF8, "START", btnStartClick)
 	
 	lblTime = CreateLabel(pnlTask, pnlTask.obj.(*tPanel).sizeX - 45, 6, 40, 20, 0x30B410, 0xF8FCF8, "", nil)
 	
@@ -87,7 +87,8 @@ startProcess("Terminal", startTerminal)
     <-make(chan bool)
 }
 
-var xTask int = 2 + 51
+
+var xTask int = 2 + 71
 
 func startProcess(name string, onStart func(*Node)){
 	obj := tBtn{x: xTask, y: 2, sizeX: 80, sizeY: 28 - 4, BC: 0xD8DCC0, TC: 0x000000, caption: name, visible: true, pressed: false, enabled: true, onClick: btnTaskClick}
@@ -139,6 +140,11 @@ func btnTaskClick(node *Node){
 	for ; i < len(process); i++ {
 		if node == process[i].btn {
 			process[i].form.obj.(*tForm).visible = !(process[i].form.obj.(*tForm).visible)
+			i := findNode(process[i].form)
+			fmt.Println(i)
+			if i > 0 {
+				sortChildren(i)
+			}
 			break
 		}
 	}

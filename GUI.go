@@ -13,7 +13,7 @@ import (
 var mouseIsDown bool = false
 var cursor bool
 
-var layout_obj = tForm{x: 0, y: 0, sizeX: BITMAP_WIDTH-1, sizeY: BITMAP_HEIGHT-2, BC: 0x0080C0, mode: NONE, caption: "", visible: true, onClick: nil}
+var layout_obj = tForm{x: 0, y: 0, sizeX: BITMAP_WIDTH-1, sizeY: BITMAP_HEIGHT-2, BC: 0x000000, mode: FLAT, caption: "", visible: true, onClick: nil}
 var layout = Node{parent: nil, previous: nil, children: nil, obj: &layout_obj}
 var list []*Node
 
@@ -29,6 +29,7 @@ const (
     CANVAS
     BIT_BUTTON
     MEMO
+    CHECKBOX
 )
 
 type tWinComponents interface {
@@ -65,6 +66,8 @@ func DrawNode(node *Node){
 		case *tBitBtn:
 			visible = obj.visible
 		case *tMemo:
+			visible = obj.visible
+		case *tCheckBox:
 			visible = obj.visible
 		}
 	}
@@ -115,6 +118,11 @@ func DrawNode(node *Node){
 			parY = obj.y
 			parSizeX = obj.sizeX
 			parSizeY = obj.sizeY
+		case *tCheckBox:
+			parX = obj.x
+			parY = obj.y
+			parSizeX = obj.sizeX
+			parSizeY = obj.sizeY
 		}
 	}
 	
@@ -149,7 +157,11 @@ func eventClick(x int, y int)  {
 		if list[len(list)-1].obj.(*tBitBtn).onClick != nil && list[len(list)-1].obj.(*tBitBtn).enabled {
 			list[len(list)-1].obj.(*tBitBtn).onClick(list[len(list)-1])
 		}
-		
+	case *tCheckBox:
+		fmt.Println("CLICKED: " + list[len(list)-1].obj.(*tCheckBox).caption)
+		if list[len(list)-1].obj.(*tCheckBox).onClick != nil && list[len(list)-1].obj.(*tCheckBox).enabled {
+			list[len(list)-1].obj.(*tCheckBox).onClick(list[len(list)-1])
+		}
 	}
 }
 
@@ -174,6 +186,8 @@ func ClickRecurs(node *Node, x int, y int, parX int, parY int) {
 		case *tBitBtn:
 			visible = obj.visible
 		case *tMemo:
+			visible = obj.visible
+		case *tCheckBox:
 			visible = obj.visible
 		}
 	}
@@ -202,6 +216,9 @@ func ClickRecurs(node *Node, x int, y int, parX int, parY int) {
 			parX = obj.x
 			parY = obj.y
 		case *tMemo:
+			parX = obj.x
+			parY = obj.y
+		case *tCheckBox:
 			parX = obj.x
 			parY = obj.y
 		}
@@ -263,6 +280,13 @@ func ClickRecurs(node *Node, x int, y int, parX int, parY int) {
 			(parX+node.obj.(*tMemo).x + node.obj.(*tMemo).sizeX) > x && 
 			(parY+node.obj.(*tMemo).y) < y && 
 			(parY+node.obj.(*tMemo).y + node.obj.(*tMemo).sizeY) > y {
+				list = append(list, node)
+			}
+		case *tCheckBox:
+			if (parX+node.obj.(*tCheckBox).x) < x && 
+			(parX+node.obj.(*tCheckBox).x + node.obj.(*tCheckBox).sizeX) > x && 
+			(parY+node.obj.(*tCheckBox).y) < y && 
+			(parY+node.obj.(*tCheckBox).y + node.obj.(*tCheckBox).sizeY) > y {
 				list = append(list, node)
 			}
 		}
@@ -419,7 +443,14 @@ func keyDown(key int){
     		} else if key == 35 {
     				obj.curX = len(obj.text)
     		} else {
-    			obj.text = obj.text[:obj.curX] + string(key) + obj.text[obj.curX:]
+    			var char string
+    			switch key {
+    			case 190:
+    				char = "."
+    			default:
+    				char = string(key)
+    			}
+    			obj.text = obj.text[:obj.curX] + char + obj.text[obj.curX:]
 				obj.curX++
 			}
 		case *tMemo:
