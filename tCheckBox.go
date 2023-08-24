@@ -10,6 +10,7 @@ import (
 
 
 type tCheckBox struct{
+	name string
     x int
     y int
     sizeX int
@@ -24,8 +25,8 @@ type tCheckBox struct{
 }
 
 
-func CreateCheckBox(parent *Node, x int, y int, sizeX int, sizeY int, BC int, TC int, caption string, checked bool, onClick func(*Node)) *Node {
-	obj := tCheckBox{x: x, y: y, sizeX: sizeX, sizeY: sizeY, BC: BC, TC: TC, caption: caption, visible: true, checked: checked, enabled: true, onClick: onClick}
+func CreateCheckBox(parent *Node, name string, x int, y int, sizeX int, sizeY int, BC int, TC int, caption string, checked bool, onClick func(*Node)) *Node {
+	obj := tCheckBox{name: name, x: x, y: y, sizeX: sizeX, sizeY: sizeY, BC: BC, TC: TC, caption: caption, visible: true, checked: checked, enabled: true, onClick: onClick}
 	node := Node{typ: CHECKBOX, parent: parent, previous: nil, children: nil, obj: &obj}
 	parent.children = append(parent.children, &node)
 	return &node

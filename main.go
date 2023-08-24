@@ -19,10 +19,6 @@ import (
 var frmDesktop *Node
 var pnlTask *Node
 var btnStart *Node
-/*var btnFlag *Node
-var btnTrap *Node
-var btnUsers *Node
-var btnEvents *Node*/
 var lblTime *Node
 
 var frmMenuStart *Node
@@ -31,6 +27,20 @@ var btnMenuFlag *Node
 var btnMenuTrap *Node
 var btnMenuUsers *Node
 var btnMenuEvents *Node
+var cbxRAD *Node
+var frmProperties *Node
+var frmRAD *Node
+var btnAddBtn *Node
+var btnAddLabel *Node
+var btnAddEdit *Node
+var btnAddCheckBox *Node
+var btnAddMemo *Node
+var btnAddPanel *Node
+var btnAddForm *Node 
+var frmCode *Node 
+var memCode *Node 
+var btnCodeGen *Node
+var btnCodeSave *Node
 
 
 var process []*tProc
@@ -48,14 +58,14 @@ func main() {
 	message := "👋 GUI started OK! 🌍"
   	fmt.Println(message)
 
-	frmDesktop = CreateForm(&layout, 0, 0, BITMAP_WIDTH-1, BITMAP_HEIGHT-2, 0x0080C0, FLAT, "", true, nil)
-	pnlTask = CreatePanel(frmDesktop, 0, frmDesktop.obj.(*tForm).sizeY - 28, BITMAP_WIDTH - 1, 28, 0x30B410, TASK, nil)
-	btnStart = CreateBtn(pnlTask, 2, 2, 70, 28 - 4, 0x50A0F8, 0xF8FCF8, "START", btnStartClick)
+	frmDesktop = CreateForm(&layout, "frmDesktop", 0, 0, BITMAP_WIDTH-1, BITMAP_HEIGHT-2, 0x0080C0, FLAT, "", true, nil)
+	pnlTask = CreatePanel(frmDesktop, "pnlTask", 0, frmDesktop.obj.(*tForm).sizeY - 28, BITMAP_WIDTH - 1, 28, 0x30B410, TASK, nil)
+	btnStart = CreateBtn(pnlTask, "btnStart", 2, 2, 70, 28 - 4, 0x50A0F8, 0xF8FCF8, "START", btnStartClick)
 	
-	lblTime = CreateLabel(pnlTask, pnlTask.obj.(*tPanel).sizeX - 45, 6, 40, 20, 0x30B410, 0xF8FCF8, "", nil)
+	lblTime = CreateLabel(pnlTask, "lblTime", pnlTask.obj.(*tPanel).sizeX - 45, 6, 40, 20, 0x30B410, 0xF8FCF8, "", nil)
 	
-	frmMenuStart = CreateForm(&layout, 0, BITMAP_HEIGHT-136, 127, 105, 0xD8DCC0, NONE, "", false, nil)
-	cnvMenuStart = CreateCanvas(frmMenuStart, 2, 2, 20, 100, nil)
+	frmMenuStart = CreateForm(&layout, "frmMenuStart", 0, BITMAP_HEIGHT-156, 127, 125, 0xD8DCC0, NONE, "", false, nil)
+	cnvMenuStart = CreateCanvas(frmMenuStart, "cnvMenuStart", 2, 2, 20, 120, nil)
 	for y := 0; y < cnvMenuStart.obj.(*tCanvas).sizeY; y++ {
     	for x := 0; x < cnvMenuStart.obj.(*tCanvas).sizeX; x++ {
     			squareNumber := (y * cnvMenuStart.obj.(*tCanvas).sizeX) + x;
@@ -69,11 +79,12 @@ func main() {
     }
 	
 	
-	btnMenuFlag = CreateBtn(frmMenuStart, 24, 3, 100, 20, 0xD8DCC0, 0x000000, "Flag", btnMenuFlagClick)
-	btnMenuTrap = CreateBtn(frmMenuStart, 24, 3 + 20, 100, 20, 0xD8DCC0, 0x000000, "SNMP", btnMenuTrapClick)
-	btnMenuUsers = CreateBtn(frmMenuStart, 24, 3 + 20 + 20, 100, 20, 0xD8DCC0, 0x000000, "Users", btnMenuUsersClick)
-	btnMenuEvents = CreateBtn(frmMenuStart, 24, 3 + 20 + 20 + 20, 100, 20, 0xD8DCC0, 0x000000, "Events", btnMenuEventsClick)
-	btnMenuEvents = CreateBtn(frmMenuStart, 24, 3 + 20 + 20 + 20 + 20, 100, 20, 0xD8DCC0, 0x000000, "Terminal", btnMenuTerminalClick)
+	btnMenuFlag = CreateBtn(frmMenuStart, "btnMenuFlag", 24, 3, 100, 20, 0xD8DCC0, 0x000000, "Flag", btnMenuFlagClick)
+	btnMenuTrap = CreateBtn(frmMenuStart, "btnMenuTrap", 24, 3 + 20, 100, 20, 0xD8DCC0, 0x000000, "SNMP", btnMenuTrapClick)
+	btnMenuUsers = CreateBtn(frmMenuStart, "btnMenuUsers", 24, 3 + 20 + 20, 100, 20, 0xD8DCC0, 0x000000, "Users", btnMenuUsersClick)
+	btnMenuEvents = CreateBtn(frmMenuStart, "btnMenuEvents", 24, 3 + 20 + 20 + 20, 100, 20, 0xD8DCC0, 0x000000, "Events", btnMenuEventsClick)
+	btnMenuEvents = CreateBtn(frmMenuStart, "btnMenuEvents", 24, 3 + 20 + 20 + 20 + 20, 100, 20, 0xD8DCC0, 0x000000, "Terminal", btnMenuTerminalClick)
+	cbxRAD = CreateCheckBox(frmMenuStart, "cbxRAD", 24, 3 + 20 + 20 + 20 + 20 + 20, 100, 16, 0xD8DCC0, 0x000000, "RAD", false, cbxRADClick)
 	
 startProcess("Flag", startFlag)
 startProcess("SNMP", startSNMP)
@@ -81,6 +92,21 @@ startProcess("Users", startUsers)
 startProcess("Events", startEvents)
 startProcess("Terminal", startTerminal)
 
+	frmRAD = CreateForm(&layout, "frmRAD", 0, 0, BITMAP_WIDTH-1, 59, 0xD8DCC0, WIN, "RAD", false, nil)
+	btnAddBtn = CreateBtn(frmRAD, "btnAddBtn", 2, 18, 40, 40, 0xD8DCC0, 0x000000, "Btn", btnAddBtnClick)
+	btnAddLabel = CreateBtn(frmRAD, "btnAddLabel", 2+41, 18, 40, 40, 0xD8DCC0, 0x000000, "Lbl", btnAddLabelClick)
+	btnAddEdit = CreateBtn(frmRAD, "btnAddEdit", 2+41+41, 18, 40, 40, 0xD8DCC0, 0x000000, "Edt", btnAddEditClick)
+	btnAddCheckBox = CreateBtn(frmRAD, "btnAddCheckBox", 2+41+41+41, 18, 40, 40, 0xD8DCC0, 0x000000, "Cbx", btnAddCheckBoxClick)
+	btnAddMemo = CreateBtn(frmRAD, "btnAddMemo", 2+41+41+41+41, 18, 40, 40, 0xD8DCC0, 0x000000, "Mem", btnAddMemoClick)
+	btnAddPanel = CreateBtn(frmRAD, "btnAddPanel", 2+41+41+41+41+41, 18, 40, 40, 0xD8DCC0, 0x000000, "Pnl", btnAddPanelClick)
+	btnAddForm = CreateBtn(frmRAD, "btnAddForm", 2+41+41+41+41+41+41, 18, 40, 40, 0xD8DCC0, 0x000000, "Frm", btnAddFormClick)
+	btnCodeGen = CreateBtn(frmRAD, "btnCodeGen", 2+41+41+41+41+41+41+41+41, 18, 50, 40, 0xD8DCC0, 0x000000, "Code", btnCodeGenClick)
+	btnCodeSave = CreateBtn(frmRAD, "btnCodeSave", 2+41+41+41+41+41+41+41+41+51, 18, 50, 40, 0xD8DCC0, 0x000000, "Save", btnCodeSaveClick)
+	
+	frmProperties = CreateForm(&layout, "frmProperties", 0, 60, 180, 400, 0xD8DCC0, WIN, "Properties", false, nil)
+	
+	frmCode = CreateForm(&layout, "frmCode", 181, 60, 800, 800, 0xD8DCC0, WIN, "Code", false, nil)
+	memCode = CreateMemo(frmCode, "memCode", 2, 18, 800-4, 800-17-4, 0xF8FCF8, 0x000000, "", nil)
 		
 
 	
@@ -91,11 +117,11 @@ startProcess("Terminal", startTerminal)
 var xTask int = 2 + 71
 
 func startProcess(name string, onStart func(*Node)){
-	obj := tBtn{x: xTask, y: 2, sizeX: 80, sizeY: 28 - 4, BC: 0xD8DCC0, TC: 0x000000, caption: name, visible: true, pressed: false, enabled: true, onClick: btnTaskClick}
+	obj := tBtn{name: "btnTask"+name, x: xTask, y: 2, sizeX: 80, sizeY: 28 - 4, BC: 0xD8DCC0, TC: 0x000000, caption: name, visible: true, pressed: false, enabled: true, onClick: btnTaskClick}
 	node := Node{typ: BUTTON, parent: pnlTask, previous: nil, children: nil, obj: &obj}
 	pnlTask.children = append(pnlTask.children, &node)
 	
-	frm := CreateForm(&layout, 400, 400, 200, 130, 0xD8DCC0, WIN, name, true, nil)
+	frm := CreateForm(&layout, "frm" + name, 400, 400, 200, 130, 0xD8DCC0, WIN, name, true, nil)
 	
 	proc := tProc{name: name, form: frm, btn: &node}
 	process = append(process, &proc)
@@ -103,6 +129,225 @@ func startProcess(name string, onStart func(*Node)){
 	layout.children[len(layout.children)-2].obj.(*tForm).focused = false
 	layout.children[len(layout.children)-1].obj.(*tForm).focused = true
 	onStart(frm)
+}
+
+
+func cbxRADClick(node *Node){
+	node.obj.(*tCheckBox).checked = !(node.obj.(*tCheckBox).checked)
+	RAD = !(RAD)
+	frmCode.obj.(*tForm).visible = !(frmCode.obj.(*tForm).visible)
+	frmRAD.obj.(*tForm).visible = !(frmRAD.obj.(*tForm).visible)
+	i := findNode(frmProperties)
+	fmt.Println(i)
+	if i > 0 {
+		sortChildren(i)
+	}
+	frmProperties.obj.(*tForm).visible = !(frmProperties.obj.(*tForm).visible)
+	i = findNode(frmProperties)
+	fmt.Println(i)
+	if i > 0 {
+		sortChildren(i)
+	}
+			
+	if !RAD {
+		for i := 0; i < len(layout.children); i++ {
+			layout.children[i].obj.(*tForm).RAD = false
+		}
+	}
+}
+
+
+func btnAddBtnClick(node *Node){
+	CreateBtn(RADFormElement, "btnButton", 10, 24, 70, 24, 0xD8DCC0, 0x000000, "Button", nil)
+}
+
+func btnAddLabelClick(node *Node){
+	CreateLabel(RADFormElement, "lblLabel", 10, 24, 70, 20, 0xD8DCC0, 0x000000, "Label", nil)
+}
+
+func btnAddEditClick(node *Node){
+	CreateEdit(RADFormElement, "edtEdit", 10, 24, 70, 20, 0xF8FCF8, 0x000000, "Edit", nil, nil)
+}
+
+func btnAddCheckBoxClick(node *Node){
+	CreateCheckBox(RADFormElement, "cbxChBox", 10, 24, 110, 20, 0xD8DCC0, 0x000000, "CheckBox", false, nil)
+}
+
+func btnAddMemoClick(node *Node){
+	CreateMemo(RADFormElement, "memMemo", 10, 24, 100, 100, 0xF8FCF8, 0x000000, "Memo", nil)
+}
+
+func btnAddPanelClick(node *Node){
+	CreatePanel(RADFormElement, "pnlPanel", 10, 24, 100, 100, 0xD8DCC0, NONE, nil)
+}
+
+func btnAddFormClick(node *Node){
+	obj := CreateForm(&layout, "frmForm", 190, 70, 500, 300, 0xD8DCC0, WIN, "Form", true, nil)
+	i := findNode(obj)
+	fmt.Println(i)
+	if i > 0 {
+		sortChildren(i)
+	}
+}
+
+func btnCodeGenClick(node *Node){
+	memCode.obj.(*tMemo).text = ""	
+	//package main
+	//import ()
+	memCode.obj.(*tMemo).text += "package main" + string(13) + string(13) + "import ()" + string(13) + string(13)
+	PrintVarNode(RADFormElement)
+	memCode.obj.(*tMemo).text += string(13) + string(13)
+	//func startSNMP(frmMain *Node){
+	memCode.obj.(*tMemo).text += "func startProc(frmMain *Node){ " + string(13)
+	PrintElementNode(RADFormElement)	
+	// }		
+	memCode.obj.(*tMemo).text += "}" + string(13)
+}
+
+
+func PrintVarNode(node *Node){
+	if node.obj != nil {
+		switch obj := node.obj.(type) {
+		case *tForm:
+			memCode.obj.(*tMemo).text += "var " + obj.name + " *Node" + string(13)
+		case *tBtn:
+			memCode.obj.(*tMemo).text += "var " + obj.name + " *Node" + string(13)
+		case *tLabel:
+			memCode.obj.(*tMemo).text += "var " + obj.name + " *Node" + string(13)
+		case *tEdit:
+			memCode.obj.(*tMemo).text += "var " + obj.name + " *Node" + string(13)
+		case *tPanel:
+			memCode.obj.(*tMemo).text += "var " + obj.name + " *Node" + string(13)
+		case *tCheckBox:
+			memCode.obj.(*tMemo).text += "var " + obj.name + " *Node" + string(13)
+		case *tCanvas:
+			memCode.obj.(*tMemo).text += "var " + obj.name + " *Node" + string(13)
+		case *tBitBtn:
+			memCode.obj.(*tMemo).text += "var " + obj.name + " *Node" + string(13)
+		case *tMemo:
+			memCode.obj.(*tMemo).text += "var " + obj.name + " *Node" + string(13)
+		}
+	}
+	
+	if node.children != nil {
+			for i := 0; i < len(node.children); i++ { 
+				PrintVarNode(node.children[i])
+			}
+	}
+	return
+}
+
+
+func PrintElementNode(node *Node){
+	if node.obj != nil {
+		switch obj := node.obj.(type) {
+		case *tForm:
+			//frm := CreateForm(&layout, 400, 400, 200, 130, 0xD8DCC0, WIN, name, true, nil)
+			memCode.obj.(*tMemo).text += "    " + obj.name + " := CreateForm(&layout, " +
+				strconv.Itoa(obj.x) + ", " +
+				strconv.Itoa(obj.y) + ", " +
+				strconv.Itoa(obj.sizeX) + ", " +
+				strconv.Itoa(obj.sizeY) + ", " +
+				fmt.Sprintf("0x%x", obj.BC) + ", " +
+				"WIN, " +
+				"\"" + obj.caption + "\"" + ", " +
+				"true, nil)" + string(13)
+		case *tBtn:
+			//btnTrapServer = CreateBtn(frmMain, 300, 30, 100, 24, 0xD8DCC0, 0x000000, "Run Server", btnTrapServerClick)
+			memCode.obj.(*tMemo).text += "    " + obj.name + " := CreateBtn(" + "parent" + ", " +
+				strconv.Itoa(obj.x) + ", " +
+				strconv.Itoa(obj.y) + ", " +
+				strconv.Itoa(obj.sizeX) + ", " +
+				strconv.Itoa(obj.sizeY) + ", " +
+				fmt.Sprintf("0x%x", obj.BC) + ", " +
+				fmt.Sprintf("0x%x", obj.TC) + ", " +
+				"\"" + obj.caption + "\"" + ", " +
+				"nil)" + string(13)
+		case *tLabel:
+			//lblIPaddr = CreateLabel(frmMain, 12, 32, 120, 20, 0xD8DCC0, 0x000000, "IP address", nil)
+			memCode.obj.(*tMemo).text += "    " + obj.name + " := CreateLabel(" + "parent" + ", " +
+				strconv.Itoa(obj.x) + ", " +
+				strconv.Itoa(obj.y) + ", " +
+				strconv.Itoa(obj.sizeX) + ", " +
+				strconv.Itoa(obj.sizeY) + ", " +
+				fmt.Sprintf("0x%x", obj.BC) + ", " +
+				fmt.Sprintf("0x%x", obj.TC) + ", " +
+				"\"" + obj.caption + "\"" + ", " +
+				"nil)" + string(13)
+		case *tEdit:
+			//editPortGet = CreateEdit(frmMain, 100, 68, 100, 20, 0xF8FCF8, 0x000000, "161", nil, nil)
+			memCode.obj.(*tMemo).text += "    " + obj.name + " := CreateEdit(" + "parent" + ", " +
+				strconv.Itoa(obj.x) + ", " +
+				strconv.Itoa(obj.y) + ", " +
+				strconv.Itoa(obj.sizeX) + ", " +
+				strconv.Itoa(obj.sizeY) + ", " +
+				fmt.Sprintf("0x%x", obj.BC) + ", " +
+				fmt.Sprintf("0x%x", obj.TC) + ", " +
+				"\"" + obj.text + "\"" + ", " +
+				"nil, nil)" + string(13)
+		case *tPanel:
+			//pnlTask = CreatePanel(frmDesktop, 0, frmDesktop.obj.(*tForm).sizeY - 28, BITMAP_WIDTH - 1, 28, 0x30B410, TASK, nil)
+			memCode.obj.(*tMemo).text += "    " + obj.name + " := CreatePanel(" + "parent" + ", " +
+				strconv.Itoa(obj.x) + ", " +
+				strconv.Itoa(obj.y) + ", " +
+				strconv.Itoa(obj.sizeX) + ", " +
+				strconv.Itoa(obj.sizeY) + ", " +
+				fmt.Sprintf("0x%x", obj.BC) + ", " +
+				"NONE, nil)" + string(13)
+		case *tCheckBox:
+			//cbxVersion1 = CreateCheckBox(frmMain, 430, 30, 140, 16, 0xD8DCC0, 0x000000, "Version 1", false, cbxVersion1Click)
+			memCode.obj.(*tMemo).text += "    " + obj.name + " := CreateCheckBox(" + "parent" + ", " +
+				strconv.Itoa(obj.x) + ", " +
+				strconv.Itoa(obj.y) + ", " +
+				strconv.Itoa(obj.sizeX) + ", " +
+				strconv.Itoa(obj.sizeY) + ", " +
+				fmt.Sprintf("0x%x", obj.BC) + ", " +
+				fmt.Sprintf("0x%x", obj.TC) + ", " +
+				"\"" + obj.caption + "\"" + ", " +
+				"false, nil)" + string(13)
+		case *tCanvas:
+			//cnvFlag = CreateCanvas(frmMain, 2, 17, 376, 321, nil)
+			memCode.obj.(*tMemo).text += "    " + obj.name + " := CreateCanvas(" + "parent" + ", " +
+				strconv.Itoa(obj.x) + ", " +
+				strconv.Itoa(obj.y) + ", " +
+				strconv.Itoa(obj.sizeX) + ", " +
+				strconv.Itoa(obj.sizeY) + ", " +
+				"nil)" + string(13)
+		case *tBitBtn:
+			//CreateBitBtn(&node, obj.sizeX - 17, 2, 15, 15, 0xD8DCC0, 0x000000, "X", formClose)
+			memCode.obj.(*tMemo).text += "    " + obj.name + " := CreateBitBtn(" + "parent" + ", " +
+				strconv.Itoa(obj.x) + ", " +
+				strconv.Itoa(obj.y) + ", " +
+				strconv.Itoa(obj.sizeX) + ", " +
+				strconv.Itoa(obj.sizeY) + ", " +
+				fmt.Sprintf("0x%x", obj.BC) + ", " +
+				fmt.Sprintf("0x%x", obj.TC) + ", " +
+				"\"" + obj.caption + "\"" + ", " +
+				"nil)" + string(13)
+		case *tMemo:
+			//memTest = CreateMemo(frmMain, 400, 30, 100, 100, 0x000000, 0xF8FCF8, "", nil)
+			memCode.obj.(*tMemo).text += "    " + obj.name + " := CreateMemo(" + "parent" + ", " +
+				strconv.Itoa(obj.x) + ", " +
+				strconv.Itoa(obj.y) + ", " +
+				strconv.Itoa(obj.sizeX) + ", " +
+				strconv.Itoa(obj.sizeY) + ", " +
+				fmt.Sprintf("0x%x", obj.BC) + ", " +
+				fmt.Sprintf("0x%x", obj.TC) + ", " +
+				"\"" + obj.text + "\"" + ", " +
+				"nil)" + string(13)
+		}
+	}
+	
+	if node.children != nil {
+			for i := 0; i < len(node.children); i++ { 
+				PrintElementNode(node.children[i])
+			}
+	}
+	return
+}
+
+func btnCodeSaveClick(node *Node){
+
 }
 
 

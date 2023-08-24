@@ -12,6 +12,9 @@ import (
 
 var mouseIsDown bool = false
 var cursor bool
+var RAD bool = false
+var RADElement *Node
+var RADFormElement *Node
 
 var layout_obj = tForm{x: 0, y: 0, sizeX: BITMAP_WIDTH-1, sizeY: BITMAP_HEIGHT-2, BC: 0x000000, mode: FLAT, caption: "", visible: true, onClick: nil}
 var layout = Node{parent: nil, previous: nil, children: nil, obj: &layout_obj}
@@ -44,6 +47,25 @@ type Node struct {
     children []*Node
     obj tWinComponents 
 }
+
+var lblPropTop *Node
+var editPropTop *Node
+var lblPropLeft *Node
+var editPropLeft *Node
+var lblPropCaption *Node
+var editPropCaption *Node
+var lblPropBC *Node
+var editPropBC *Node
+var lblPropWidth *Node
+var editPropWidth *Node
+var lblPropHeight *Node
+var editPropHeight *Node
+var lblPropTC *Node
+var editPropTC *Node
+var lblPropText *Node
+var editPropText *Node
+var lblPropName *Node
+var editPropName *Node
          
 
 func DrawNode(node *Node){
@@ -142,25 +164,33 @@ func DrawNode(node *Node){
 
 //export eventClick
 func eventClick(x int, y int)  {
-	fmt.Println("Event: " + strconv.Itoa(x) + " " + strconv.Itoa(y))
-	list = nil
-	ClickRecurs(&layout, x, y, 0, 0)
 	
-	switch list[len(list)-1].obj.(type) {
-	case *tBtn:
-		fmt.Println("CLICKED: " + list[len(list)-1].obj.(*tBtn).caption)
-		if list[len(list)-1].obj.(*tBtn).onClick != nil && list[len(list)-1].obj.(*tBtn).enabled {
-			list[len(list)-1].obj.(*tBtn).onClick(list[len(list)-1])
-		}
-	case *tBitBtn:
-		fmt.Println("CLICKED: " + list[len(list)-1].obj.(*tBitBtn).caption)
-		if list[len(list)-1].obj.(*tBitBtn).onClick != nil && list[len(list)-1].obj.(*tBitBtn).enabled {
-			list[len(list)-1].obj.(*tBitBtn).onClick(list[len(list)-1])
-		}
-	case *tCheckBox:
-		fmt.Println("CLICKED: " + list[len(list)-1].obj.(*tCheckBox).caption)
-		if list[len(list)-1].obj.(*tCheckBox).onClick != nil && list[len(list)-1].obj.(*tCheckBox).enabled {
-			list[len(list)-1].obj.(*tCheckBox).onClick(list[len(list)-1])
+		fmt.Println("Event: " + strconv.Itoa(x) + " " + strconv.Itoa(y))
+		list = nil
+		ClickRecurs(&layout, x, y, 0, 0)
+		
+		if !RAD || list[len(list)-1] == cbxRAD || layout.children[len(layout.children)-1] == frmProperties || layout.children[len(layout.children)-1] == frmRAD || layout.children[len(layout.children)-1] == frmCode {
+		switch list[len(list)-1].obj.(type) {
+		case *tBtn:
+			fmt.Println("CLICKED: " + list[len(list)-1].obj.(*tBtn).caption)
+			if list[len(list)-1].obj.(*tBtn).onClick != nil && list[len(list)-1].obj.(*tBtn).enabled {
+				list[len(list)-1].obj.(*tBtn).onClick(list[len(list)-1])
+			}
+		case *tBitBtn:
+			fmt.Println("CLICKED: " + list[len(list)-1].obj.(*tBitBtn).caption)
+			if list[len(list)-1].obj.(*tBitBtn).onClick != nil && list[len(list)-1].obj.(*tBitBtn).enabled {
+				list[len(list)-1].obj.(*tBitBtn).onClick(list[len(list)-1])
+			}
+		case *tCheckBox:
+			fmt.Println("CLICKED: " + list[len(list)-1].obj.(*tCheckBox).caption)
+			if list[len(list)-1].obj.(*tCheckBox).onClick != nil && list[len(list)-1].obj.(*tCheckBox).enabled {
+				list[len(list)-1].obj.(*tCheckBox).onClick(list[len(list)-1])
+			}
+		case *tEdit:
+			fmt.Println("CLICKED: " + list[len(list)-1].obj.(*tEdit).text)
+			if list[len(list)-1].obj.(*tEdit).onClick != nil && list[len(list)-1].obj.(*tEdit).enabled {
+				list[len(list)-1].obj.(*tEdit).onClick(list[len(list)-1])
+			}
 		}
 	}
 }
@@ -329,6 +359,9 @@ func sortChildren(i int) {
 }
 
 
+
+
+
 var downX int = 0
 var downY int = 0
 var btnPressed *tBtn = nil
@@ -353,6 +386,15 @@ func eventMouseDown(x int, y int)  {
 		}
 	}
 	layout.children[len(layout.children)-1].obj.(*tForm).focus = list[len(list)-1]
+	if RAD && layout.children[len(layout.children)-1] != frmProperties && layout.children[len(layout.children)-1] != frmRAD && layout.children[len(layout.children)-1] != frmCode {
+			RADElement = list[len(list)-1]
+			for i := 0; i < len(layout.children); i++ {
+				layout.children[i].obj.(*tForm).RAD = false
+			}
+			layout.children[len(layout.children)-1].obj.(*tForm).RAD = true
+			RADFormElement = layout.children[len(layout.children)-1]
+			frmProperties.children = nil
+	}
 	
 	switch obj := list[len(list)-1].obj.(type) {
 	case *tForm:
@@ -364,25 +406,419 @@ func eventMouseDown(x int, y int)  {
 				downX = x 
     			downY = y 
     			mouseIsDown = true
-    		}
-    case *tBtn:
-    	if obj.enabled {
-    		btnPressed = obj
-			obj.pressed = true	
+    	}
+    	if RAD && layout.children[len(layout.children)-1] != frmProperties && layout.children[len(layout.children)-1] != frmRAD && layout.children[len(layout.children)-1] != frmCode {
+    		frmProperties.obj.(*tForm).caption = "Properties: FORM"
+    		lblPropName = CreateLabel(frmProperties, "lblPropName", 5, 20, 95, 20, 0xD8DCC0, 0x000000, "Name", nil)
+			editPropName = CreateEdit(frmProperties, "editPropName", 80, 20, 95, 20, 0xF8FCF8, 0x000000, obj.name, nil, editPropNameEnter)
+    		lblPropLeft = CreateLabel(frmProperties, "lblPropLeft", 5, 40, 95, 20, 0xD8DCC0, 0x000000, "Left", nil)
+			editPropLeft = CreateEdit(frmProperties, "editPropLeft", 80, 40, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.x), nil, editPropLeftEnter)
+			lblPropTop = CreateLabel(frmProperties, "lblPropTop", 5, 60, 95, 20, 0xD8DCC0, 0x000000, "Top", nil)
+			editPropTop = CreateEdit(frmProperties, "editPropTop", 80, 60, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.y), nil, editPropTopEnter)
+			lblPropCaption = CreateLabel(frmProperties, "lblPropCaption", 5, 80, 95, 20, 0xD8DCC0, 0x000000, "Caption", nil)
+			editPropCaption = CreateEdit(frmProperties, "editPropCaption", 80, 80, 95, 20, 0xF8FCF8, 0x000000, obj.caption, nil, editPropCaptionEnter)
+			lblPropBC = CreateLabel(frmProperties, "lblPropBC", 5, 100, 95, 20, 0xD8DCC0, 0x000000, "BC", nil)
+			editPropBC = CreateEdit(frmProperties, "editPropBC", 80, 100, 95, 20, 0xF8FCF8, 0x000000, fmt.Sprintf("%x", obj.BC), nil, editPropBCEnter)
+			lblPropWidth = CreateLabel(frmProperties, "lblPropWidth", 5, 120, 95, 20, 0xD8DCC0, 0x000000, "Width", nil)
+			editPropWidth = CreateEdit(frmProperties, "editPropWidth", 80, 120, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.sizeX), nil, editPropWidthEnter)
+			lblPropHeight = CreateLabel(frmProperties, "lblPropHeight", 5, 140, 95, 20, 0xD8DCC0, 0x000000, "Height", nil)
+			editPropHeight = CreateEdit(frmProperties, "editPropHeight", 80, 140, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.sizeY), nil, editPropHeightEnter)
 		}
+    case *tBtn:
+		if RAD && layout.children[len(layout.children)-1] != frmProperties && layout.children[len(layout.children)-1] != frmRAD && layout.children[len(layout.children)-1] != frmCode {
+			frmProperties.obj.(*tForm).caption = "Properties: BUTTON"
+			downX = x 
+    		downY = y 
+    		mouseIsDown = true
+    		lblPropName = CreateLabel(frmProperties, "lblPropName", 5, 20, 95, 20, 0xD8DCC0, 0x000000, "Name", nil)
+			editPropName = CreateEdit(frmProperties, "editPropName", 80, 20, 95, 20, 0xF8FCF8, 0x000000, obj.name, nil, editPropNameEnter)
+			lblPropLeft = CreateLabel(frmProperties, "lblPropLeft", 5, 40, 95, 20, 0xD8DCC0, 0x000000, "Left", nil)
+			editPropLeft = CreateEdit(frmProperties, "editPropLeft", 80, 40, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.x), nil, editPropLeftEnter)
+			lblPropTop = CreateLabel(frmProperties, "lblPropTop", 5, 60, 95, 20, 0xD8DCC0, 0x000000, "Top", nil)
+			editPropTop = CreateEdit(frmProperties, "editPropTop", 80, 60, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.y), nil, editPropTopEnter)
+			lblPropCaption = CreateLabel(frmProperties, "lblPropCaption", 5, 80, 95, 20, 0xD8DCC0, 0x000000, "Caption", nil)
+			editPropCaption = CreateEdit(frmProperties, "editPropCaption", 80, 80, 95, 20, 0xF8FCF8, 0x000000, obj.caption, nil, editPropCaptionEnter)
+			lblPropBC = CreateLabel(frmProperties, "lblPropBC", 5, 100, 95, 20, 0xD8DCC0, 0x000000, "BC", nil)
+			editPropBC = CreateEdit(frmProperties, "editPropBC", 80, 100, 95, 20, 0xF8FCF8, 0x000000, fmt.Sprintf("%x", obj.BC), nil, editPropBCEnter)
+			lblPropTC = CreateLabel(frmProperties, "lblPropTC", 5, 120, 95, 20, 0xD8DCC0, 0x000000, "TC", nil)
+			editPropTC = CreateEdit(frmProperties, "editPropTC", 80, 120, 95, 20, 0xF8FCF8, 0x000000, fmt.Sprintf("%x", obj.TC), nil, editPropTCEnter)
+			lblPropWidth = CreateLabel(frmProperties, "lblPropWidth", 5, 140, 95, 20, 0xD8DCC0, 0x000000, "Width", nil)
+			editPropWidth = CreateEdit(frmProperties, "editPropWidth", 80, 140, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.sizeX), nil, editPropWidthEnter)
+			lblPropHeight = CreateLabel(frmProperties, "lblPropHeight", 5, 160, 95, 20, 0xD8DCC0, 0x000000, "Height", nil)
+			editPropHeight = CreateEdit(frmProperties, "editPropHeight", 80, 160, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.sizeY), nil, editPropHeightEnter)
+		} else {
+			if obj.enabled {
+    			btnPressed = obj
+				obj.pressed = true	
+			}
+		}
+	case *tLabel:
+		if RAD && layout.children[len(layout.children)-1] != frmProperties && layout.children[len(layout.children)-1] != frmRAD && layout.children[len(layout.children)-1] != frmCode {
+			frmProperties.obj.(*tForm).caption = "Properties: LABEL"
+			downX = x 
+    		downY = y 
+    		mouseIsDown = true
+    		lblPropName = CreateLabel(frmProperties, "lblPropName", 5, 20, 95, 20, 0xD8DCC0, 0x000000, "Name", nil)
+			editPropName = CreateEdit(frmProperties, "editPropName", 80, 20, 95, 20, 0xF8FCF8, 0x000000, obj.name, nil, editPropNameEnter)
+			lblPropLeft = CreateLabel(frmProperties, "lblPropLeft", 5, 40, 95, 20, 0xD8DCC0, 0x000000, "Left", nil)
+			editPropLeft = CreateEdit(frmProperties, "editPropLeft", 80, 40, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.x), nil, editPropLeftEnter)
+			lblPropTop = CreateLabel(frmProperties, "lblPropTop", 5, 60, 95, 20, 0xD8DCC0, 0x000000, "Top", nil)
+			editPropTop = CreateEdit(frmProperties, "editPropTop", 80, 60, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.y), nil, editPropTopEnter)
+			lblPropCaption = CreateLabel(frmProperties, "lblPropCaption", 5, 80, 95, 20, 0xD8DCC0, 0x000000, "Caption", nil)
+			editPropCaption = CreateEdit(frmProperties, "editPropCaption", 80, 80, 95, 20, 0xF8FCF8, 0x000000, obj.caption, nil, editPropCaptionEnter)
+			lblPropBC = CreateLabel(frmProperties, "lblPropBC", 5, 100, 95, 20, 0xD8DCC0, 0x000000, "BC", nil)
+			editPropBC = CreateEdit(frmProperties, "editPropBC", 80, 100, 95, 20, 0xF8FCF8, 0x000000, fmt.Sprintf("%x", obj.BC), nil, editPropBCEnter)
+			lblPropTC = CreateLabel(frmProperties, "lblPropTC", 5, 120, 95, 20, 0xD8DCC0, 0x000000, "TC", nil)
+			editPropTC = CreateEdit(frmProperties, "editPropTC", 80, 120, 95, 20, 0xF8FCF8, 0x000000, fmt.Sprintf("%x", obj.TC), nil, editPropTCEnter)
+			lblPropWidth = CreateLabel(frmProperties, "lblPropWidth", 5, 140, 95, 20, 0xD8DCC0, 0x000000, "Width", nil)
+			editPropWidth = CreateEdit(frmProperties, "editPropWidth", 80, 140, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.sizeX), nil, editPropWidthEnter)
+			lblPropHeight = CreateLabel(frmProperties, "lblPropHeight", 5, 160, 95, 20, 0xD8DCC0, 0x000000, "Height", nil)
+			editPropHeight = CreateEdit(frmProperties, "editPropHeight", 80, 160, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.sizeY), nil, editPropHeightEnter)
+		} 
 	case *tEdit:
-    	if obj.enabled {
-			obj.focused = true	
+		if RAD && layout.children[len(layout.children)-1] != frmProperties && layout.children[len(layout.children)-1] != frmRAD && layout.children[len(layout.children)-1] != frmCode {
+			frmProperties.obj.(*tForm).caption = "Properties: EDIT"
+			downX = x 
+    		downY = y 
+    		mouseIsDown = true
+    		lblPropName = CreateLabel(frmProperties, "lblPropName", 5, 20, 95, 20, 0xD8DCC0, 0x000000, "Name", nil)
+			editPropName = CreateEdit(frmProperties, "editPropName", 80, 20, 95, 20, 0xF8FCF8, 0x000000, obj.name, nil, editPropNameEnter)
+			lblPropLeft = CreateLabel(frmProperties, "lblPropLeft", 5, 40, 95, 20, 0xD8DCC0, 0x000000, "Left", nil)
+			editPropLeft = CreateEdit(frmProperties, "editPropLeft", 80, 40, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.x), nil, editPropLeftEnter)
+			lblPropTop = CreateLabel(frmProperties, "lblPropTop", 5, 60, 95, 20, 0xD8DCC0, 0x000000, "Top", nil)
+			editPropTop = CreateEdit(frmProperties, "editPropTop", 80, 60, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.y), nil, editPropTopEnter)
+			lblPropText = CreateLabel(frmProperties, "lblPropText", 5, 80, 95, 20, 0xD8DCC0, 0x000000, "Text", nil)
+			editPropText = CreateEdit(frmProperties, "editPropText", 80, 80, 95, 20, 0xF8FCF8, 0x000000, obj.text, nil, editPropTextEnter)
+			lblPropBC = CreateLabel(frmProperties, "lblPropBC", 5, 100, 95, 20, 0xD8DCC0, 0x000000, "BC", nil)
+			editPropBC = CreateEdit(frmProperties, "editPropBC", 80, 100, 95, 20, 0xF8FCF8, 0x000000, fmt.Sprintf("%x", obj.BC), nil, editPropBCEnter)
+			lblPropTC = CreateLabel(frmProperties, "lblPropTC", 5, 120, 95, 20, 0xD8DCC0, 0x000000, "TC", nil)
+			editPropTC = CreateEdit(frmProperties, "editPropTC", 80, 120, 95, 20, 0xF8FCF8, 0x000000, fmt.Sprintf("%x", obj.TC), nil, editPropTCEnter)
+			lblPropWidth = CreateLabel(frmProperties, "lblPropWidth", 5, 140, 95, 20, 0xD8DCC0, 0x000000, "Width", nil)
+			editPropWidth = CreateEdit(frmProperties, "editPropWidth", 80, 140, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.sizeX), nil, editPropWidthEnter)
+			lblPropHeight = CreateLabel(frmProperties, "lblPropHeight", 5, 160, 95, 20, 0xD8DCC0, 0x000000, "Height", nil)
+			editPropHeight = CreateEdit(frmProperties, "editPropHeight", 80, 160, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.sizeY), nil, editPropHeightEnter)
+		} else {
+			if obj.enabled {
+				obj.focused = true	
+				obj.curX = len(obj.text)
+			}
 		}
 	case *tBitBtn:
-    	if obj.enabled {
-    		bitbtnPressed = obj
-			obj.pressed = true	
+		if RAD && layout.children[len(layout.children)-1] != frmProperties && layout.children[len(layout.children)-1] != frmRAD && layout.children[len(layout.children)-1] != frmCode {
+			frmProperties.obj.(*tForm).caption = "Properties: BITBTN"
+			downX = x 
+    		downY = y 
+    		mouseIsDown = true
+    		lblPropName = CreateLabel(frmProperties, "lblPropName", 5, 20, 95, 20, 0xD8DCC0, 0x000000, "Name", nil)
+			editPropName = CreateEdit(frmProperties, "editPropName", 80, 20, 95, 20, 0xF8FCF8, 0x000000, obj.name, nil, editPropNameEnter)
+			lblPropLeft = CreateLabel(frmProperties, "lblPropLeft", 5, 40, 95, 20, 0xD8DCC0, 0x000000, "Left", nil)
+			editPropLeft = CreateEdit(frmProperties, "editPropLeft", 80, 40, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.x), nil, editPropLeftEnter)
+			lblPropTop = CreateLabel(frmProperties, "lblPropTop", 5, 60, 95, 20, 0xD8DCC0, 0x000000, "Top", nil)
+			editPropTop = CreateEdit(frmProperties, "editPropTop", 80, 60, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.y), nil, editPropTopEnter)
+			lblPropCaption = CreateLabel(frmProperties, "lblPropCaption", 5, 80, 95, 20, 0xD8DCC0, 0x000000, "Caption", nil)
+			editPropCaption = CreateEdit(frmProperties, "editPropCaption", 80, 80, 95, 20, 0xF8FCF8, 0x000000, obj.caption, nil, editPropCaptionEnter)
+			lblPropBC = CreateLabel(frmProperties, "lblPropBC", 5, 100, 95, 20, 0xD8DCC0, 0x000000, "BC", nil)
+			editPropBC = CreateEdit(frmProperties, "editPropBC", 80, 100, 95, 20, 0xF8FCF8, 0x000000, fmt.Sprintf("%x", obj.BC), nil, editPropBCEnter)
+			lblPropTC = CreateLabel(frmProperties, "lblPropTC", 5, 120, 95, 20, 0xD8DCC0, 0x000000, "TC", nil)
+			editPropTC = CreateEdit(frmProperties, "editPropTC", 80, 120, 95, 20, 0xF8FCF8, 0x000000, fmt.Sprintf("%x", obj.TC), nil, editPropTCEnter)
+			lblPropWidth = CreateLabel(frmProperties, "lblPropWidth", 5, 140, 95, 20, 0xD8DCC0, 0x000000, "Width", nil)
+			editPropWidth = CreateEdit(frmProperties, "editPropWidth", 80, 140, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.sizeX), nil, editPropWidthEnter)
+			lblPropHeight = CreateLabel(frmProperties, "lblPropHeight", 5, 160, 95, 20, 0xD8DCC0, 0x000000, "Height", nil)
+			editPropHeight = CreateEdit(frmProperties, "editPropHeight", 80, 160, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.sizeY), nil, editPropHeightEnter)
+		} else {
+			if obj.enabled {
+    			bitbtnPressed = obj
+				obj.pressed = true	
+			}
 		}
 	case *tMemo:
-    	if obj.enabled {
-			obj.focused = true	
+		if RAD && layout.children[len(layout.children)-1] != frmProperties && layout.children[len(layout.children)-1] != frmRAD && layout.children[len(layout.children)-1] != frmCode {
+			frmProperties.obj.(*tForm).caption = "Properties: MEMO"
+			downX = x 
+    		downY = y 
+    		mouseIsDown = true
+    		lblPropName = CreateLabel(frmProperties, "lblPropName", 5, 20, 95, 20, 0xD8DCC0, 0x000000, "Name", nil)
+			editPropName = CreateEdit(frmProperties, "editPropName", 80, 20, 95, 20, 0xF8FCF8, 0x000000, obj.name, nil, editPropNameEnter)
+			lblPropLeft = CreateLabel(frmProperties, "lblPropLeft", 5, 40, 95, 20, 0xD8DCC0, 0x000000, "Left", nil)
+			editPropLeft = CreateEdit(frmProperties, "editPropLeft", 80, 40, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.x), nil, editPropLeftEnter)
+			lblPropTop = CreateLabel(frmProperties, "lblPropTop", 5, 60, 95, 20, 0xD8DCC0, 0x000000, "Top", nil)
+			editPropTop = CreateEdit(frmProperties, "editPropTop", 80, 60, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.y), nil, editPropTopEnter)
+			lblPropText = CreateLabel(frmProperties, "lblPropText", 5, 80, 95, 20, 0xD8DCC0, 0x000000, "Text", nil)
+			editPropText = CreateEdit(frmProperties, "editPropText", 80, 80, 95, 20, 0xF8FCF8, 0x000000, obj.text, nil, editPropTextEnter)
+			lblPropBC = CreateLabel(frmProperties, "lblPropBC", 5, 100, 95, 20, 0xD8DCC0, 0x000000, "BC", nil)
+			editPropBC = CreateEdit(frmProperties, "editPropBC", 80, 100, 95, 20, 0xF8FCF8, 0x000000, fmt.Sprintf("%x", obj.BC), nil, editPropBCEnter)
+			lblPropTC = CreateLabel(frmProperties, "lblPropTC", 5, 120, 95, 20, 0xD8DCC0, 0x000000, "TC", nil)
+			editPropTC = CreateEdit(frmProperties, "editPropTC", 80, 120, 95, 20, 0xF8FCF8, 0x000000, fmt.Sprintf("%x", obj.TC), nil, editPropTCEnter)
+			lblPropWidth = CreateLabel(frmProperties, "lblPropWidth", 5, 140, 95, 20, 0xD8DCC0, 0x000000, "Width", nil)
+			editPropWidth = CreateEdit(frmProperties, "editPropWidth", 80, 140, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.sizeX), nil, editPropWidthEnter)
+			lblPropHeight = CreateLabel(frmProperties, "lblPropHeight", 5, 160, 95, 20, 0xD8DCC0, 0x000000, "Height", nil)
+			editPropHeight = CreateEdit(frmProperties, "editPropHeight", 80, 160, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.sizeY), nil, editPropHeightEnter)
+		} else {
+			if obj.enabled {
+				obj.focused = true	
+			}
 		}
+	case *tCheckBox:
+		if RAD && layout.children[len(layout.children)-1] != frmProperties && layout.children[len(layout.children)-1] != frmRAD && layout.children[len(layout.children)-1] != frmCode {
+			frmProperties.obj.(*tForm).caption = "Properties: CHECKBOX"
+			downX = x 
+    		downY = y 
+    		mouseIsDown = true
+    		lblPropName = CreateLabel(frmProperties, "lblPropName", 5, 20, 95, 20, 0xD8DCC0, 0x000000, "Name", nil)
+			editPropName = CreateEdit(frmProperties, "editPropName", 80, 20, 95, 20, 0xF8FCF8, 0x000000, obj.name, nil, editPropNameEnter)
+			lblPropLeft = CreateLabel(frmProperties, "lblPropLeft", 5, 40, 95, 20, 0xD8DCC0, 0x000000, "Left", nil)
+			editPropLeft = CreateEdit(frmProperties, "editPropLeft", 80, 40, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.x), nil, editPropLeftEnter)
+			lblPropTop = CreateLabel(frmProperties, "lblPropTop", 5, 60, 95, 20, 0xD8DCC0, 0x000000, "Top", nil)
+			editPropTop = CreateEdit(frmProperties, "editPropTop", 80, 60, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.y), nil, editPropTopEnter)
+			lblPropCaption = CreateLabel(frmProperties, "lblPropCaption", 5, 80, 95, 20, 0xD8DCC0, 0x000000, "Caption", nil)
+			editPropCaption = CreateEdit(frmProperties, "editPropCaption", 80, 80, 95, 20, 0xF8FCF8, 0x000000, obj.caption, nil, editPropCaptionEnter)
+			lblPropBC = CreateLabel(frmProperties, "lblPropBC", 5, 100, 95, 20, 0xD8DCC0, 0x000000, "BC", nil)
+			editPropBC = CreateEdit(frmProperties, "editPropBC", 80, 100, 95, 20, 0xF8FCF8, 0x000000, fmt.Sprintf("%x", obj.BC), nil, editPropBCEnter)
+			lblPropTC = CreateLabel(frmProperties, "lblPropTC", 5, 120, 95, 20, 0xD8DCC0, 0x000000, "TC", nil)
+			editPropTC = CreateEdit(frmProperties, "editPropTC", 80, 120, 95, 20, 0xF8FCF8, 0x000000, fmt.Sprintf("%x", obj.TC), nil, editPropTCEnter)
+			lblPropWidth = CreateLabel(frmProperties, "lblPropWidth", 5, 140, 95, 20, 0xD8DCC0, 0x000000, "Width", nil)
+			editPropWidth = CreateEdit(frmProperties, "editPropWidth", 80, 140, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.sizeX), nil, editPropWidthEnter)
+			lblPropHeight = CreateLabel(frmProperties, "lblPropHeight", 5, 160, 95, 20, 0xD8DCC0, 0x000000, "Height", nil)
+			editPropHeight = CreateEdit(frmProperties, "editPropHeight", 80, 160, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.sizeY), nil, editPropHeightEnter)
+		}
+	case *tPanel:
+		if RAD && layout.children[len(layout.children)-1] != frmProperties && layout.children[len(layout.children)-1] != frmRAD && layout.children[len(layout.children)-1] != frmCode {
+			frmProperties.obj.(*tForm).caption = "Properties: PANEL"
+			downX = x 
+    		downY = y 
+    		mouseIsDown = true
+    		lblPropName = CreateLabel(frmProperties, "lblPropName", 5, 20, 95, 20, 0xD8DCC0, 0x000000, "Name", nil)
+			editPropName = CreateEdit(frmProperties, "editPropName", 80, 20, 95, 20, 0xF8FCF8, 0x000000, obj.name, nil, editPropNameEnter)
+			lblPropLeft = CreateLabel(frmProperties, "lblPropLeft", 5, 40, 95, 20, 0xD8DCC0, 0x000000, "Left", nil)
+			editPropLeft = CreateEdit(frmProperties, "editPropLeft", 80, 40, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.x), nil, editPropLeftEnter)
+			lblPropTop = CreateLabel(frmProperties, "lblPropTop", 5, 60, 95, 20, 0xD8DCC0, 0x000000, "Top", nil)
+			editPropTop = CreateEdit(frmProperties, "editPropTop", 80, 60, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.y), nil, editPropTopEnter)
+			lblPropBC = CreateLabel(frmProperties, "lblPropBC", 5, 80, 95, 20, 0xD8DCC0, 0x000000, "BC", nil)
+			editPropBC = CreateEdit(frmProperties, "editPropBC", 80, 80, 95, 20, 0xF8FCF8, 0x000000, fmt.Sprintf("%x", obj.BC), nil, editPropBCEnter)
+			lblPropWidth = CreateLabel(frmProperties, "lblPropWidth", 5, 100, 95, 20, 0xD8DCC0, 0x000000, "Width", nil)
+			editPropWidth = CreateEdit(frmProperties, "editPropWidth", 80, 100, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.sizeX), nil, editPropWidthEnter)
+			lblPropHeight = CreateLabel(frmProperties, "lblPropHeight", 5, 120, 95, 20, 0xD8DCC0, 0x000000, "Height", nil)
+			editPropHeight = CreateEdit(frmProperties, "editPropHeight", 80, 120, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.sizeY), nil, editPropHeightEnter)
+		} 
+	}
+}
+
+
+func editPropNameEnter(node *Node){
+	switch obj := RADElement.obj.(type) {
+	case *tForm:
+		obj.name = node.obj.(*tEdit).text
+	case *tBtn:
+		obj.name  = node.obj.(*tEdit).text
+	case *tEdit:
+		obj.name  = node.obj.(*tEdit).text
+	case *tLabel:
+		obj.name  = node.obj.(*tEdit).text
+	case *tPanel:
+		obj.name  = node.obj.(*tEdit).text
+	case *tMemo:
+		obj.name  = node.obj.(*tEdit).text
+	case *tBitBtn:
+		obj.name  = node.obj.(*tEdit).text
+	case *tCheckBox:
+		obj.name  = node.obj.(*tEdit).text
+	case *tCanvas:
+		obj.name  = node.obj.(*tEdit).text
+	}
+}
+
+
+func editPropLeftEnter(node *Node){
+	switch obj := RADElement.obj.(type) {
+	case *tForm:
+		obj.x, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tBtn:
+		obj.x, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tEdit:
+		obj.x, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tLabel:
+		obj.x, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tPanel:
+		obj.x, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tMemo:
+		obj.x, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tBitBtn:
+		obj.x, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tCheckBox:
+		obj.x, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tCanvas:
+		obj.x, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	}
+}
+
+
+func editPropTopEnter(node *Node){
+	switch obj := RADElement.obj.(type) {
+	case *tForm:
+		obj.y, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tBtn:
+		obj.y, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tEdit:
+		obj.y, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tLabel:
+		obj.y, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tPanel:
+		obj.y, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tMemo:
+		obj.y, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tBitBtn:
+		obj.y, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tCheckBox:
+		obj.y, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tCanvas:
+		obj.y, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	}
+}
+
+
+func editPropCaptionEnter(node *Node){
+	switch obj := RADElement.obj.(type) {
+	case *tForm:
+		obj.caption = node.obj.(*tEdit).text
+	case *tBtn:
+		obj.caption = node.obj.(*tEdit).text
+	case *tEdit:
+		//obj.y, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tLabel:
+		obj.caption = node.obj.(*tEdit).text
+	case *tPanel:
+		//obj.y, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tMemo:
+		//obj.y, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tBitBtn:
+		obj.caption = node.obj.(*tEdit).text
+	case *tCheckBox:
+		obj.caption = node.obj.(*tEdit).text
+	case *tCanvas:
+		//obj.y, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	}
+}
+
+
+func editPropTextEnter(node *Node){
+	switch obj := RADElement.obj.(type) {
+	case *tForm:
+		//obj.text = node.obj.(*tEdit).text
+	case *tBtn:
+		//obj.caption = node.obj.(*tEdit).text
+	case *tEdit:
+		obj.text = node.obj.(*tEdit).text
+	case *tLabel:
+		//obj.caption = node.obj.(*tEdit).text
+	case *tPanel:
+		//obj.y, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tMemo:
+		obj.text = node.obj.(*tEdit).text
+	case *tBitBtn:
+		//obj.caption = node.obj.(*tEdit).text
+	case *tCheckBox:
+		//obj.caption = node.obj.(*tEdit).text
+	case *tCanvas:
+		//obj.y, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	}
+}
+
+
+func editPropWidthEnter(node *Node){
+	switch obj := RADElement.obj.(type) {
+	case *tForm:
+		obj.sizeX, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tBtn:
+		obj.sizeX, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tEdit:
+		obj.sizeX, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tLabel:
+		obj.sizeX, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tPanel:
+		obj.sizeX, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tMemo:
+		obj.sizeX, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tBitBtn:
+		obj.sizeX, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tCheckBox:
+		obj.sizeX, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tCanvas:
+		obj.sizeX, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	}
+}
+
+
+func editPropHeightEnter(node *Node){
+	switch obj := RADElement.obj.(type) {
+	case *tForm:
+		obj.sizeY, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tBtn:
+		obj.sizeY, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tEdit:
+		obj.sizeY, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tLabel:
+		obj.sizeY, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tPanel:
+		obj.sizeY, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tMemo:
+		obj.sizeY, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tBitBtn:
+		obj.sizeY, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tCheckBox:
+		obj.sizeY, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tCanvas:
+		obj.sizeY, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	}
+}
+
+
+func editPropBCEnter(node *Node){
+	val, _ := strconv.ParseInt(node.obj.(*tEdit).text, 16, 32)
+	switch obj := RADElement.obj.(type) {
+	case *tForm:
+		obj.BC = int(val)
+	case *tBtn:
+		obj.BC = int(val)
+	case *tEdit:
+		obj.BC = int(val)
+	case *tLabel:
+		obj.BC = int(val)
+	case *tPanel:
+		obj.BC = int(val)
+	case *tMemo:
+		obj.BC = int(val)
+	case *tBitBtn:
+		obj.BC = int(val)
+	case *tCheckBox:
+		obj.BC = int(val)
+	case *tCanvas:
+		//obj.BC, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	}
+}
+
+
+func editPropTCEnter(node *Node){
+	val, _ := strconv.ParseInt(node.obj.(*tEdit).text, 16, 32)
+	switch obj := RADElement.obj.(type) {
+	case *tForm:
+		//val, _ := strconv.ParseInt(node.obj.(*tEdit).text, 16, 32)
+		//obj.TC = int(val)
+	case *tBtn:
+		obj.TC = int(val)
+	case *tEdit:
+		obj.TC = int(val)
+	case *tLabel:
+		obj.TC = int(val)
+	case *tPanel:
+		//obj.BC, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tMemo:
+		obj.TC = int(val)
+	case *tBitBtn:
+		obj.TC = int(val)
+	case *tCheckBox:
+		obj.TC = int(val)
+	case *tCanvas:
+		//obj.BC, _ = strconv.Atoi(node.obj.(*tEdit).text)
 	}
 }
 
@@ -405,13 +841,70 @@ func eventMouseUp(x int, y int)  {
 func eventMouseMove(x int, y int)  {
 	if !mouseIsDown {return}
 	
-	switch list[len(list)-1].obj.(type) {
+	switch obj := list[len(list)-1].obj.(type) {
 	case *tBtn:
-		list[len(list)-1].obj.(*tBtn).x += x - downX
-    	list[len(list)-1].obj.(*tBtn).y += y - downY
+		if RAD && layout.children[len(layout.children)-1] != frmProperties && layout.children[len(layout.children)-1] != frmRAD && layout.children[len(layout.children)-1] != frmCode {
+			obj.x += x - downX
+    		obj.y += y - downY
+    		editPropLeft.obj.(*tEdit).text = strconv.Itoa(obj.x)
+			editPropTop.obj.(*tEdit).text = strconv.Itoa(obj.y)
+    	}
+    case *tLabel:
+		if RAD && layout.children[len(layout.children)-1] != frmProperties && layout.children[len(layout.children)-1] != frmRAD && layout.children[len(layout.children)-1] != frmCode {
+			obj.x += x - downX
+    		obj.y += y - downY
+    		editPropLeft.obj.(*tEdit).text = strconv.Itoa(obj.x)
+			editPropTop.obj.(*tEdit).text = strconv.Itoa(obj.y)
+    	}
+    case *tEdit:
+		if RAD && layout.children[len(layout.children)-1] != frmProperties && layout.children[len(layout.children)-1] != frmRAD && layout.children[len(layout.children)-1] != frmCode {
+			obj.x += x - downX
+    		obj.y += y - downY
+    		editPropLeft.obj.(*tEdit).text = strconv.Itoa(obj.x)
+			editPropTop.obj.(*tEdit).text = strconv.Itoa(obj.y)
+    	}
+    case *tMemo:
+		if RAD && layout.children[len(layout.children)-1] != frmProperties && layout.children[len(layout.children)-1] != frmRAD && layout.children[len(layout.children)-1] != frmCode {
+			obj.x += x - downX
+    		obj.y += y - downY
+    		editPropLeft.obj.(*tEdit).text = strconv.Itoa(obj.x)
+			editPropTop.obj.(*tEdit).text = strconv.Itoa(obj.y)
+    	}
+    case *tCanvas:
+		if RAD && layout.children[len(layout.children)-1] != frmProperties && layout.children[len(layout.children)-1] != frmRAD && layout.children[len(layout.children)-1] != frmCode {
+			obj.x += x - downX
+    		obj.y += y - downY
+    		editPropLeft.obj.(*tEdit).text = strconv.Itoa(obj.x)
+			editPropTop.obj.(*tEdit).text = strconv.Itoa(obj.y)
+    	}
+    case *tCheckBox:
+		if RAD && layout.children[len(layout.children)-1] != frmProperties && layout.children[len(layout.children)-1] != frmRAD && layout.children[len(layout.children)-1] != frmCode {
+			obj.x += x - downX
+    		obj.y += y - downY
+    		editPropLeft.obj.(*tEdit).text = strconv.Itoa(obj.x)
+			editPropTop.obj.(*tEdit).text = strconv.Itoa(obj.y)
+    	}
+    case *tPanel:
+		if RAD && layout.children[len(layout.children)-1] != frmProperties && layout.children[len(layout.children)-1] != frmRAD && layout.children[len(layout.children)-1] != frmCode {
+			obj.x += x - downX
+    		obj.y += y - downY
+    		editPropLeft.obj.(*tEdit).text = strconv.Itoa(obj.x)
+			editPropTop.obj.(*tEdit).text = strconv.Itoa(obj.y)
+    	}
+    case *tBitBtn:
+		if RAD && layout.children[len(layout.children)-1] != frmProperties && layout.children[len(layout.children)-1] != frmRAD && layout.children[len(layout.children)-1] != frmCode {
+			obj.x += x - downX
+    		obj.y += y - downY
+    		editPropLeft.obj.(*tEdit).text = strconv.Itoa(obj.x)
+			editPropTop.obj.(*tEdit).text = strconv.Itoa(obj.y)
+    	}
     case *tForm:
-		list[len(list)-1].obj.(*tForm).x += x - downX
-    	list[len(list)-1].obj.(*tForm).y += y - downY				
+		obj.x += x - downX
+    	obj.y += y - downY	
+    	if RAD && layout.children[len(layout.children)-1] != frmProperties && layout.children[len(layout.children)-1] != frmRAD && layout.children[len(layout.children)-1] != frmCode {
+			editPropLeft.obj.(*tEdit).text = strconv.Itoa(obj.x)
+			editPropTop.obj.(*tEdit).text = strconv.Itoa(obj.y)	
+		}		
 	}
 	
     downX = x 
@@ -422,6 +915,16 @@ func eventMouseMove(x int, y int)  {
 
 //export keyDown
 func keyDown(key int){
+	if RAD && layout.children[len(layout.children)-1] != frmProperties && layout.children[len(layout.children)-1] != frmRAD && layout.children[len(layout.children)-1] != frmCode && key == 46 {
+		for i := 0; i < len(RADElement.parent.children); i++ {
+			if RADElement.parent.children[i] == RADElement {
+				copy(RADElement.parent.children[i:], RADElement.parent.children[i+1:])
+				RADElement.parent.children[len(RADElement.parent.children)-1] = nil
+				RADElement.parent.children = RADElement.parent.children[:len(RADElement.parent.children)-1]
+				frmProperties.children = nil
+			}		
+		}
+	}
 	if layout.children[len(layout.children)-1].obj.(*tForm).focus != nil {
 		switch obj := layout.children[len(layout.children)-1].obj.(*tForm).focus.obj.(type) {
     	case *tEdit:
@@ -442,6 +945,8 @@ func keyDown(key int){
     				obj.curX = 0
     		} else if key == 35 {
     				obj.curX = len(obj.text)
+    		} else if key == 13 {		
+    			obj.onEnter(layout.children[len(layout.children)-1].obj.(*tForm).focus)				
     		} else {
     			var char string
     			switch key {
@@ -504,6 +1009,7 @@ func keyDown(key int){
 				obj.pos++
 				obj.curX++
 			}
+		case *tBtn:
 			
 		}
 		fmt.Println(key)

@@ -10,6 +10,7 @@ import (
 
 
 type tMemo struct{
+	name string
     x int
     y int
     sizeX int
@@ -28,8 +29,8 @@ type tMemo struct{
 }
 
 
-func CreateMemo(parent *Node, x int, y int, sizeX int, sizeY int, BC int, TC int, text string, onClick func(*Node)) *Node {
-	obj := tMemo{x: x, y: y, sizeX: sizeX, sizeY: sizeY, BC: BC, TC: TC, text: text, visible: true, enabled: true, curX: 0, curY: 0, pos: 0, line_start: 0, onClick: onClick}
+func CreateMemo(parent *Node, name string, x int, y int, sizeX int, sizeY int, BC int, TC int, text string, onClick func(*Node)) *Node {
+	obj := tMemo{name: name, x: x, y: y, sizeX: sizeX, sizeY: sizeY, BC: BC, TC: TC, text: text, visible: true, enabled: true, curX: 0, curY: 0, pos: 0, line_start: 0, onClick: onClick}
 	node := Node{typ: MEMO, parent: parent, previous: nil, children: nil, obj: &obj}
 	parent.children = append(parent.children, &node)
 	return &node
@@ -60,7 +61,7 @@ func (obj tMemo) Draw(parX int, parY int, parSizeX int, parSizeY int){
     SetBackColor(obj.BC);
     TextOutgl(nil, obj.text, parX+obj.x + 4, parY+obj.y + 4, 1);
     if obj.focused && cursor {
-    	TextOutgl(nil, "|", parX+obj.x + 4 + obj.curX*7, parY+obj.y + 4 + (7+2)*obj.curY, 1);
+    	TextOutgl(nil, "|", parX+obj.x + 4 + obj.curX*8, parY+obj.y + 4 + (7+2)*obj.curY, 1);
     }
 
     

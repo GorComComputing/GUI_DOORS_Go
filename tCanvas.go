@@ -10,6 +10,7 @@ import (
 
 
 type tCanvas struct{
+	name string
     x int
     y int
     sizeX int
@@ -20,9 +21,9 @@ type tCanvas struct{
 }
 
 
-func CreateCanvas(parent *Node, x int, y int, sizeX int, sizeY int, onClick func(*Node)) (*Node) {
+func CreateCanvas(parent *Node, name string, x int, y int, sizeX int, sizeY int, onClick func(*Node)) (*Node) {
 	buffer := make([]uint8, sizeX * sizeY * 4)
-	obj := tCanvas{x: x, y: y, sizeX: sizeX, sizeY: sizeY, visible: true, buffer: buffer, onClick: onClick}
+	obj := tCanvas{name: name, x: x, y: y, sizeX: sizeX, sizeY: sizeY, visible: true, buffer: buffer, onClick: onClick}
 	node := Node{typ: CANVAS, parent: parent, previous: nil, children: nil, obj: &obj}
 	parent.children = append(parent.children, &node)
 	return &node

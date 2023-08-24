@@ -25,7 +25,7 @@ func startFlag(frmMain *Node){
 	frmMain.children[0].obj.(*tBitBtn).x = frmMain.obj.(*tForm).sizeX - 17
 	frmMain.obj.(*tForm).visible = false
 	
-	cnvFlag = CreateCanvas(frmMain, 2, 17, 376, 321, nil)
+	cnvFlag = CreateCanvas(frmMain, "cnvFlag", 2, 17, 376, 321, nil)
 	for y := 0; y < cnvFlag.obj.(*tCanvas).sizeY; y++ {
     	for x := 0; x < cnvFlag.obj.(*tCanvas).sizeX; x++ {
     			squareNumber := (y * cnvFlag.obj.(*tCanvas).sizeX) + x;

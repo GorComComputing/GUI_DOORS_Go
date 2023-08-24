@@ -10,6 +10,7 @@ import (
 
 
 type tLabel struct{
+	name string
     x int
     y int
     sizeX int
@@ -22,8 +23,8 @@ type tLabel struct{
 }
 
 
-func CreateLabel(parent *Node, x int, y int, sizeX int, sizeY int, BC int, TC int, caption string, onClick func(*Node)) *Node {
-	obj := tLabel{x: x, y: y, sizeX: sizeX, sizeY: sizeY, BC: BC, TC: TC, caption: caption, visible: true, onClick: onClick}
+func CreateLabel(parent *Node, name string, x int, y int, sizeX int, sizeY int, BC int, TC int, caption string, onClick func(*Node)) *Node {
+	obj := tLabel{name: name, x: x, y: y, sizeX: sizeX, sizeY: sizeY, BC: BC, TC: TC, caption: caption, visible: true, onClick: onClick}
 	node := Node{typ: LABEL, parent: parent, previous: nil, children: nil, obj: &obj}
 	parent.children = append(parent.children, &node)
 	return &node

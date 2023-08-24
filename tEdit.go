@@ -10,6 +10,7 @@ import (
 
 
 type tEdit struct{
+	name string
     x int
     y int
     sizeX int
@@ -22,11 +23,12 @@ type tEdit struct{
     enabled bool
     curX int
     onClick func(*Node)
+    onEnter func(*Node)
 }
 
 
-func CreateEdit(parent *Node, x int, y int, sizeX int, sizeY int, BC int, TC int, text string, onClick func(*Node)) *Node {
-	obj := tEdit{x: x, y: y, sizeX: sizeX, sizeY: sizeY, BC: BC, TC: TC, text: text, visible: true, enabled: true, curX: 0, onClick: onClick}
+func CreateEdit(parent *Node, name string, x int, y int, sizeX int, sizeY int, BC int, TC int, text string, onClick func(*Node), onEnter func(*Node)) *Node {
+	obj := tEdit{name: name, x: x, y: y, sizeX: sizeX, sizeY: sizeY, BC: BC, TC: TC, text: text, visible: true, enabled: true, curX: 0, onClick: onClick, onEnter: onEnter}
 	node := Node{typ: EDIT, parent: parent, previous: nil, children: nil, obj: &obj}
 	parent.children = append(parent.children, &node)
 	return &node
@@ -62,9 +64,9 @@ func (obj tEdit) Draw(parX int, parY int, parSizeX int, parSizeY int){
     }
     if obj.focused && cursor {
     	if (len(obj.text)+1)*7 > obj.sizeX {
-    		TextOutgl(nil, "|", parX+obj.x + 4+obj.curX*7 + obj.sizeX - (len(obj.text)+1)*7, parY+obj.y + obj.sizeY/2-4, 1);
+    		TextOutgl(nil, "|", parX+obj.x + 4+obj.curX*8 + obj.sizeX - (len(obj.text)+1)*7, parY+obj.y + obj.sizeY/2-4, 1);
     	} else {
-    		TextOutgl(nil, "|", parX+obj.x + 4+obj.curX*7, parY+obj.y + obj.sizeY/2-4, 1);
+    		TextOutgl(nil, "|", parX+obj.x + 4+obj.curX*8, parY+obj.y + obj.sizeY/2-4, 1);
     	}
     }
 

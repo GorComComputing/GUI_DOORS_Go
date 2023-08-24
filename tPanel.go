@@ -10,6 +10,7 @@ import (
 
 
 type tPanel struct{
+	name string
     x int
     y int
     sizeX int
@@ -21,8 +22,8 @@ type tPanel struct{
 }
 
 
-func CreatePanel(parent *Node, x int, y int, sizeX int, sizeY int, BC int, mode tMode, onClick func(*Node)) *Node {
-	obj := tPanel{x: x, y: y, sizeX: sizeX, sizeY: sizeY, BC: BC, visible: true, mode: mode, onClick: onClick}
+func CreatePanel(parent *Node, name string, x int, y int, sizeX int, sizeY int, BC int, mode tMode, onClick func(*Node)) *Node {
+	obj := tPanel{name: name, x: x, y: y, sizeX: sizeX, sizeY: sizeY, BC: BC, visible: true, mode: mode, onClick: onClick}
 	node := Node{typ: PANEL, parent: parent, previous: nil, children: nil, obj: &obj}
 	parent.children = append(parent.children, &node)
 	return &node

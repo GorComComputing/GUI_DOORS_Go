@@ -10,6 +10,7 @@ import (
 
 
 type tBitBtn struct{
+	name string
     x int
     y int
     sizeX int
@@ -24,8 +25,8 @@ type tBitBtn struct{
 }
 
 
-func CreateBitBtn(parent *Node, x int, y int, sizeX int, sizeY int, BC int, TC int, caption string, onClick func(*Node)) *Node {
-	obj := tBitBtn{x: x, y: y, sizeX: sizeX, sizeY: sizeY, BC: BC, TC: TC, caption: caption, visible: true, pressed: false, enabled: true, onClick: onClick}
+func CreateBitBtn(parent *Node, name string, x int, y int, sizeX int, sizeY int, BC int, TC int, caption string, onClick func(*Node)) *Node {
+	obj := tBitBtn{name: name, x: x, y: y, sizeX: sizeX, sizeY: sizeY, BC: BC, TC: TC, caption: caption, visible: true, pressed: false, enabled: true, onClick: onClick}
 	node := Node{typ: BIT_BUTTON, parent: parent, previous: nil, children: nil, obj: &obj}
 	parent.children = append(parent.children, &node)
 	return &node

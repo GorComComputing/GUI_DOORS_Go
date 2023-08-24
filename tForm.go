@@ -10,6 +10,7 @@ import (
 
 
 type tForm struct{
+	name string
     x int
     y int
     sizeX int
@@ -20,6 +21,7 @@ type tForm struct{
     visible bool
     focused bool
     focus *Node
+    RAD bool
     onClick func(*Node)
 }
 
@@ -33,13 +35,13 @@ const (
 )
 
 
-func CreateForm(parent *Node, x int, y int, sizeX int, sizeY int, BC int, mode tMode, caption string, visible bool, onClick func(*Node)) *Node {
-	obj := tForm{x: x, y: y, sizeX: sizeX, sizeY: sizeY, BC: BC, mode: mode, caption: caption, visible: visible, focus: nil, onClick: onClick}
+func CreateForm(parent *Node, name string, x int, y int, sizeX int, sizeY int, BC int, mode tMode, caption string, visible bool, onClick func(*Node)) *Node {
+	obj := tForm{name: name, x: x, y: y, sizeX: sizeX, sizeY: sizeY, BC: BC, mode: mode, caption: caption, visible: visible, focus: nil, RAD: false, onClick: onClick}
 	node := Node{typ: FORM, parent: parent, previous: nil, children: nil, obj: &obj}
 	parent.children = append(parent.children, &node)
 	
 	if obj.mode == WIN {
-		CreateBitBtn(&node, obj.sizeX - 17, 2, 15, 15, 0xD8DCC0, 0x000000, "X", formClose)
+		CreateBitBtn(&node, "bitbtnClose"+name, obj.sizeX - 17, 2, 15, 15, 0xD8DCC0, 0x000000, "X", formClose)
 	}
 	return &node
 }
@@ -114,6 +116,15 @@ func (obj tForm) Draw(parX int, parY int, parSizeX int, parSizeY int){
 	p = append(p, p4)
 
     FillPoly(nil, 4, p);
+    
+    if obj.RAD {
+    	SetColor(0xFF0000)
+    	for i := 0; i < obj.sizeY; i += 10 {
+    		for j := 0; j < obj.sizeX; j += 10 {
+    			PutPixel(nil, parX + obj.x + j, parY + obj.y + i, 0x000000)
+    		}
+    	}
+    }
     
     if obj.mode == WIN {
     	if obj.focused {

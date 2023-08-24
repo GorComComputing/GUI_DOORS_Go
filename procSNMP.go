@@ -41,45 +41,45 @@ var cbxVersion3 *Node
 
 func startSNMP(frmMain *Node){
 	
-	frmMain.obj.(*tForm).x = 100
-	frmMain.obj.(*tForm).y = 50
+	frmMain.obj.(*tForm).x = 190
+	frmMain.obj.(*tForm).y = 70
 	frmMain.obj.(*tForm).sizeX = 550
 	frmMain.obj.(*tForm).sizeY = 300
 	frmMain.children[0].obj.(*tBitBtn).x = frmMain.obj.(*tForm).sizeX - 17
 	
-	lblIPaddr = CreateLabel(frmMain, 12, 32, 120, 20, 0xD8DCC0, 0x000000, "IP address", nil)
-	editIPaddr = CreateEdit(frmMain, 100, 30, 100, 20, 0xF8FCF8, 0x000000, "127.0.0.1", nil)
+	lblIPaddr = CreateLabel(frmMain, "lblIPaddr", 12, 32, 120, 20, 0xD8DCC0, 0x000000, "IP address", nil)
+	editIPaddr = CreateEdit(frmMain, "editIPaddr", 100, 30, 100, 20, 0xF8FCF8, 0x000000, "127.0.0.1", nil, nil)
 	
-	lblPortGet = CreateLabel(frmMain, 12, 70, 120, 20, 0xD8DCC0, 0x000000, "Port Get", nil)
-	editPortGet = CreateEdit(frmMain, 100, 68, 100, 20, 0xF8FCF8, 0x000000, "161", nil)
+	lblPortGet = CreateLabel(frmMain, "lblPortGet", 12, 70, 120, 20, 0xD8DCC0, 0x000000, "Port Get", nil)
+	editPortGet = CreateEdit(frmMain, "editPortGet", 100, 68, 100, 20, 0xF8FCF8, 0x000000, "161", nil, nil)
 	
-	lblPortTrap = CreateLabel(frmMain, 220, 70, 120, 20, 0xD8DCC0, 0x000000, "Port Trap", nil)
-	editPortTrap = CreateEdit(frmMain, 300, 68, 100, 20, 0xF8FCF8, 0x000000, "9161", nil)
+	lblPortTrap = CreateLabel(frmMain, "lblPortTrap", 220, 70, 120, 20, 0xD8DCC0, 0x000000, "Port Trap", nil)
+	editPortTrap = CreateEdit(frmMain, "editPortTrap", 300, 68, 100, 20, 0xF8FCF8, 0x000000, "9161", nil, nil)
 	
-	btnTrapServer = CreateBtn(frmMain, 300, 30, 100, 24, 0xD8DCC0, 0x000000, "Run Server", btnTrapServerClick)
-	
-	
-	btnSendGet = CreateBtn(frmMain, 50, 100, 70, 24, 0xD8DCC0, 0x000000, "Get", btnSendGetClick)
-	btnSet = CreateBtn(frmMain, 50 + 80, 100, 70, 24, 0xD8DCC0, 0x000000, "Set", btnSetClick)
-	btnSendTrap = CreateBtn(frmMain, 300, 100, 70, 24, 0xD8DCC0, 0x000000, "Trap", btnSendTrapClick)
+	btnTrapServer = CreateBtn(frmMain, "btnTrapServer", 300, 30, 100, 24, 0xD8DCC0, 0x000000, "Run Server", btnTrapServerClick)
 	
 	
-	lblOID = CreateLabel(frmMain, 50, 154, 120, 20, 0xD8DCC0, 0x000000, "OID", nil)
-	editOID = CreateEdit(frmMain, 100, 152, 200, 20, 0xF8FCF8, 0x000000, "1.3.6.1.2.1.1.4.0", nil)
+	btnSendGet = CreateBtn(frmMain, "btnSendGet", 50, 100, 70, 24, 0xD8DCC0, 0x000000, "Get", btnSendGetClick)
+	btnSet = CreateBtn(frmMain, "btnSet", 50 + 80, 100, 70, 24, 0xD8DCC0, 0x000000, "Set", btnSetClick)
+	btnSendTrap = CreateBtn(frmMain, "btnSendTrap", 300, 100, 70, 24, 0xD8DCC0, 0x000000, "Trap", btnSendTrapClick)
+	
+	
+	lblOID = CreateLabel(frmMain, "lblOID", 165, 170, 120, 20, 0xD8DCC0, 0x000000, "OID", nil)
+	editOID = CreateEdit(frmMain, "editOID", 200, 170, 200, 20, 0xF8FCF8, 0x000000, "1.3.6.1.2.1.1.4.0", nil, nil)
 		
-	lblValue = CreateLabel(frmMain, 50, 182, 120, 20, 0xD8DCC0, 0x000000, "Value", nil)
-	editValue = CreateEdit(frmMain, 100, 180, 200, 20, 0xF8FCF8, 0x000000, "", nil)
+	lblValue = CreateLabel(frmMain, "lblValue", 150, 200, 120, 20, 0xD8DCC0, 0x000000, "Value", nil)
+	editValue = CreateEdit(frmMain, "editValue", 200, 200, 200, 20, 0xF8FCF8, 0x000000, "", nil, nil)
 
 	
-	btnSendHelp = CreateBtn(frmMain, 470, 270, 70, 24, 0xD8DCC0, 0x000000, "Help", btnSendHelpClick)
-	btnBrowser = CreateBtn(frmMain, 12, 270, 90, 24, 0xD8DCC0, 0x000000, "Browser", btnBrowserClick)
+	btnSendHelp = CreateBtn(frmMain, "btnSendHelp", 470, 270, 70, 24, 0xD8DCC0, 0x000000, "Help", btnSendHelpClick)
+	btnBrowser = CreateBtn(frmMain, "btnBrowser", 12, 270, 90, 24, 0xD8DCC0, 0x000000, "Browser", btnBrowserClick)
 	
-	cbxVersion1 = CreateCheckBox(frmMain, 430, 30, 140, 16, 0xD8DCC0, 0x000000, "Version 1", false, cbxVersion1Click)
-	cbxVersion2 = CreateCheckBox(frmMain, 430, 60, 140, 16, 0xD8DCC0, 0x000000, "Version 2", true, cbxVersion2Click)
-	cbxVersion3 = CreateCheckBox(frmMain, 430, 90, 140, 16, 0xD8DCC0, 0x000000, "Version 3", false, cbxVersion3Click)
+	cbxVersion1 = CreateCheckBox(frmMain, "cbxVersion1", 430, 30, 140, 16, 0xD8DCC0, 0x000000, "Version 1", false, cbxVersion1Click)
+	cbxVersion2 = CreateCheckBox(frmMain, "cbxVersion2", 430, 60, 140, 16, 0xD8DCC0, 0x000000, "Version 2", true, cbxVersion2Click)
+	cbxVersion3 = CreateCheckBox(frmMain, "cbxVersion3", 430, 90, 140, 16, 0xD8DCC0, 0x000000, "Version 3", false, cbxVersion3Click)
 
-	//lblFontTest = CreateLabel(frmMain, 12, 200, 500, 20, 0xD8DCC0, 0x000000, "abcdefghijklmnopqrstuvwxyz !\"#$%&'()*+,-./ :;<=>?@ [\\]^_`  {|}~", nil)
-	//lblFontTest2 = CreateLabel(frmMain, 12, 230, 500, 20, 0xD8DCC0, 0x000000, "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890", nil)
+	//lblFontTest = CreateLabel(frmMain, "lblFontTest", 12, 200, 500, 20, 0xD8DCC0, 0x000000, "abcdefghijklmnopqrstuvwxyz !\"#$%&'()*+,-./ :;<=>?@ [\\]^_`  {|}~", nil)
+	//lblFontTest2 = CreateLabel(frmMain, "lblFontTest2", 12, 230, 500, 20, 0xD8DCC0, 0x000000, "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890", nil)
 }
 
 
