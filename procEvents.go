@@ -127,7 +127,7 @@ func refreshEventsTable(){
 		eventsTable[i][7].obj.(*tBtn).visible = false
 	}
 	
-	result := js.Global().Call("HttpRequest", "http://localhost:8085/api?cmd=get_evnt " + strconv.Itoa(CurEventsPage) + " 5").Get("response").String()
+	result := js.Global().Call("HttpRequest", "http://localhost:8085/api?cmd=get_evnt " + strconv.Itoa(CurEventsPage) + " 5", "").Get("response").String()
 	fmt.Println("Responsed: ", result)
 	
 	var events []EventsFromDB 

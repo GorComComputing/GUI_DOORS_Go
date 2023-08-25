@@ -26,6 +26,7 @@ type tMemo struct{
     pos int
     line_start int
     onClick func(*Node)
+    onClickStr string
 }
 
 

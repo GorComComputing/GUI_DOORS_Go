@@ -20,8 +20,8 @@ var memTerminal *Node
 
 func startTerminal(frmMain *Node){
 	//frmTrap = CreateForm(&layout, 400, 400, 200, 130, 0xD8DCC0, WIN, "Trap", false, nil)
-	frmMain.obj.(*tForm).x = 450
-	frmMain.obj.(*tForm).y = 450
+	frmMain.obj.(*tForm).x = 200
+	frmMain.obj.(*tForm).y = 700
 	frmMain.obj.(*tForm).sizeX = 7*80+2*4
 	frmMain.obj.(*tForm).sizeY = (7+2)*24 + 17 + 7
 	frmMain.children[0].obj.(*tBitBtn).x = frmMain.obj.(*tForm).sizeX - 17

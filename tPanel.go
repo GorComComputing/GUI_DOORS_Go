@@ -19,6 +19,7 @@ type tPanel struct{
     visible bool
     mode tMode
     onClick func(*Node)
+    onClickStr string
 }
 
 

@@ -23,6 +23,7 @@ type tForm struct{
     focus *Node
     RAD bool
     onClick func(*Node)
+    onClickStr string
 }
 
 type tMode int

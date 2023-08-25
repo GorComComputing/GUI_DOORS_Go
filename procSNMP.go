@@ -105,7 +105,7 @@ func cbxVersion3Click(node *Node){
 
 
 func btnSendTrapClick(node *Node){
-	result := js.Global().Call("HttpRequest", "http://localhost:8085/api?cmd=curl_get " + "http://localhost:8087/api?cmd=trap_v2 "  + editIPaddr.obj.(*tEdit).text + " " + editPortGet.obj.(*tEdit).text + " " + editOID.obj.(*tEdit).text + " " + editValue.obj.(*tEdit).text).Get("response").String()
+	result := js.Global().Call("HttpRequest", "http://localhost:8085/api?cmd=curl_get " + "http://localhost:8087/api?cmd=trap_v2 "  + editIPaddr.obj.(*tEdit).text + " " + editPortGet.obj.(*tEdit).text + " " + editOID.obj.(*tEdit).text + " " + editValue.obj.(*tEdit).text, "").Get("response").String()
 	fmt.Println("Responsed: ", result)
 	
 	memTerminal.obj.(*tMemo).text = result
@@ -113,7 +113,7 @@ func btnSendTrapClick(node *Node){
 
 
 func btnTrapServerClick(node *Node){
-	result := js.Global().Call("HttpRequest", "http://localhost:8085/api?cmd=curl_get " + "http://localhost:8087/api?cmd=trap_srv").Get("response").String()
+	result := js.Global().Call("HttpRequest", "http://localhost:8085/api?cmd=curl_get " + "http://localhost:8087/api?cmd=trap_srv", "").Get("response").String()
 	fmt.Println("Responsed: ", result)
 	
 	memTerminal.obj.(*tMemo).text = result
@@ -121,7 +121,7 @@ func btnTrapServerClick(node *Node){
 
 
 func btnSendHelpClick(node *Node){
-	result := js.Global().Call("HttpRequest", "http://localhost:8085/api?cmd=curl_get " + "http://localhost:8087/api?cmd=.help").Get("response").String()
+	result := js.Global().Call("HttpRequest", "http://localhost:8085/api?cmd=curl_get " + "http://localhost:8087/api?cmd=.help", "").Get("response").String()
 	fmt.Println("Responsed: ", result)
 	
 	result = strings.Replace(result, "\n", string(13), -1)
@@ -131,7 +131,7 @@ func btnSendHelpClick(node *Node){
 
 
 func btnSendGetClick(node *Node){
-	result := js.Global().Call("HttpRequest", "http://localhost:8085/api?cmd=curl_get " + "http://localhost:8087/api?cmd=get_param " + editIPaddr.obj.(*tEdit).text + " " + editPortGet.obj.(*tEdit).text + " " + editOID.obj.(*tEdit).text).Get("response").String()
+	result := js.Global().Call("HttpRequest", "http://localhost:8085/api?cmd=curl_get " + "http://localhost:8087/api?cmd=get_param " + editIPaddr.obj.(*tEdit).text + " " + editPortGet.obj.(*tEdit).text + " " + editOID.obj.(*tEdit).text, "").Get("response").String()
 	fmt.Println("Responsed: ", result)
 	
 	result = strings.Replace(result, "\n", string(13), -1)
@@ -141,7 +141,7 @@ func btnSendGetClick(node *Node){
 
 
 func btnSetClick(node *Node){
-	result := js.Global().Call("HttpRequest", "http://localhost:8085/api?cmd=curl_get " + "http://localhost:8087/api?cmd=set " + editIPaddr.obj.(*tEdit).text + " " + editPortGet.obj.(*tEdit).text + " " + editOID.obj.(*tEdit).text + " " + editValue.obj.(*tEdit).text).Get("response").String()
+	result := js.Global().Call("HttpRequest", "http://localhost:8085/api?cmd=curl_get " + "http://localhost:8087/api?cmd=set " + editIPaddr.obj.(*tEdit).text + " " + editPortGet.obj.(*tEdit).text + " " + editOID.obj.(*tEdit).text + " " + editValue.obj.(*tEdit).text, "").Get("response").String()
 	fmt.Println("Responsed: ", result)
 	
 	result = strings.Replace(result, "\n", string(13), -1)
@@ -151,7 +151,7 @@ func btnSetClick(node *Node){
 
 
 func btnBrowserClick(node *Node){
-	result := js.Global().Call("HttpRequest", "http://localhost:8085/api?cmd=curl_get " + "http://info.cern.ch/hypertext/WWW/TheProject.html").Get("response").String()
+	result := js.Global().Call("HttpRequest", "http://localhost:8085/api?cmd=curl_get " + "http://info.cern.ch/hypertext/WWW/TheProject.html", "").Get("response").String()
 	fmt.Println("Responsed: ", result)
 	
 	result = strings.Replace(result, "\n", string(13), -1)

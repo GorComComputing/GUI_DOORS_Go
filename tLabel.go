@@ -20,6 +20,7 @@ type tLabel struct{
     caption string
     visible bool
     onClick func(*Node)
+    onClickStr string
 }
 
 
@@ -33,6 +34,7 @@ func CreateLabel(parent *Node, name string, x int, y int, sizeX int, sizeY int, 
 
 func (obj tLabel) Draw(parX int, parY int, parSizeX int, parSizeY int){
 	SetLocalViewPort(parX + obj.x, parY + obj.y, parX + obj.x + obj.sizeX, parY + obj.y + obj.sizeY)
+
     SetColor(obj.BC);
     var p []tPoint
 
@@ -52,8 +54,7 @@ func (obj tLabel) Draw(parX int, parY int, parSizeX int, parSizeY int){
 
     SetColor(obj.TC);
     SetBackColor(obj.BC);
-    TextOutgl(nil, obj.caption, parX + obj.x+1, parY + obj.y + obj.sizeY/2 - 4, 1);
-    
+    TextOutgl(nil, obj.caption, parX + obj.x+1, parY + obj.y + obj.sizeY/2 - 4, 1); 
 }
 
 

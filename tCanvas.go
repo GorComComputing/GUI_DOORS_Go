@@ -18,6 +18,7 @@ type tCanvas struct{
     visible bool
     buffer []uint8
     onClick func(*Node)
+    onClickStr string
 }
 
 

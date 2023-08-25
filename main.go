@@ -4,9 +4,10 @@ import (
     "fmt"
     //"math/rand"
     //"math"
-    //"syscall/js"
+    "syscall/js"
     //"time"
     "strconv"
+    "strings"
     //"net/http"
     //"io"
     //"bytes"
@@ -41,6 +42,7 @@ var frmCode *Node
 var memCode *Node 
 var btnCodeGen *Node
 var btnCodeSave *Node
+var btnCodeOpen *Node
 
 
 var process []*tProc
@@ -91,6 +93,7 @@ startProcess("SNMP", startSNMP)
 startProcess("Users", startUsers)
 startProcess("Events", startEvents)
 startProcess("Terminal", startTerminal)
+startProcess("Test", startProc)
 
 	frmRAD = CreateForm(&layout, "frmRAD", 0, 0, BITMAP_WIDTH-1, 59, 0xD8DCC0, WIN, "RAD", false, nil)
 	btnAddBtn = CreateBtn(frmRAD, "btnAddBtn", 2, 18, 40, 40, 0xD8DCC0, 0x000000, "Btn", btnAddBtnClick)
@@ -102,11 +105,12 @@ startProcess("Terminal", startTerminal)
 	btnAddForm = CreateBtn(frmRAD, "btnAddForm", 2+41+41+41+41+41+41, 18, 40, 40, 0xD8DCC0, 0x000000, "Frm", btnAddFormClick)
 	btnCodeGen = CreateBtn(frmRAD, "btnCodeGen", 2+41+41+41+41+41+41+41+41, 18, 50, 40, 0xD8DCC0, 0x000000, "Code", btnCodeGenClick)
 	btnCodeSave = CreateBtn(frmRAD, "btnCodeSave", 2+41+41+41+41+41+41+41+41+51, 18, 50, 40, 0xD8DCC0, 0x000000, "Save", btnCodeSaveClick)
+	btnCodeOpen = CreateBtn(frmRAD, "btnCodeOpen", 2+41+41+41+41+41+41+41+41+51+51, 18, 50, 40, 0xD8DCC0, 0x000000, "Open", btnCodeOpenClick)
 	
 	frmProperties = CreateForm(&layout, "frmProperties", 0, 60, 180, 400, 0xD8DCC0, WIN, "Properties", false, nil)
 	
-	frmCode = CreateForm(&layout, "frmCode", 181, 60, 800, 800, 0xD8DCC0, WIN, "Code", false, nil)
-	memCode = CreateMemo(frmCode, "memCode", 2, 18, 800-4, 800-17-4, 0xF8FCF8, 0x000000, "", nil)
+	frmCode = CreateForm(&layout, "frmCode", 181, 60, 900, 800, 0xD8DCC0, WIN, "Code", false, nil)
+	memCode = CreateMemo(frmCode, "memCode", 2, 18, 900-4, 800-17-4, 0xF8FCF8, 0x000000, "", nil)
 		
 
 	
@@ -199,9 +203,82 @@ func btnCodeGenClick(node *Node){
 	memCode.obj.(*tMemo).text += string(13) + string(13)
 	//func startSNMP(frmMain *Node){
 	memCode.obj.(*tMemo).text += "func startProc(frmMain *Node){ " + string(13)
-	PrintElementNode(RADFormElement)	
+	
+	//frmMain.obj.(*tForm).x = 190
+	//frmMain.obj.(*tForm).y = 70
+	//frmMain.obj.(*tForm).sizeX = 550
+	//frmMain.obj.(*tForm).sizeY = 300
+	//frmMain.children[0].obj.(*tBitBtn).x = frmMain.obj.(*tForm).sizeX - 17
+	memCode.obj.(*tMemo).text += "    frmMain.obj.(*tForm).x = " + strconv.Itoa(RADFormElement.obj.(*tForm).x) + string(13)
+	memCode.obj.(*tMemo).text += "    frmMain.obj.(*tForm).y = " + strconv.Itoa(RADFormElement.obj.(*tForm).y) + string(13)
+	memCode.obj.(*tMemo).text += "    frmMain.obj.(*tForm).sizeX = " + strconv.Itoa(RADFormElement.obj.(*tForm).sizeX) + string(13)
+	memCode.obj.(*tMemo).text += "    frmMain.obj.(*tForm).sizeY = " + strconv.Itoa(RADFormElement.obj.(*tForm).sizeY) + string(13)
+	memCode.obj.(*tMemo).text += "    frmMain.children[0].obj.(*tBitBtn).x = frmMain.obj.(*tForm).sizeX - 17" + string(13) + string(13)
+	
+	PrintElementNode(RADFormElement, &layout)	
 	// }		
-	memCode.obj.(*tMemo).text += "}" + string(13)
+	memCode.obj.(*tMemo).text += "}" + string(13) + string(13) + string(13)
+	
+	PrintFuncNode(RADFormElement)
+}
+
+func PrintFuncNode(node *Node){
+	if node.obj != nil {
+		switch obj := node.obj.(type) {
+		case *tForm:
+			if obj.onClickStr != ""{
+				memCode.obj.(*tMemo).text += "func " + obj.onClickStr +"(node *Node){" + string(13) + string(13)
+				memCode.obj.(*tMemo).text += "}" + string(13) + string(13) + string(13)
+			}
+		case *tBtn:
+			if obj.onClickStr != ""{
+				memCode.obj.(*tMemo).text += "func " + obj.onClickStr +"(node *Node){" + string(13) + string(13)
+				memCode.obj.(*tMemo).text += "}" + string(13) + string(13) + string(13)
+			}
+		case *tLabel:
+			if obj.onClickStr != ""{
+				memCode.obj.(*tMemo).text += "func " + obj.onClickStr +"(node *Node){" + string(13) + string(13)
+				memCode.obj.(*tMemo).text += "}" + string(13) + string(13) + string(13)
+			}
+		case *tEdit:
+			if obj.onClickStr != ""{
+				memCode.obj.(*tMemo).text += "func " + obj.onClickStr +"(node *Node){" + string(13) + string(13)
+				memCode.obj.(*tMemo).text += "}" + string(13) + string(13) + string(13)
+			}
+		case *tPanel:
+			if obj.onClickStr != ""{
+				memCode.obj.(*tMemo).text += "func " + obj.onClickStr +"(node *Node){" + string(13) + string(13)
+				memCode.obj.(*tMemo).text += "}" + string(13) + string(13) + string(13)
+			}
+		case *tCheckBox:
+			if obj.onClickStr != ""{
+				memCode.obj.(*tMemo).text += "func " + obj.onClickStr +"(node *Node){" + string(13) + string(13)
+				memCode.obj.(*tMemo).text += "}" + string(13) + string(13) + string(13)
+			}
+		case *tCanvas:
+			if obj.onClickStr != ""{
+				memCode.obj.(*tMemo).text += "func " + obj.onClickStr +"(node *Node){" + string(13) + string(13)
+				memCode.obj.(*tMemo).text += "}" + string(13) + string(13) + string(13)
+			}
+		case *tBitBtn:
+			if obj.onClickStr != ""{
+				memCode.obj.(*tMemo).text += "func " + obj.onClickStr +"(node *Node){" + string(13) + string(13)
+				memCode.obj.(*tMemo).text += "}" + string(13) + string(13) + string(13)
+			}
+		case *tMemo:
+			if obj.onClickStr != ""{
+				memCode.obj.(*tMemo).text += "func " + obj.onClickStr +"(node *Node){" + string(13) + string(13)
+				memCode.obj.(*tMemo).text += "}" + string(13) + string(13) + string(13)
+			}
+		}
+	}
+	
+	if node.children != nil {
+			for i := 0; i < len(node.children); i++ { 
+				PrintFuncNode(node.children[i])
+			}
+	}
+	return
 }
 
 
@@ -209,7 +286,7 @@ func PrintVarNode(node *Node){
 	if node.obj != nil {
 		switch obj := node.obj.(type) {
 		case *tForm:
-			memCode.obj.(*tMemo).text += "var " + obj.name + " *Node" + string(13)
+			//memCode.obj.(*tMemo).text += "var " + obj.name + " *Node" + string(13)
 		case *tBtn:
 			memCode.obj.(*tMemo).text += "var " + obj.name + " *Node" + string(13)
 		case *tLabel:
@@ -223,7 +300,7 @@ func PrintVarNode(node *Node){
 		case *tCanvas:
 			memCode.obj.(*tMemo).text += "var " + obj.name + " *Node" + string(13)
 		case *tBitBtn:
-			memCode.obj.(*tMemo).text += "var " + obj.name + " *Node" + string(13)
+			//memCode.obj.(*tMemo).text += "var " + obj.name + " *Node" + string(13)
 		case *tMemo:
 			memCode.obj.(*tMemo).text += "var " + obj.name + " *Node" + string(13)
 		}
@@ -238,12 +315,70 @@ func PrintVarNode(node *Node){
 }
 
 
-func PrintElementNode(node *Node){
+func PrintElementNode(node *Node, parent *Node){
 	if node.obj != nil {
+		var parentName string = "frmMain"
+		switch obj := parent.obj.(type) {
+		case *tForm:
+			if parent == &layout {
+				parentName = "&layout"
+			} else {
+				parentName = "frmMain"
+			} 
+		case *tBtn:
+			if parent.typ != FORM {
+				parentName = obj.name
+			} else {
+				parentName = "frmMain"
+			}
+		case *tLabel:
+			if parent.typ != FORM {
+				parentName = obj.name
+			} else {
+				parentName = "frmMain"
+			}
+		case *tEdit:
+			if parent.typ != FORM {
+				parentName = obj.name
+			} else {
+				parentName = "frmMain"
+			}
+		case *tPanel:
+			if parent.typ != FORM {
+				parentName = obj.name
+			} else {
+				parentName = "frmMain"
+			}
+		case *tCheckBox:
+			if parent.typ != FORM {
+				parentName = obj.name
+			} else {
+				parentName = "frmMain"
+			}
+		case *tCanvas:
+			if parent.typ != FORM {
+				parentName = obj.name
+			} else {
+				parentName = "frmMain"
+			}
+		case *tBitBtn:
+			if parent.typ != FORM {
+				parentName = obj.name
+			} else {
+				parentName = "frmMain"
+			}
+		case *tMemo:
+			if parent.typ != FORM {
+				parentName = obj.name
+			} else {
+				parentName = "frmMain"
+			}
+		}
+		
 		switch obj := node.obj.(type) {
 		case *tForm:
 			//frm := CreateForm(&layout, 400, 400, 200, 130, 0xD8DCC0, WIN, name, true, nil)
-			memCode.obj.(*tMemo).text += "    " + obj.name + " := CreateForm(&layout, " +
+			/*memCode.obj.(*tMemo).text += "    " + obj.name + " := CreateForm(" + parentName + ", " +
 				strconv.Itoa(obj.x) + ", " +
 				strconv.Itoa(obj.y) + ", " +
 				strconv.Itoa(obj.sizeX) + ", " +
@@ -251,10 +386,15 @@ func PrintElementNode(node *Node){
 				fmt.Sprintf("0x%x", obj.BC) + ", " +
 				"WIN, " +
 				"\"" + obj.caption + "\"" + ", " +
-				"true, nil)" + string(13)
+				"true, nil)" + string(13)*/
 		case *tBtn:
+			var onClickStr string = "nil"
+			if obj.onClickStr != "" {
+				onClickStr = obj.onClickStr
+			}
 			//btnTrapServer = CreateBtn(frmMain, 300, 30, 100, 24, 0xD8DCC0, 0x000000, "Run Server", btnTrapServerClick)
-			memCode.obj.(*tMemo).text += "    " + obj.name + " := CreateBtn(" + "parent" + ", " +
+			memCode.obj.(*tMemo).text += "    " + obj.name + " = CreateBtn(" + parentName + ", " +
+				"\"" + obj.name + "\", " +
 				strconv.Itoa(obj.x) + ", " +
 				strconv.Itoa(obj.y) + ", " +
 				strconv.Itoa(obj.sizeX) + ", " +
@@ -262,10 +402,15 @@ func PrintElementNode(node *Node){
 				fmt.Sprintf("0x%x", obj.BC) + ", " +
 				fmt.Sprintf("0x%x", obj.TC) + ", " +
 				"\"" + obj.caption + "\"" + ", " +
-				"nil)" + string(13)
+				onClickStr + ")" + string(13)
 		case *tLabel:
+			var onClickStr string = "nil"
+			if obj.onClickStr != "" {
+				onClickStr = obj.onClickStr
+			}
 			//lblIPaddr = CreateLabel(frmMain, 12, 32, 120, 20, 0xD8DCC0, 0x000000, "IP address", nil)
-			memCode.obj.(*tMemo).text += "    " + obj.name + " := CreateLabel(" + "parent" + ", " +
+			memCode.obj.(*tMemo).text += "    " + obj.name + " = CreateLabel(" + parentName + ", " +
+				"\"" + obj.name + "\", " +
 				strconv.Itoa(obj.x) + ", " +
 				strconv.Itoa(obj.y) + ", " +
 				strconv.Itoa(obj.sizeX) + ", " +
@@ -273,10 +418,19 @@ func PrintElementNode(node *Node){
 				fmt.Sprintf("0x%x", obj.BC) + ", " +
 				fmt.Sprintf("0x%x", obj.TC) + ", " +
 				"\"" + obj.caption + "\"" + ", " +
-				"nil)" + string(13)
+				onClickStr + ")" + string(13)
 		case *tEdit:
+			var onClickStr string = "nil"
+			if obj.onClickStr != "" {
+				onClickStr = obj.onClickStr
+			}
+			var onEnterStr string = "nil"
+			if obj.onEnterStr != "" {
+				onEnterStr = obj.onEnterStr
+			}
 			//editPortGet = CreateEdit(frmMain, 100, 68, 100, 20, 0xF8FCF8, 0x000000, "161", nil, nil)
-			memCode.obj.(*tMemo).text += "    " + obj.name + " := CreateEdit(" + "parent" + ", " +
+			memCode.obj.(*tMemo).text += "    " + obj.name + " = CreateEdit(" + parentName + ", " +
+				"\"" + obj.name + "\", " +
 				strconv.Itoa(obj.x) + ", " +
 				strconv.Itoa(obj.y) + ", " +
 				strconv.Itoa(obj.sizeX) + ", " +
@@ -284,19 +438,32 @@ func PrintElementNode(node *Node){
 				fmt.Sprintf("0x%x", obj.BC) + ", " +
 				fmt.Sprintf("0x%x", obj.TC) + ", " +
 				"\"" + obj.text + "\"" + ", " +
-				"nil, nil)" + string(13)
+				onClickStr + ", " + 
+				onEnterStr + ")" + string(13)
 		case *tPanel:
+			var onClickStr string = "nil"
+			if obj.onClickStr != "" {
+				onClickStr = obj.onClickStr
+			}
 			//pnlTask = CreatePanel(frmDesktop, 0, frmDesktop.obj.(*tForm).sizeY - 28, BITMAP_WIDTH - 1, 28, 0x30B410, TASK, nil)
-			memCode.obj.(*tMemo).text += "    " + obj.name + " := CreatePanel(" + "parent" + ", " +
+			memCode.obj.(*tMemo).text += "    " + obj.name + " = CreatePanel(" + parentName + ", " +
+				"\"" + obj.name + "\", " +
 				strconv.Itoa(obj.x) + ", " +
 				strconv.Itoa(obj.y) + ", " +
 				strconv.Itoa(obj.sizeX) + ", " +
 				strconv.Itoa(obj.sizeY) + ", " +
 				fmt.Sprintf("0x%x", obj.BC) + ", " +
-				"NONE, nil)" + string(13)
+				
+				"NONE, " +
+				onClickStr + ")" + string(13)
 		case *tCheckBox:
+			var onClickStr string = "nil"
+			if obj.onClickStr != "" {
+				onClickStr = obj.onClickStr
+			}
 			//cbxVersion1 = CreateCheckBox(frmMain, 430, 30, 140, 16, 0xD8DCC0, 0x000000, "Version 1", false, cbxVersion1Click)
-			memCode.obj.(*tMemo).text += "    " + obj.name + " := CreateCheckBox(" + "parent" + ", " +
+			memCode.obj.(*tMemo).text += "    " + obj.name + " = CreateCheckBox(" + parentName + ", " +
+				"\"" + obj.name + "\", " +
 				strconv.Itoa(obj.x) + ", " +
 				strconv.Itoa(obj.y) + ", " +
 				strconv.Itoa(obj.sizeX) + ", " +
@@ -304,18 +471,29 @@ func PrintElementNode(node *Node){
 				fmt.Sprintf("0x%x", obj.BC) + ", " +
 				fmt.Sprintf("0x%x", obj.TC) + ", " +
 				"\"" + obj.caption + "\"" + ", " +
-				"false, nil)" + string(13)
+				"false, " +
+				onClickStr + ")" + string(13)
 		case *tCanvas:
+			var onClickStr string = "nil"
+			if obj.onClickStr != "" {
+				onClickStr = obj.onClickStr
+			}
 			//cnvFlag = CreateCanvas(frmMain, 2, 17, 376, 321, nil)
-			memCode.obj.(*tMemo).text += "    " + obj.name + " := CreateCanvas(" + "parent" + ", " +
+			memCode.obj.(*tMemo).text += "    " + obj.name + " = CreateCanvas(" + parentName + ", " +
+				"\"" + obj.name + "\", " +
 				strconv.Itoa(obj.x) + ", " +
 				strconv.Itoa(obj.y) + ", " +
 				strconv.Itoa(obj.sizeX) + ", " +
 				strconv.Itoa(obj.sizeY) + ", " +
-				"nil)" + string(13)
+				onClickStr + ")" + string(13)
 		case *tBitBtn:
+			/*var onClickStr string = "nil"
+			if obj.onClickStr != "" {
+				onClickStr = obj.onClickStr
+			}
 			//CreateBitBtn(&node, obj.sizeX - 17, 2, 15, 15, 0xD8DCC0, 0x000000, "X", formClose)
-			memCode.obj.(*tMemo).text += "    " + obj.name + " := CreateBitBtn(" + "parent" + ", " +
+			memCode.obj.(*tMemo).text += "    " + obj.name + " = CreateBitBtn(" + parentName + ", " +
+				"\"" + obj.name + "\", " +
 				strconv.Itoa(obj.x) + ", " +
 				strconv.Itoa(obj.y) + ", " +
 				strconv.Itoa(obj.sizeX) + ", " +
@@ -323,10 +501,15 @@ func PrintElementNode(node *Node){
 				fmt.Sprintf("0x%x", obj.BC) + ", " +
 				fmt.Sprintf("0x%x", obj.TC) + ", " +
 				"\"" + obj.caption + "\"" + ", " +
-				"nil)" + string(13)
+				onClickStr + ")" + string(13)*/
 		case *tMemo:
+			var onClickStr string = "nil"
+			if obj.onClickStr != "" {
+				onClickStr = obj.onClickStr
+			}
 			//memTest = CreateMemo(frmMain, 400, 30, 100, 100, 0x000000, 0xF8FCF8, "", nil)
-			memCode.obj.(*tMemo).text += "    " + obj.name + " := CreateMemo(" + "parent" + ", " +
+			memCode.obj.(*tMemo).text += "    " + obj.name + " = CreateMemo(" + parentName + ", " +
+				"\"" + obj.name + "\", " +
 				strconv.Itoa(obj.x) + ", " +
 				strconv.Itoa(obj.y) + ", " +
 				strconv.Itoa(obj.sizeX) + ", " +
@@ -334,20 +517,35 @@ func PrintElementNode(node *Node){
 				fmt.Sprintf("0x%x", obj.BC) + ", " +
 				fmt.Sprintf("0x%x", obj.TC) + ", " +
 				"\"" + obj.text + "\"" + ", " +
-				"nil)" + string(13)
+				onClickStr + ")" + string(13)
 		}
 	}
 	
 	if node.children != nil {
 			for i := 0; i < len(node.children); i++ { 
-				PrintElementNode(node.children[i])
+				PrintElementNode(node.children[i], node)
 			}
 	}
 	return
 }
 
-func btnCodeSaveClick(node *Node){
 
+func btnCodeSaveClick(node *Node){
+	tmp := strings.Replace(memCode.obj.(*tMemo).text, string(13), "\r\n", -1)
+	result := js.Global().Call("HttpRequest", "http://localhost:8085/save", tmp).Get("response").String() 
+	fmt.Println("Responsed: ", result)
+	
+	memTerminal.obj.(*tMemo).text = result	
+}
+
+func btnCodeOpenClick(node *Node){	
+	result := js.Global().Call("HttpRequest", "http://localhost:8085/api?cmd=read ./files/tmp.go", "").Get("response").String()  //?" + memCode.obj.(*tMemo).text
+	fmt.Println("Responsed: ", result)
+	
+	result = strings.Replace(result, "\r\n", string(13), -1)
+	result = strings.Replace(result, "\t", string(0x20) + string(0x20) + string(0x20) + string(0x20), -1)
+	memCode.obj.(*tMemo).text = result
+	
 }
 
 

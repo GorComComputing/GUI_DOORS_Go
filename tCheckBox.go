@@ -22,6 +22,7 @@ type tCheckBox struct{
     checked bool
     enabled bool
     onClick func(*Node)
+    onClickStr string
 }
 
 
@@ -54,7 +55,7 @@ func (obj tCheckBox) Draw(parX int, parY int, parSizeX int, parSizeY int){
 
     	FillPoly(nil, 4, p);
     	
-    	
+    if obj.enabled {
     	SetColor(0x787C78);
     	LinePP(nil, parX + obj.x, parY + obj.y, parX + obj.x + size, parY + obj.y);
     	LinePP(nil, parX + obj.x, parY + obj.y, parX + obj.x, parY + obj.y + size);
@@ -67,7 +68,20 @@ func (obj tCheckBox) Draw(parX int, parY int, parSizeX int, parSizeY int){
     	SetColor(0xE0E0E0);
     	LinePP(nil, parX + obj.x+1, parY + obj.y + size, parX + obj.x + size, parY + obj.y + size);
     	LinePP(nil, parX + obj.x + size, parY + obj.y+1, parX + obj.x + size, parY + obj.y + size);
-    	
+    } else {
+    	SetColor(0x777777);
+    	LinePP(nil, parX + obj.x, parY + obj.y, parX + obj.x + size, parY + obj.y);
+    	LinePP(nil, parX + obj.x, parY + obj.y, parX + obj.x, parY + obj.y + size);
+    	SetColor(0x777777);
+    	LinePP(nil, parX + obj.x+1, parY + obj.y+1, parX + obj.x + size - 2, parY + obj.y+1);
+    	LinePP(nil, parX + obj.x+1, parY + obj.y+1, parX + obj.x+1, parY + obj.y + size - 1);
+    	SetColor(0x777B77);
+    	LinePP(nil, parX + obj.x+2, parY + obj.y + size - 1, parX + obj.x + size - 1, parY + obj.y + size - 1);
+    	LinePP(nil, parX + obj.x + size - 1, parY + obj.y + 1, parX + obj.x + size - 1, parY + obj.y + size - 1);
+    	SetColor(0x777B77);
+    	LinePP(nil, parX + obj.x+1, parY + obj.y + size, parX + obj.x + size, parY + obj.y + size);
+    	LinePP(nil, parX + obj.x + size, parY + obj.y+1, parX + obj.x + size, parY + obj.y + size);
+    }
     	
 	if obj.checked {
 		SetColor(0xF8FCF8);
@@ -89,8 +103,9 @@ func (obj tCheckBox) Draw(parX int, parY int, parSizeX int, parSizeY int){
     	SetBackColor(obj.BC);
     	TextOutgl(nil, obj.caption, parX+obj.x + 25, parY+obj.y + obj.sizeY/2-4, 1);
     } else {
-    	SetColor(0x787C78);
+    	SetColor(0x777B77);  // 0x787C78
     	SetBackColor(obj.BC);
-    	TextOutgl(nil, obj.caption, parX+obj.x + obj.sizeX/2-((len(obj.caption)-1)*8)/2 - 3, parY+obj.y + obj.sizeY/2-4, 1);
+    	TextOutgl(nil, obj.caption, parX+obj.x + 25, parY+obj.y + obj.sizeY/2-4, 1);
+    	//TextOutgl(nil, obj.caption, parX+obj.x + obj.sizeX/2-((len(obj.caption)-1)*8)/2 - 3, parY+obj.y + obj.sizeY/2-4, 1);
     }    
 }

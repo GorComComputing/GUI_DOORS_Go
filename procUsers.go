@@ -83,7 +83,7 @@ func startUsers(frmMain *Node){
 func btnRefreshClick(node *Node){
 	refreshUsersTable()
 	
-	result := js.Global().Call("HttpRequest", "http://localhost:8085/api?cmd=get_usr " + strconv.Itoa(CurUsersPage) + " 5").Get("response").String()
+	result := js.Global().Call("HttpRequest", "http://localhost:8085/api?cmd=get_usr " + strconv.Itoa(CurUsersPage) + " 5", "").Get("response").String()
 	memTerminal.obj.(*tMemo).text = result	
 }
 
@@ -118,7 +118,7 @@ func refreshUsersTable(){
 		usersTable[i][6].obj.(*tBtn).visible = false
 	}
 	
-	result := js.Global().Call("HttpRequest", "http://localhost:8085/api?cmd=get_usr " + strconv.Itoa(CurUsersPage) + " 5").Get("response").String()
+	result := js.Global().Call("HttpRequest", "http://localhost:8085/api?cmd=get_usr " + strconv.Itoa(CurUsersPage) + " 5", "").Get("response").String()
 	fmt.Println("Responsed: ", result)
 	
 	var users []UsersFromDB 

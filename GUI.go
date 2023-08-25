@@ -5,6 +5,7 @@ import (
     //"syscall/js"
     //"math/rand"
     "strconv"
+    "strings"
     //"reflect"
 
 )
@@ -66,6 +67,18 @@ var lblPropText *Node
 var editPropText *Node
 var lblPropName *Node
 var editPropName *Node
+var lblPropMode *Node
+var editPropMode *Node
+var lblPropVisible *Node
+var editPropVisible *Node
+var lblPropEnabled *Node
+var editPropEnabled *Node
+var lblPropChecked *Node
+var editPropChecked *Node
+var lblEvntClick *Node
+var editEvntClick *Node
+var lblEvntEnter *Node
+var editEvntEnter *Node
          
 
 func DrawNode(node *Node){
@@ -408,6 +421,23 @@ func eventMouseDown(x int, y int)  {
     			mouseIsDown = true
     	}
     	if RAD && layout.children[len(layout.children)-1] != frmProperties && layout.children[len(layout.children)-1] != frmRAD && layout.children[len(layout.children)-1] != frmCode {
+    		var mode string
+    		if obj.mode == NONE {
+    			mode = "NONE"
+    		} else if obj.mode == WIN {
+    			mode = "WIN"
+    		} else if obj.mode == FLAT {
+    			mode = "FLAT"
+    		} else if obj.mode == TASK {
+    			mode = "TASK"
+    		} 
+    		var visible string
+    		if obj.visible {
+    			visible = "true"
+    		} else {
+    			visible = "false"
+    		} 
+
     		frmProperties.obj.(*tForm).caption = "Properties: FORM"
     		lblPropName = CreateLabel(frmProperties, "lblPropName", 5, 20, 95, 20, 0xD8DCC0, 0x000000, "Name", nil)
 			editPropName = CreateEdit(frmProperties, "editPropName", 80, 20, 95, 20, 0xF8FCF8, 0x000000, obj.name, nil, editPropNameEnter)
@@ -423,9 +453,29 @@ func eventMouseDown(x int, y int)  {
 			editPropWidth = CreateEdit(frmProperties, "editPropWidth", 80, 120, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.sizeX), nil, editPropWidthEnter)
 			lblPropHeight = CreateLabel(frmProperties, "lblPropHeight", 5, 140, 95, 20, 0xD8DCC0, 0x000000, "Height", nil)
 			editPropHeight = CreateEdit(frmProperties, "editPropHeight", 80, 140, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.sizeY), nil, editPropHeightEnter)
+			lblPropMode = CreateLabel(frmProperties, "lblPropMode", 5, 160, 95, 20, 0xD8DCC0, 0x000000, "Mode", nil)
+			editPropMode = CreateEdit(frmProperties, "editPropMode", 80, 160, 95, 20, 0xF8FCF8, 0x000000, mode, nil, editPropModeEnter)
+			lblPropVisible = CreateLabel(frmProperties, "lblPropVisible", 5, 180, 95, 20, 0xD8DCC0, 0x000000, "Visible", nil)
+			editPropVisible = CreateEdit(frmProperties, "editPropVisible", 80, 180, 95, 20, 0xF8FCF8, 0x000000, visible, nil, editPropVisibleEnter)
+			
+			lblEvntClick = CreateLabel(frmProperties, "lblEvntClick", 5, 220, 95, 20, 0xD8DCC0, 0x000000, "Click", nil)
+			editEvntClick = CreateEdit(frmProperties, "editEvntClick", 80, 220, 95, 20, 0xF8FCF8, 0x000000, obj.onClickStr, nil, editEvntClickEnter)
 		}
     case *tBtn:
 		if RAD && layout.children[len(layout.children)-1] != frmProperties && layout.children[len(layout.children)-1] != frmRAD && layout.children[len(layout.children)-1] != frmCode {
+			var visible string
+    		if obj.visible {
+    			visible = "true"
+    		} else {
+    			visible = "false"
+    		}
+			var enabled string
+    		if obj.enabled {
+    			enabled = "true"
+    		} else {
+    			enabled = "false"
+    		}
+    		
 			frmProperties.obj.(*tForm).caption = "Properties: BUTTON"
 			downX = x 
     		downY = y 
@@ -446,6 +496,14 @@ func eventMouseDown(x int, y int)  {
 			editPropWidth = CreateEdit(frmProperties, "editPropWidth", 80, 140, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.sizeX), nil, editPropWidthEnter)
 			lblPropHeight = CreateLabel(frmProperties, "lblPropHeight", 5, 160, 95, 20, 0xD8DCC0, 0x000000, "Height", nil)
 			editPropHeight = CreateEdit(frmProperties, "editPropHeight", 80, 160, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.sizeY), nil, editPropHeightEnter)
+			lblPropVisible = CreateLabel(frmProperties, "lblPropVisible", 5, 180, 95, 20, 0xD8DCC0, 0x000000, "Visible", nil)
+			editPropVisible = CreateEdit(frmProperties, "editPropVisible", 80, 180, 95, 20, 0xF8FCF8, 0x000000, visible, nil, editPropVisibleEnter)
+			lblPropEnabled = CreateLabel(frmProperties, "lblPropEnabled", 5, 200, 95, 20, 0xD8DCC0, 0x000000, "Enabled", nil)
+			editPropEnabled = CreateEdit(frmProperties, "editPropEnabled", 80, 200, 95, 20, 0xF8FCF8, 0x000000, enabled, nil, editPropEnabledEnter)
+			
+			lblEvntClick = CreateLabel(frmProperties, "lblEvntClick", 5, 240, 95, 20, 0xD8DCC0, 0x000000, "Click", nil)
+			editEvntClick = CreateEdit(frmProperties, "editEvntClick", 80, 240, 95, 20, 0xF8FCF8, 0x000000, obj.onClickStr, nil, editEvntClickEnter)
+			
 		} else {
 			if obj.enabled {
     			btnPressed = obj
@@ -454,6 +512,13 @@ func eventMouseDown(x int, y int)  {
 		}
 	case *tLabel:
 		if RAD && layout.children[len(layout.children)-1] != frmProperties && layout.children[len(layout.children)-1] != frmRAD && layout.children[len(layout.children)-1] != frmCode {
+			var visible string
+    		if obj.visible {
+    			visible = "true"
+    		} else {
+    			visible = "false"
+    		}
+    		
 			frmProperties.obj.(*tForm).caption = "Properties: LABEL"
 			downX = x 
     		downY = y 
@@ -474,9 +539,27 @@ func eventMouseDown(x int, y int)  {
 			editPropWidth = CreateEdit(frmProperties, "editPropWidth", 80, 140, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.sizeX), nil, editPropWidthEnter)
 			lblPropHeight = CreateLabel(frmProperties, "lblPropHeight", 5, 160, 95, 20, 0xD8DCC0, 0x000000, "Height", nil)
 			editPropHeight = CreateEdit(frmProperties, "editPropHeight", 80, 160, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.sizeY), nil, editPropHeightEnter)
+			lblPropVisible = CreateLabel(frmProperties, "lblPropVisible", 5, 180, 95, 20, 0xD8DCC0, 0x000000, "Visible", nil)
+			editPropVisible = CreateEdit(frmProperties, "editPropVisible", 80, 180, 95, 20, 0xF8FCF8, 0x000000, visible, nil, editPropVisibleEnter)
+			
+			lblEvntClick = CreateLabel(frmProperties, "lblEvntClick", 5, 220, 95, 20, 0xD8DCC0, 0x000000, "Click", nil)
+			editEvntClick = CreateEdit(frmProperties, "editEvntClick", 80, 220, 95, 20, 0xF8FCF8, 0x000000, obj.onClickStr, nil, editEvntClickEnter)
 		} 
 	case *tEdit:
 		if RAD && layout.children[len(layout.children)-1] != frmProperties && layout.children[len(layout.children)-1] != frmRAD && layout.children[len(layout.children)-1] != frmCode {
+			var visible string
+    		if obj.visible {
+    			visible = "true"
+    		} else {
+    			visible = "false"
+    		}
+			var enabled string
+    		if obj.enabled {
+    			enabled = "true"
+    		} else {
+    			enabled = "false"
+    		}
+    		
 			frmProperties.obj.(*tForm).caption = "Properties: EDIT"
 			downX = x 
     		downY = y 
@@ -497,6 +580,15 @@ func eventMouseDown(x int, y int)  {
 			editPropWidth = CreateEdit(frmProperties, "editPropWidth", 80, 140, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.sizeX), nil, editPropWidthEnter)
 			lblPropHeight = CreateLabel(frmProperties, "lblPropHeight", 5, 160, 95, 20, 0xD8DCC0, 0x000000, "Height", nil)
 			editPropHeight = CreateEdit(frmProperties, "editPropHeight", 80, 160, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.sizeY), nil, editPropHeightEnter)
+			lblPropVisible = CreateLabel(frmProperties, "lblPropVisible", 5, 180, 95, 20, 0xD8DCC0, 0x000000, "Visible", nil)
+			editPropVisible = CreateEdit(frmProperties, "editPropVisible", 80, 180, 95, 20, 0xF8FCF8, 0x000000, visible, nil, editPropVisibleEnter)
+			lblPropEnabled = CreateLabel(frmProperties, "lblPropEnabled", 5, 200, 95, 20, 0xD8DCC0, 0x000000, "Enabled", nil)
+			editPropEnabled = CreateEdit(frmProperties, "editPropEnabled", 80, 200, 95, 20, 0xF8FCF8, 0x000000, enabled, nil, editPropEnabledEnter)
+			
+			lblEvntClick = CreateLabel(frmProperties, "lblEvntClick", 5, 240, 95, 20, 0xD8DCC0, 0x000000, "Click", nil)
+			editEvntClick = CreateEdit(frmProperties, "editEvntClick", 80, 240, 95, 20, 0xF8FCF8, 0x000000, obj.onClickStr, nil, editEvntClickEnter)
+			lblEvntEnter = CreateLabel(frmProperties, "lblEvntEnter", 5, 260, 95, 20, 0xD8DCC0, 0x000000, "Enter", nil)
+			editEvntEnter = CreateEdit(frmProperties, "editEvntEnter", 80, 260, 95, 20, 0xF8FCF8, 0x000000, obj.onEnterStr, nil, editEvntEnterEnter)
 		} else {
 			if obj.enabled {
 				obj.focused = true	
@@ -505,6 +597,19 @@ func eventMouseDown(x int, y int)  {
 		}
 	case *tBitBtn:
 		if RAD && layout.children[len(layout.children)-1] != frmProperties && layout.children[len(layout.children)-1] != frmRAD && layout.children[len(layout.children)-1] != frmCode {
+			var visible string
+    		if obj.visible {
+    			visible = "true"
+    		} else {
+    			visible = "false"
+    		}
+			var enabled string
+    		if obj.enabled {
+    			enabled = "true"
+    		} else {
+    			enabled = "false"
+    		}
+			
 			frmProperties.obj.(*tForm).caption = "Properties: BITBTN"
 			downX = x 
     		downY = y 
@@ -525,6 +630,13 @@ func eventMouseDown(x int, y int)  {
 			editPropWidth = CreateEdit(frmProperties, "editPropWidth", 80, 140, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.sizeX), nil, editPropWidthEnter)
 			lblPropHeight = CreateLabel(frmProperties, "lblPropHeight", 5, 160, 95, 20, 0xD8DCC0, 0x000000, "Height", nil)
 			editPropHeight = CreateEdit(frmProperties, "editPropHeight", 80, 160, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.sizeY), nil, editPropHeightEnter)
+			lblPropVisible = CreateLabel(frmProperties, "lblPropVisible", 5, 180, 95, 20, 0xD8DCC0, 0x000000, "Visible", nil)
+			editPropVisible = CreateEdit(frmProperties, "editPropVisible", 80, 180, 95, 20, 0xF8FCF8, 0x000000, visible, nil, editPropVisibleEnter)
+			lblPropEnabled = CreateLabel(frmProperties, "lblPropEnabled", 5, 200, 95, 20, 0xD8DCC0, 0x000000, "Enabled", nil)
+			editPropEnabled = CreateEdit(frmProperties, "editPropEnabled", 80, 200, 95, 20, 0xF8FCF8, 0x000000, enabled, nil, editPropEnabledEnter)
+			
+			lblEvntClick = CreateLabel(frmProperties, "lblEvntClick", 5, 240, 95, 20, 0xD8DCC0, 0x000000, "Click", nil)
+			editEvntClick = CreateEdit(frmProperties, "editEvntClick", 80, 240, 95, 20, 0xF8FCF8, 0x000000, obj.onClickStr, nil, editEvntClickEnter)
 		} else {
 			if obj.enabled {
     			bitbtnPressed = obj
@@ -533,6 +645,19 @@ func eventMouseDown(x int, y int)  {
 		}
 	case *tMemo:
 		if RAD && layout.children[len(layout.children)-1] != frmProperties && layout.children[len(layout.children)-1] != frmRAD && layout.children[len(layout.children)-1] != frmCode {
+			var visible string
+    		if obj.visible {
+    			visible = "true"
+    		} else {
+    			visible = "false"
+    		}
+			var enabled string
+    		if obj.enabled {
+    			enabled = "true"
+    		} else {
+    			enabled = "false"
+    		}
+    		
 			frmProperties.obj.(*tForm).caption = "Properties: MEMO"
 			downX = x 
     		downY = y 
@@ -553,6 +678,13 @@ func eventMouseDown(x int, y int)  {
 			editPropWidth = CreateEdit(frmProperties, "editPropWidth", 80, 140, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.sizeX), nil, editPropWidthEnter)
 			lblPropHeight = CreateLabel(frmProperties, "lblPropHeight", 5, 160, 95, 20, 0xD8DCC0, 0x000000, "Height", nil)
 			editPropHeight = CreateEdit(frmProperties, "editPropHeight", 80, 160, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.sizeY), nil, editPropHeightEnter)
+			lblPropVisible = CreateLabel(frmProperties, "lblPropVisible", 5, 180, 95, 20, 0xD8DCC0, 0x000000, "Visible", nil)
+			editPropVisible = CreateEdit(frmProperties, "editPropVisible", 80, 180, 95, 20, 0xF8FCF8, 0x000000, visible, nil, editPropVisibleEnter)
+			lblPropEnabled = CreateLabel(frmProperties, "lblPropEnabled", 5, 200, 95, 20, 0xD8DCC0, 0x000000, "Enabled", nil)
+			editPropEnabled = CreateEdit(frmProperties, "editPropEnabled", 80, 200, 95, 20, 0xF8FCF8, 0x000000, enabled, nil, editPropEnabledEnter)
+			
+			lblEvntClick = CreateLabel(frmProperties, "lblEvntClick", 5, 240, 95, 20, 0xD8DCC0, 0x000000, "Click", nil)
+			editEvntClick = CreateEdit(frmProperties, "editEvntClick", 80, 240, 95, 20, 0xF8FCF8, 0x000000, obj.onClickStr, nil, editEvntClickEnter)
 		} else {
 			if obj.enabled {
 				obj.focused = true	
@@ -560,6 +692,25 @@ func eventMouseDown(x int, y int)  {
 		}
 	case *tCheckBox:
 		if RAD && layout.children[len(layout.children)-1] != frmProperties && layout.children[len(layout.children)-1] != frmRAD && layout.children[len(layout.children)-1] != frmCode {
+			var visible string
+    		if obj.visible {
+    			visible = "true"
+    		} else {
+    			visible = "false"
+    		}
+			var enabled string
+    		if obj.enabled {
+    			enabled = "true"
+    		} else {
+    			enabled = "false"
+    		}
+    		var checked string
+    		if obj.checked {
+    			checked = "true"
+    		} else {
+    			checked = "false"
+    		}
+    		
 			frmProperties.obj.(*tForm).caption = "Properties: CHECKBOX"
 			downX = x 
     		downY = y 
@@ -580,9 +731,35 @@ func eventMouseDown(x int, y int)  {
 			editPropWidth = CreateEdit(frmProperties, "editPropWidth", 80, 140, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.sizeX), nil, editPropWidthEnter)
 			lblPropHeight = CreateLabel(frmProperties, "lblPropHeight", 5, 160, 95, 20, 0xD8DCC0, 0x000000, "Height", nil)
 			editPropHeight = CreateEdit(frmProperties, "editPropHeight", 80, 160, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.sizeY), nil, editPropHeightEnter)
+			lblPropVisible = CreateLabel(frmProperties, "lblPropVisible", 5, 180, 95, 20, 0xD8DCC0, 0x000000, "Visible", nil)
+			editPropVisible = CreateEdit(frmProperties, "editPropVisible", 80, 180, 95, 20, 0xF8FCF8, 0x000000, visible, nil, editPropVisibleEnter)
+			lblPropEnabled = CreateLabel(frmProperties, "lblPropEnabled", 5, 200, 95, 20, 0xD8DCC0, 0x000000, "Enabled", nil)
+			editPropEnabled = CreateEdit(frmProperties, "editPropEnabled", 80, 200, 95, 20, 0xF8FCF8, 0x000000, enabled, nil, editPropEnabledEnter)
+			lblPropChecked = CreateLabel(frmProperties, "lblPropChecked", 5, 220, 95, 20, 0xD8DCC0, 0x000000, "Checked", nil)
+			editPropChecked = CreateEdit(frmProperties, "editPropChecked", 80, 220, 95, 20, 0xF8FCF8, 0x000000, checked, nil, editPropCheckedEnter)
+			
+			lblEvntClick = CreateLabel(frmProperties, "lblEvntClick", 5, 260, 95, 20, 0xD8DCC0, 0x000000, "Click", nil)
+			editEvntClick = CreateEdit(frmProperties, "editEvntClick", 80, 260, 95, 20, 0xF8FCF8, 0x000000, obj.onClickStr, nil, editEvntClickEnter)
 		}
 	case *tPanel:
 		if RAD && layout.children[len(layout.children)-1] != frmProperties && layout.children[len(layout.children)-1] != frmRAD && layout.children[len(layout.children)-1] != frmCode {
+			var mode string
+    		if obj.mode == NONE {
+    			mode = "NONE"
+    		} else if obj.mode == WIN {
+    			mode = "WIN"
+    		} else if obj.mode == FLAT {
+    			mode = "FLAT"
+    		} else if obj.mode == TASK {
+    			mode = "TASK"
+    		} 
+    		var visible string
+    		if obj.visible {
+    			visible = "true"
+    		} else {
+    			visible = "false"
+    		} 
+    		
 			frmProperties.obj.(*tForm).caption = "Properties: PANEL"
 			downX = x 
     		downY = y 
@@ -599,6 +776,13 @@ func eventMouseDown(x int, y int)  {
 			editPropWidth = CreateEdit(frmProperties, "editPropWidth", 80, 100, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.sizeX), nil, editPropWidthEnter)
 			lblPropHeight = CreateLabel(frmProperties, "lblPropHeight", 5, 120, 95, 20, 0xD8DCC0, 0x000000, "Height", nil)
 			editPropHeight = CreateEdit(frmProperties, "editPropHeight", 80, 120, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.sizeY), nil, editPropHeightEnter)
+			lblPropMode = CreateLabel(frmProperties, "lblPropMode", 5, 140, 95, 20, 0xD8DCC0, 0x000000, "Mode", nil)
+			editPropMode = CreateEdit(frmProperties, "editPropMode", 80, 140, 95, 20, 0xF8FCF8, 0x000000, mode, nil, editPropModeEnter)
+			lblPropVisible = CreateLabel(frmProperties, "lblPropVisible", 5, 160, 95, 20, 0xD8DCC0, 0x000000, "Visible", nil)
+			editPropVisible = CreateEdit(frmProperties, "editPropVisible", 80, 160, 95, 20, 0xF8FCF8, 0x000000, visible, nil, editPropVisibleEnter)
+			
+			lblEvntClick = CreateLabel(frmProperties, "lblEvntClick", 5, 200, 95, 20, 0xD8DCC0, 0x000000, "Click", nil)
+			editEvntClick = CreateEdit(frmProperties, "editEvntClick", 80, 200, 95, 20, 0xF8FCF8, 0x000000, obj.onClickStr, nil, editEvntClickEnter)
 		} 
 	}
 }
@@ -822,6 +1006,228 @@ func editPropTCEnter(node *Node){
 	}
 }
 
+func editPropModeEnter(node *Node){
+	//node.obj.(*tEdit).text = strings.ToLower(node.obj.(*tEdit).text)
+	switch obj := RADElement.obj.(type) {
+	case *tForm:
+		if node.obj.(*tEdit).text == "NONE" {
+			obj.mode = NONE	
+		} else if node.obj.(*tEdit).text == "WIN" {
+			obj.mode = WIN
+		} else if node.obj.(*tEdit).text == "FLAT" {
+			obj.mode = FLAT
+		} else if node.obj.(*tEdit).text == "TASK" {
+			obj.mode = TASK
+		}
+	case *tBtn:
+		//obj.sizeY, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tEdit:
+		//obj.sizeY, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tLabel:
+		//obj.sizeY, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tPanel:
+		if node.obj.(*tEdit).text == "NONE" {
+			obj.mode = NONE	
+		} else if node.obj.(*tEdit).text == "WIN" {
+			obj.mode = WIN
+		} else if node.obj.(*tEdit).text == "FLAT" {
+			obj.mode = FLAT
+		} else if node.obj.(*tEdit).text == "TASK" {
+			obj.mode = TASK
+		}
+	case *tMemo:
+		//obj.sizeY, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tBitBtn:
+		//obj.sizeY, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tCheckBox:
+		//obj.sizeY, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tCanvas:
+		//obj.sizeY, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	}
+}
+
+func editPropVisibleEnter(node *Node){
+	node.obj.(*tEdit).text = strings.ToLower(node.obj.(*tEdit).text)
+	switch obj := RADElement.obj.(type) {
+	case *tForm:
+		if node.obj.(*tEdit).text == "true" {
+			obj.visible = true	
+		} else if node.obj.(*tEdit).text == "false" {
+			obj.visible = false
+		}
+	case *tBtn:
+		if node.obj.(*tEdit).text == "true" {
+			obj.visible = true	
+		} else if node.obj.(*tEdit).text == "false" {
+			obj.visible = false
+		}
+	case *tEdit:
+		if node.obj.(*tEdit).text == "true" {
+			obj.visible = true	
+		} else if node.obj.(*tEdit).text == "false" {
+			obj.visible = false
+		}
+	case *tLabel:
+		if node.obj.(*tEdit).text == "true" {
+			obj.visible = true	
+		} else if node.obj.(*tEdit).text == "false" {
+			obj.visible = false
+		}
+	case *tPanel:
+		if node.obj.(*tEdit).text == "true" {
+			obj.visible = true	
+		} else if node.obj.(*tEdit).text == "false" {
+			obj.visible = false
+		}
+	case *tMemo:
+		if node.obj.(*tEdit).text == "true" {
+			obj.visible = true	
+		} else if node.obj.(*tEdit).text == "false" {
+			obj.visible = false
+		}
+	case *tBitBtn:
+		if node.obj.(*tEdit).text == "true" {
+			obj.visible = true	
+		} else if node.obj.(*tEdit).text == "false" {
+			obj.visible = false
+		}
+	case *tCheckBox:
+		if node.obj.(*tEdit).text == "true" {
+			obj.visible = true	
+		} else if node.obj.(*tEdit).text == "false" {
+			obj.visible = false
+		}
+	case *tCanvas:
+		if node.obj.(*tEdit).text == "true" {
+			obj.visible = true	
+		} else if node.obj.(*tEdit).text == "false" {
+			obj.visible = false
+		}
+	}
+}
+
+func editPropEnabledEnter(node *Node){
+	node.obj.(*tEdit).text = strings.ToLower(node.obj.(*tEdit).text)
+	switch obj := RADElement.obj.(type) {
+	case *tForm:
+		//obj.sizeY, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tBtn:
+		if node.obj.(*tEdit).text == "true" {
+			obj.enabled = true	
+		} else if node.obj.(*tEdit).text == "false" {
+			obj.enabled = false
+		}
+	case *tEdit:
+		if node.obj.(*tEdit).text == "true" {
+			obj.enabled = true	
+		} else if node.obj.(*tEdit).text == "false" {
+			obj.enabled = false
+		}
+	case *tLabel:
+		//obj.sizeY, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tPanel:
+		//obj.sizeY, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tMemo:
+		if node.obj.(*tEdit).text == "true" {
+			obj.enabled = true	
+		} else if node.obj.(*tEdit).text == "false" {
+			obj.enabled = false
+		}
+	case *tBitBtn:
+		if node.obj.(*tEdit).text == "true" {
+			obj.enabled = true	
+		} else if node.obj.(*tEdit).text == "false" {
+			obj.enabled = false
+		}
+	case *tCheckBox:
+		if node.obj.(*tEdit).text == "true" {
+			obj.enabled = true	
+		} else if node.obj.(*tEdit).text == "false" {
+			obj.enabled = false
+		}
+	case *tCanvas:
+		//obj.sizeY, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	}
+}
+
+func editPropCheckedEnter(node *Node){
+	node.obj.(*tEdit).text = strings.ToLower(node.obj.(*tEdit).text)
+	switch obj := RADElement.obj.(type) {
+	case *tForm:
+		//obj.sizeY, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tBtn:
+		//obj.sizeY, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tEdit:
+		//obj.sizeY, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tLabel:
+		//obj.sizeY, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tPanel:
+		//obj.sizeY, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tMemo:
+		//obj.sizeY, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tBitBtn:
+		//obj.sizeY, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tCheckBox:
+		if node.obj.(*tEdit).text == "true" {
+			obj.checked = true	
+		} else if node.obj.(*tEdit).text == "false" {
+			obj.checked = false
+		}
+	case *tCanvas:
+		//obj.sizeY, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	}
+}
+
+func editEvntClickEnter(node *Node){
+	node.obj.(*tEdit).text = strings.ToLower(node.obj.(*tEdit).text)
+	switch obj := RADElement.obj.(type) {
+	case *tForm:
+		obj.onClickStr = node.obj.(*tEdit).text
+	case *tBtn:
+		obj.onClickStr = node.obj.(*tEdit).text
+	case *tEdit:
+		obj.onClickStr = node.obj.(*tEdit).text
+	case *tLabel:
+		obj.onClickStr = node.obj.(*tEdit).text
+	case *tPanel:
+		obj.onClickStr = node.obj.(*tEdit).text
+	case *tMemo:
+		obj.onClickStr = node.obj.(*tEdit).text
+	case *tBitBtn:
+		obj.onClickStr = node.obj.(*tEdit).text
+	case *tCheckBox:
+		obj.onClickStr = node.obj.(*tEdit).text
+	case *tCanvas:
+		obj.onClickStr = node.obj.(*tEdit).text
+	}
+}
+
+func editEvntEnterEnter(node *Node){
+	node.obj.(*tEdit).text = strings.ToLower(node.obj.(*tEdit).text)
+	switch obj := RADElement.obj.(type) {
+	case *tForm:
+		//obj.onClickStr = node.obj.(*tEdit).text
+	case *tBtn:
+		//obj.onClickStr = node.obj.(*tEdit).text
+	case *tEdit:
+		obj.onEnterStr = node.obj.(*tEdit).text
+	case *tLabel:
+		//obj.onClickStr = node.obj.(*tEdit).text
+	case *tPanel:
+		//obj.onClickStr = node.obj.(*tEdit).text
+	case *tMemo:
+		//obj.onClickStr = node.obj.(*tEdit).text
+	case *tBitBtn:
+		//obj.onClickStr = node.obj.(*tEdit).text
+	case *tCheckBox:
+		//obj.onClickStr = node.obj.(*tEdit).text
+	case *tCanvas:
+		//obj.onClickStr = node.obj.(*tEdit).text
+	}
+}
+
+
+
 
 //export eventMouseUp
 func eventMouseUp(x int, y int)  {
@@ -928,6 +1334,7 @@ func keyDown(key int){
 	if layout.children[len(layout.children)-1].obj.(*tForm).focus != nil {
 		switch obj := layout.children[len(layout.children)-1].obj.(*tForm).focus.obj.(type) {
     	case *tEdit:
+    		if (RAD && (layout.children[len(layout.children)-1] == frmProperties || layout.children[len(layout.children)-1] == frmRAD || layout.children[len(layout.children)-1] == frmCode) && obj.enabled) || (!RAD && obj.enabled) { 
     		if key == 8 {
     			if len(obj.text) > 0 {
     				obj.text = obj.text[:len(obj.text)-1]
@@ -957,6 +1364,7 @@ func keyDown(key int){
     			}
     			obj.text = obj.text[:obj.curX] + char + obj.text[obj.curX:]
 				obj.curX++
+			}
 			}
 		case *tMemo:
     		if key == 8 {

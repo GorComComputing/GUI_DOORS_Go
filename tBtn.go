@@ -22,6 +22,7 @@ type tBtn struct{
     pressed bool
     enabled bool
     onClick func(*Node)
+    onClickStr string
 }
 
 
