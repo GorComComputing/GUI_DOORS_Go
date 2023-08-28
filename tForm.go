@@ -1,10 +1,10 @@
 package main
 
 import (
-    //"fmt"
+    "fmt"
     //"syscall/js"
     //"math/rand"
-    //"strconv"
+    "strconv"
 
 )
 
@@ -21,7 +21,7 @@ type tForm struct{
     visible bool
     focused bool
     focus *Node
-    RAD bool
+    isRAD bool
     onClick func(*Node)
     onClickStr string
 }
@@ -37,7 +37,7 @@ const (
 
 
 func CreateForm(parent *Node, name string, x int, y int, sizeX int, sizeY int, BC int, mode tMode, caption string, visible bool, onClick func(*Node)) *Node {
-	obj := tForm{name: name, x: x, y: y, sizeX: sizeX, sizeY: sizeY, BC: BC, mode: mode, caption: caption, visible: visible, focus: nil, RAD: false, onClick: onClick}
+	obj := tForm{name: name, x: x, y: y, sizeX: sizeX, sizeY: sizeY, BC: BC, mode: mode, caption: caption, visible: visible, focus: nil, isRAD: false, onClick: onClick}
 	node := Node{typ: FORM, parent: parent, previous: nil, children: nil, obj: &obj}
 	parent.children = append(parent.children, &node)
 	
@@ -99,7 +99,7 @@ func formClose(node *Node){
 }
 
 
-func (obj tForm) Draw(parX int, parY int, parSizeX int, parSizeY int){
+func (obj *tForm) Draw(parX int, parY int, parSizeX int, parSizeY int){
 	SetLocalViewPort(parX + obj.x+2, parY + obj.y+2, parX + obj.x + obj.sizeX-2, parY + obj.y + obj.sizeY-2)
     SetColor(obj.BC);
     var p []tPoint
@@ -118,7 +118,7 @@ func (obj tForm) Draw(parX int, parY int, parSizeX int, parSizeY int){
 
     FillPoly(nil, 4, p);
     
-    if obj.RAD {
+    if obj.isRAD {
     	SetColor(0xFF0000)
     	for i := 0; i < obj.sizeY; i += 10 {
     		for j := 0; j < obj.sizeX; j += 10 {
@@ -174,6 +174,86 @@ func (obj tForm) Draw(parX int, parY int, parSizeX int, parSizeY int){
     }  
 }
 
+
+func (obj *tForm) RAD(x int, y int){
+	var mode string
+    		if obj.mode == NONE {
+    			mode = "NONE"
+    		} else if obj.mode == WIN {
+    			mode = "WIN"
+    		} else if obj.mode == FLAT {
+    			mode = "FLAT"
+    		} else if obj.mode == TASK {
+    			mode = "TASK"
+    		} 
+    		var visible string
+    		if obj.visible {
+    			visible = "true"
+    		} else {
+    			visible = "false"
+    		} 
+
+    		frmProperties.obj.(*tForm).caption = "Properties: FORM"
+    		lblPropName = CreateLabel(frmProperties, "lblPropName", 5, 20, 95, 20, 0xD8DCC0, 0x000000, "Name", nil)
+			editPropName = CreateEdit(frmProperties, "editPropName", 80, 20, 95, 20, 0xF8FCF8, 0x000000, obj.name, nil, editPropNameEnter)
+    		lblPropLeft = CreateLabel(frmProperties, "lblPropLeft", 5, 40, 95, 20, 0xD8DCC0, 0x000000, "Left", nil)
+			editPropLeft = CreateEdit(frmProperties, "editPropLeft", 80, 40, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.x), nil, editPropLeftEnter)
+			lblPropTop = CreateLabel(frmProperties, "lblPropTop", 5, 60, 95, 20, 0xD8DCC0, 0x000000, "Top", nil)
+			editPropTop = CreateEdit(frmProperties, "editPropTop", 80, 60, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.y), nil, editPropTopEnter)
+			lblPropCaption = CreateLabel(frmProperties, "lblPropCaption", 5, 80, 95, 20, 0xD8DCC0, 0x000000, "Caption", nil)
+			editPropCaption = CreateEdit(frmProperties, "editPropCaption", 80, 80, 95, 20, 0xF8FCF8, 0x000000, obj.caption, nil, editPropCaptionEnter)
+			lblPropBC = CreateLabel(frmProperties, "lblPropBC", 5, 100, 95, 20, 0xD8DCC0, 0x000000, "BC", nil)
+			editPropBC = CreateEdit(frmProperties, "editPropBC", 80, 100, 95, 20, 0xF8FCF8, 0x000000, fmt.Sprintf("%x", obj.BC), nil, editPropBCEnter)
+			lblPropWidth = CreateLabel(frmProperties, "lblPropWidth", 5, 120, 95, 20, 0xD8DCC0, 0x000000, "Width", nil)
+			editPropWidth = CreateEdit(frmProperties, "editPropWidth", 80, 120, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.sizeX), nil, editPropWidthEnter)
+			lblPropHeight = CreateLabel(frmProperties, "lblPropHeight", 5, 140, 95, 20, 0xD8DCC0, 0x000000, "Height", nil)
+			editPropHeight = CreateEdit(frmProperties, "editPropHeight", 80, 140, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.sizeY), nil, editPropHeightEnter)
+			lblPropMode = CreateLabel(frmProperties, "lblPropMode", 5, 160, 95, 20, 0xD8DCC0, 0x000000, "Mode", nil)
+			editPropMode = CreateEdit(frmProperties, "editPropMode", 80, 160, 95, 20, 0xF8FCF8, 0x000000, mode, nil, editPropModeEnter)
+			lblPropVisible = CreateLabel(frmProperties, "lblPropVisible", 5, 180, 95, 20, 0xD8DCC0, 0x000000, "Visible", nil)
+			editPropVisible = CreateEdit(frmProperties, "editPropVisible", 80, 180, 95, 20, 0xF8FCF8, 0x000000, visible, nil, editPropVisibleEnter)
+			
+			lblEvntClick = CreateLabel(frmProperties, "lblEvntClick", 5, 220, 95, 20, 0xD8DCC0, 0x000000, "Click", nil)
+			editEvntClick = CreateEdit(frmProperties, "editEvntClick", 80, 220, 95, 20, 0xF8FCF8, 0x000000, obj.onClickStr, nil, editEvntClickEnter)
+}
+
+
+func (obj *tForm) KeyDown(key int){
+
+}
+
+
+func (obj *tForm) Click(){
+
+}
+
+
+func (obj *tForm) MouseMove(x int, y int){
+	obj.x += x - downX
+    	obj.y += y - downY	
+    	if RAD && layout.children[len(layout.children)-1] != frmProperties && layout.children[len(layout.children)-1] != frmRAD && layout.children[len(layout.children)-1] != frmCode {
+			editPropLeft.obj.(*tEdit).text = strconv.Itoa(obj.x)
+			editPropTop.obj.(*tEdit).text = strconv.Itoa(obj.y)	
+		}
+}
+
+
+func (obj *tForm) MouseDown(x int, y int){
+	// Перенос окна
+		if (obj.mode == WIN) &&
+			(obj.x) < x && 
+			(obj.x + obj.sizeX) > x && 
+			(obj.y) < y && 
+			(obj.y + 17) > y {
+				downX = x 
+    			downY = y 
+    			mouseIsDown = true
+    	}
+    	// RAD
+    	if RAD && layout.children[len(layout.children)-1] != frmProperties && layout.children[len(layout.children)-1] != frmRAD && layout.children[len(layout.children)-1] != frmCode {
+    		obj.RAD(x, y)
+		}
+}
 
 /*func (obj tForm) SetSize(width int, height int){
 	obj.sizeX = width

@@ -1,10 +1,10 @@
 package main
 
 import (
-    //"fmt"
+    "fmt"
     //"syscall/js"
     //"math/rand"
-    //"strconv"
+    "strconv"
 
 )
 
@@ -38,7 +38,7 @@ func CreateMemo(parent *Node, name string, x int, y int, sizeX int, sizeY int, B
 }
 
 
-func (obj tMemo) Draw(parX int, parY int, parSizeX int, parSizeY int){
+func (obj *tMemo) Draw(parX int, parY int, parSizeX int, parSizeY int){
 	SetLocalViewPort(parX + obj.x, parY + obj.y, parX + obj.x + obj.sizeX, parY + obj.y + obj.sizeY)
     SetColor(obj.BC);
     var p []tPoint
@@ -72,4 +72,128 @@ func (obj tMemo) Draw(parX int, parY int, parSizeX int, parSizeY int){
 }
 
 
+func (obj *tMemo) RAD(x int, y int){
+	var visible string
+    		if obj.visible {
+    			visible = "true"
+    		} else {
+    			visible = "false"
+    		}
+			var enabled string
+    		if obj.enabled {
+    			enabled = "true"
+    		} else {
+    			enabled = "false"
+    		}
+    		
+			frmProperties.obj.(*tForm).caption = "Properties: MEMO"
+			downX = x 
+    		downY = y 
+    		mouseIsDown = true
+    		lblPropName = CreateLabel(frmProperties, "lblPropName", 5, 20, 95, 20, 0xD8DCC0, 0x000000, "Name", nil)
+			editPropName = CreateEdit(frmProperties, "editPropName", 80, 20, 95, 20, 0xF8FCF8, 0x000000, obj.name, nil, editPropNameEnter)
+			lblPropLeft = CreateLabel(frmProperties, "lblPropLeft", 5, 40, 95, 20, 0xD8DCC0, 0x000000, "Left", nil)
+			editPropLeft = CreateEdit(frmProperties, "editPropLeft", 80, 40, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.x), nil, editPropLeftEnter)
+			lblPropTop = CreateLabel(frmProperties, "lblPropTop", 5, 60, 95, 20, 0xD8DCC0, 0x000000, "Top", nil)
+			editPropTop = CreateEdit(frmProperties, "editPropTop", 80, 60, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.y), nil, editPropTopEnter)
+			lblPropText = CreateLabel(frmProperties, "lblPropText", 5, 80, 95, 20, 0xD8DCC0, 0x000000, "Text", nil)
+			editPropText = CreateEdit(frmProperties, "editPropText", 80, 80, 95, 20, 0xF8FCF8, 0x000000, obj.text, nil, editPropTextEnter)
+			lblPropBC = CreateLabel(frmProperties, "lblPropBC", 5, 100, 95, 20, 0xD8DCC0, 0x000000, "BC", nil)
+			editPropBC = CreateEdit(frmProperties, "editPropBC", 80, 100, 95, 20, 0xF8FCF8, 0x000000, fmt.Sprintf("%x", obj.BC), nil, editPropBCEnter)
+			lblPropTC = CreateLabel(frmProperties, "lblPropTC", 5, 120, 95, 20, 0xD8DCC0, 0x000000, "TC", nil)
+			editPropTC = CreateEdit(frmProperties, "editPropTC", 80, 120, 95, 20, 0xF8FCF8, 0x000000, fmt.Sprintf("%x", obj.TC), nil, editPropTCEnter)
+			lblPropWidth = CreateLabel(frmProperties, "lblPropWidth", 5, 140, 95, 20, 0xD8DCC0, 0x000000, "Width", nil)
+			editPropWidth = CreateEdit(frmProperties, "editPropWidth", 80, 140, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.sizeX), nil, editPropWidthEnter)
+			lblPropHeight = CreateLabel(frmProperties, "lblPropHeight", 5, 160, 95, 20, 0xD8DCC0, 0x000000, "Height", nil)
+			editPropHeight = CreateEdit(frmProperties, "editPropHeight", 80, 160, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.sizeY), nil, editPropHeightEnter)
+			lblPropVisible = CreateLabel(frmProperties, "lblPropVisible", 5, 180, 95, 20, 0xD8DCC0, 0x000000, "Visible", nil)
+			editPropVisible = CreateEdit(frmProperties, "editPropVisible", 80, 180, 95, 20, 0xF8FCF8, 0x000000, visible, nil, editPropVisibleEnter)
+			lblPropEnabled = CreateLabel(frmProperties, "lblPropEnabled", 5, 200, 95, 20, 0xD8DCC0, 0x000000, "Enabled", nil)
+			editPropEnabled = CreateEdit(frmProperties, "editPropEnabled", 80, 200, 95, 20, 0xF8FCF8, 0x000000, enabled, nil, editPropEnabledEnter)
+			
+			lblEvntClick = CreateLabel(frmProperties, "lblEvntClick", 5, 240, 95, 20, 0xD8DCC0, 0x000000, "Click", nil)
+			editEvntClick = CreateEdit(frmProperties, "editEvntClick", 80, 240, 95, 20, 0xF8FCF8, 0x000000, obj.onClickStr, nil, editEvntClickEnter)
+}
+
+
+func (obj *tMemo) KeyDown(key int){
+	if key == 8 {
+    			if len(obj.text) > 0 {
+    				obj.text = obj.text[:obj.pos-1] + obj.text[obj.pos:]
+    				obj.curX--
+    				obj.pos--
+    			}
+    		} else if key == 13 {
+    			obj.text = obj.text[:obj.line_start + obj.pos] + string(key) + obj.text[obj.line_start + obj.pos:]
+    			//obj.pos++
+    			obj.line_start += obj.pos+1
+    			obj.curY++
+    			obj.curX = 0
+    			obj.pos = 0
+    		} else if key == 37 {
+    			if obj.curX > 0 {
+    				obj.curX--
+    				obj.pos--
+    			}
+    		} else if key == 39 {
+    			if ((obj.line_start + obj.pos) < (len(obj.text)-1)) && ((obj.line_start + obj.pos+1) != 13) {
+    				obj.curX++
+    				obj.pos++
+    			}
+    		} else if key == 38 {
+    			oldNL := obj.line_start
+    			if obj.line_start != 0 { 
+    				obj.curY--
+    				obj.line_start = findLeft(obj.text, obj.line_start)
+    				if obj.curX > oldNL - obj.line_start - 1 {
+    					obj.curX = oldNL - obj.line_start - 1
+    					obj.pos = oldNL - obj.line_start - 1
+    				}
+    			}
+    			
+    		} else if key == 40 {
+    			right := findRight(obj.text, obj.line_start)
+    			if obj.line_start == right || right == len(obj.text)-1 {
+    				return
+    			}
+    			obj.line_start = right
+    			if obj.curX > len(obj.text)-1 - obj.line_start {
+    				obj.curX = len(obj.text) - obj.line_start
+    				obj.pos = len(obj.text) - obj.line_start
+    			}
+    			obj.curY++
+			} else {
+				obj.text = obj.text[:obj.line_start + obj.pos] + string(key) + obj.text[obj.line_start + obj.pos:]
+				obj.pos++
+				obj.curX++
+			}
+}
+
+
+func (obj *tMemo) Click(){
+
+}
+
+
+func (obj *tMemo) MouseMove(x int, y int){
+	if RAD && layout.children[len(layout.children)-1] != frmProperties && layout.children[len(layout.children)-1] != frmRAD && layout.children[len(layout.children)-1] != frmCode {
+			obj.x += x - downX
+    		obj.y += y - downY
+    		editPropLeft.obj.(*tEdit).text = strconv.Itoa(obj.x)
+			editPropTop.obj.(*tEdit).text = strconv.Itoa(obj.y)
+    	}
+}
+
+
+func (obj *tMemo) MouseDown(x int, y int){
+	// RAD
+		if RAD && layout.children[len(layout.children)-1] != frmProperties && layout.children[len(layout.children)-1] != frmRAD && layout.children[len(layout.children)-1] != frmCode {
+			obj.RAD(x, y)
+		} else {
+			// Фокус
+			if obj.enabled {
+				obj.focused = true	
+			}
+		}
+}
 

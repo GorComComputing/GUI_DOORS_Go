@@ -4,7 +4,7 @@ import (
     "fmt"
     //"math/rand"
     //"math"
-    "syscall/js"
+    //"syscall/js"
     //"time"
     "strconv"
     //"net/http"
@@ -15,7 +15,6 @@ import (
 )
 
 
-//var frmUsers *Node
 var btnAddUser *Node
 var btnRefreshUser *Node
 var lblId *Node
@@ -43,7 +42,6 @@ var CurUsersPage = 1
 
 
 func startUsers(frmMain *Node){
-	//frmUsers = CreateForm(&layout, 100, 100, 400, 220, 0xD8DCC0, WIN, "Users", false, nil)
 	frmMain.obj.(*tForm).x = 150
 	frmMain.obj.(*tForm).y = 150
 	frmMain.obj.(*tForm).sizeX = 400
@@ -82,9 +80,6 @@ func startUsers(frmMain *Node){
 
 func btnRefreshClick(node *Node){
 	refreshUsersTable()
-	
-	result := js.Global().Call("HttpRequest", "http://localhost:8085/api?cmd=get_usr " + strconv.Itoa(CurUsersPage) + " 5", "").Get("response").String()
-	memTerminal.obj.(*tMemo).text = result	
 }
 
 
@@ -118,8 +113,7 @@ func refreshUsersTable(){
 		usersTable[i][6].obj.(*tBtn).visible = false
 	}
 	
-	result := js.Global().Call("HttpRequest", "http://localhost:8085/api?cmd=get_usr " + strconv.Itoa(CurUsersPage) + " 5", "").Get("response").String()
-	fmt.Println("Responsed: ", result)
+	result := Get("http://localhost:8085/api", "cmd=get_usr " + strconv.Itoa(CurUsersPage) + " 5", "")
 	
 	var users []UsersFromDB 
 	err := json.Unmarshal([]byte(result), &users)

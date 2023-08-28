@@ -1,10 +1,10 @@
 package main
 
 import (
-    "fmt"
+    //"fmt"
     //"math/rand"
     //"math"
-    "syscall/js"
+    //"syscall/js"
     "strings"
     //"time"
     //"strconv"
@@ -32,19 +32,19 @@ var lblFontTest *Node
 var lblFontTest2 *Node
 var btnSendGet *Node
 var btnSet *Node
-var btnBrowser *Node
+//var btnBrowser *Node
 var btnTrapServer *Node
 var cbxVersion1 *Node
 var cbxVersion2 *Node
 var cbxVersion3 *Node
+var memSNMPTerminal *Node
 
 
 func startSNMP(frmMain *Node){
-	
 	frmMain.obj.(*tForm).x = 190
 	frmMain.obj.(*tForm).y = 70
-	frmMain.obj.(*tForm).sizeX = 550
-	frmMain.obj.(*tForm).sizeY = 300
+	frmMain.obj.(*tForm).sizeX = 568
+	frmMain.obj.(*tForm).sizeY = 434
 	frmMain.children[0].obj.(*tBitBtn).x = frmMain.obj.(*tForm).sizeX - 17
 	
 	lblIPaddr = CreateLabel(frmMain, "lblIPaddr", 12, 32, 120, 20, 0xD8DCC0, 0x000000, "IP address", nil)
@@ -71,15 +71,22 @@ func startSNMP(frmMain *Node){
 	editValue = CreateEdit(frmMain, "editValue", 200, 200, 200, 20, 0xF8FCF8, 0x000000, "", nil, nil)
 
 	
-	btnSendHelp = CreateBtn(frmMain, "btnSendHelp", 470, 270, 70, 24, 0xD8DCC0, 0x000000, "Help", btnSendHelpClick)
-	btnBrowser = CreateBtn(frmMain, "btnBrowser", 12, 270, 90, 24, 0xD8DCC0, 0x000000, "Browser", btnBrowserClick)
+	btnSendHelp = CreateBtn(frmMain, "btnSendHelp", 470, 200, 70, 24, 0xD8DCC0, 0x000000, "Help", btnSendHelpClick)
+	//btnBrowser = CreateBtn(frmMain, "btnBrowser", 12, 270, 90, 24, 0xD8DCC0, 0x000000, "Browser", btnBrowserClick)
 	
 	cbxVersion1 = CreateCheckBox(frmMain, "cbxVersion1", 430, 30, 140, 16, 0xD8DCC0, 0x000000, "Version 1", false, cbxVersion1Click)
 	cbxVersion2 = CreateCheckBox(frmMain, "cbxVersion2", 430, 60, 140, 16, 0xD8DCC0, 0x000000, "Version 2", true, cbxVersion2Click)
 	cbxVersion3 = CreateCheckBox(frmMain, "cbxVersion3", 430, 90, 140, 16, 0xD8DCC0, 0x000000, "Version 3", false, cbxVersion3Click)
+	
+	memSNMPTerminal = CreateMemo(frmMain, "memSNMPTerminal", 2, 230, 564, 202, 0x000000, 0xF8FCF8, "", nil)
 
 	//lblFontTest = CreateLabel(frmMain, "lblFontTest", 12, 200, 500, 20, 0xD8DCC0, 0x000000, "abcdefghijklmnopqrstuvwxyz !\"#$%&'()*+,-./ :;<=>?@ [\\]^_`  {|}~", nil)
 	//lblFontTest2 = CreateLabel(frmMain, "lblFontTest2", 12, 230, 500, 20, 0xD8DCC0, 0x000000, "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890", nil)
+}
+
+
+func printSNMPTerminal(str string) {
+	memSNMPTerminal.obj.(*tMemo).text = str
 }
 
 
@@ -105,56 +112,38 @@ func cbxVersion3Click(node *Node){
 
 
 func btnSendTrapClick(node *Node){
-	result := js.Global().Call("HttpRequest", "http://localhost:8085/api?cmd=curl_get " + "http://localhost:8087/api?cmd=trap_v2 "  + editIPaddr.obj.(*tEdit).text + " " + editPortGet.obj.(*tEdit).text + " " + editOID.obj.(*tEdit).text + " " + editValue.obj.(*tEdit).text, "").Get("response").String()
-	fmt.Println("Responsed: ", result)
-	
-	memTerminal.obj.(*tMemo).text = result
+	printSNMPTerminal(Get("http://localhost:8087/api", "cmd=trap_v2 "  + editIPaddr.obj.(*tEdit).text + " " + editPortGet.obj.(*tEdit).text + " " + editOID.obj.(*tEdit).text + " " + editValue.obj.(*tEdit).text, ""))
 }
 
 
 func btnTrapServerClick(node *Node){
-	result := js.Global().Call("HttpRequest", "http://localhost:8085/api?cmd=curl_get " + "http://localhost:8087/api?cmd=trap_srv", "").Get("response").String()
-	fmt.Println("Responsed: ", result)
-	
-	memTerminal.obj.(*tMemo).text = result
+	printSNMPTerminal(Get("http://localhost:8087/api", "cmd=trap_srv", ""))
 }
 
 
 func btnSendHelpClick(node *Node){
-	result := js.Global().Call("HttpRequest", "http://localhost:8085/api?cmd=curl_get " + "http://localhost:8087/api?cmd=.help", "").Get("response").String()
-	fmt.Println("Responsed: ", result)
-	
+	result := Get("http://localhost:8087/api", "cmd=.help", "")
 	result = strings.Replace(result, "\n", string(13), -1)
-	
-	memTerminal.obj.(*tMemo).text = result
+	printSNMPTerminal(result)
 }
 
 
 func btnSendGetClick(node *Node){
-	result := js.Global().Call("HttpRequest", "http://localhost:8085/api?cmd=curl_get " + "http://localhost:8087/api?cmd=get_param " + editIPaddr.obj.(*tEdit).text + " " + editPortGet.obj.(*tEdit).text + " " + editOID.obj.(*tEdit).text, "").Get("response").String()
-	fmt.Println("Responsed: ", result)
-	
+	result := Get("http://localhost:8087/api", "cmd=get_param " + editIPaddr.obj.(*tEdit).text + " " + editPortGet.obj.(*tEdit).text + " " + editOID.obj.(*tEdit).text, "")	
 	result = strings.Replace(result, "\n", string(13), -1)
-	
-	memTerminal.obj.(*tMemo).text = result
+	printSNMPTerminal(result)
 }
 
 
 func btnSetClick(node *Node){
-	result := js.Global().Call("HttpRequest", "http://localhost:8085/api?cmd=curl_get " + "http://localhost:8087/api?cmd=set " + editIPaddr.obj.(*tEdit).text + " " + editPortGet.obj.(*tEdit).text + " " + editOID.obj.(*tEdit).text + " " + editValue.obj.(*tEdit).text, "").Get("response").String()
-	fmt.Println("Responsed: ", result)
-	
+	result := Get("http://localhost:8087/api", "cmd=set " + editIPaddr.obj.(*tEdit).text + " " + editPortGet.obj.(*tEdit).text + " " + editOID.obj.(*tEdit).text + " " + editValue.obj.(*tEdit).text, "")	
 	result = strings.Replace(result, "\n", string(13), -1)
-	
-	memTerminal.obj.(*tMemo).text = result
+	printSNMPTerminal(result)
 }
 
 
-func btnBrowserClick(node *Node){
-	result := js.Global().Call("HttpRequest", "http://localhost:8085/api?cmd=curl_get " + "http://info.cern.ch/hypertext/WWW/TheProject.html", "").Get("response").String()
-	fmt.Println("Responsed: ", result)
-	
+/*func btnBrowserClick(node *Node){
+	result := Get("http://info.cern.ch/hypertext/WWW/TheProject.html", "", "")	
 	result = strings.Replace(result, "\n", string(13), -1)
-	
-	memTerminal.obj.(*tMemo).text = result
-}
+	printSNMPTerminal(result)
+}*/

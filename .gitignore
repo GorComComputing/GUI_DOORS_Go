@@ -1,3 +1,5 @@
 # Ignore .exe 
 *.exe
-main.wasm
+DOORS.wasm
+/WebServer/DOORS
+/WebServer/files

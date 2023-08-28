@@ -4,7 +4,7 @@ import (
     //"fmt"
     //"syscall/js"
     //"math/rand"
-    //"strconv"
+    "strconv"
 
 )
 
@@ -31,7 +31,7 @@ func CreateCanvas(parent *Node, name string, x int, y int, sizeX int, sizeY int,
 }
 
 
-func (obj tCanvas) Draw(parX int, parY int, parSizeX int, parSizeY int){
+func (obj *tCanvas) Draw(parX int, parY int, parSizeX int, parSizeY int){
 	//SetViewPort(parX, parY, parX + parSizeX, parY + parSizeY)
 	i := (((parY+obj.y+1) * BITMAP_WIDTH) + (parX+obj.x))*4
 
@@ -47,6 +47,36 @@ func (obj tCanvas) Draw(parX int, parY int, parSizeX int, parSizeY int){
     }
     
     //SetViewPort(0, 0, GETMAX_X, GETMAX_Y)
+}
+
+
+func (obj *tCanvas) RAD(x int, y int){
+
+}
+
+
+func (obj *tCanvas) KeyDown(key int){
+
+}
+
+
+func (obj *tCanvas) Click(){
+
+}
+
+
+func (obj *tCanvas) MouseMove(x int, y int){
+	if RAD && layout.children[len(layout.children)-1] != frmProperties && layout.children[len(layout.children)-1] != frmRAD && layout.children[len(layout.children)-1] != frmCode {
+			obj.x += x - downX
+    		obj.y += y - downY
+    		editPropLeft.obj.(*tEdit).text = strconv.Itoa(obj.x)
+			editPropTop.obj.(*tEdit).text = strconv.Itoa(obj.y)
+    	}
+}
+
+
+func (obj *tCanvas) MouseDown(x int, y int){
+
 }
 
 

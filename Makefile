@@ -1,8 +1,9 @@
 .PHONY: main
 main: *.go deps
 	#GOOS=js GOARCH=wasm go build -o GUI.wasm . 
-	tinygo build -o GUI.wasm -target wasm .
-	cp GUI.wasm ../WebServer/www
+	tinygo build -o DOORS.wasm -target wasm .
+	cp DOORS.wasm ./WebServer/www
+	rm ./DOORS.wasm
 
 
 .PHONY:deps

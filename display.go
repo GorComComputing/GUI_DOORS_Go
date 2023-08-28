@@ -64,37 +64,6 @@ func GetPixelgl(buffer []uint8, x int, y int) int {
 }
 
 
-//export Draw
-func Draw() {
-	SetBackColor(0x000000) //0x111111 0xFFFFFF
-	SetColor(0x000000)
-	SetViewPort(0, 0, GETMAX_X, GETMAX_Y)
-	ClearDevice(nil)
-	DrawNode(&layout)
-	//FillCircle(nil, 0, 100, 30)
-	//Circle(nil, 0, 200, 30)
-	onTimer()
-	
-	/*SetColor(0xFF00FF)
-    	var p []tPoint
-
-    	p1 := tPoint{x: 100, y: 100}
-		p = append(p, p1)
-	
-		p2 := tPoint{x: 400, y: 100}
-		p = append(p, p2)
-	
-		p3 := tPoint{x: 400, y: 400}
-		p = append(p, p3)
-	
-		p4 := tPoint{x: 100, y: 400}
-		p = append(p, p4)
-
-    	FillPoly(nil, 4, p);*/
-}
-
-
-
 // Function to return a pointer (Index) to our buffer in wasm memory
 //export getGraphicsBufferPointer
 func getGraphicsBufferPointer() *[BUFFER_SIZE]uint8 {

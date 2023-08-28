@@ -4,7 +4,7 @@ import (
     "fmt"
     //"math/rand"
     //"math"
-    "syscall/js"
+    //"syscall/js"
     //"time"
     "strconv"
     //"net/http"
@@ -15,7 +15,6 @@ import (
 )
 
 
-//var frmEvents *Node
 var btnAddEvent *Node
 var btnRefreshEvents *Node
 
@@ -49,7 +48,6 @@ var CurEventsPage = 20
 
 
 func startEvents(frmMain *Node){
-	//frmEvents = CreateForm(&layout, 100, 100, 500, 220, 0xD8DCC0, WIN, "Events", false, nil)
 	frmMain.obj.(*tForm).x = 100
 	frmMain.obj.(*tForm).y = 100
 	frmMain.obj.(*tForm).sizeX = 600
@@ -115,7 +113,6 @@ func btnNextEventsClick(node *Node){
 
 
 func refreshEventsTable(){
-
 	for i:=0; i < 5; i++ {
 		eventsTable[i][0].obj.(*tLabel).caption = ""
 		eventsTable[i][1].obj.(*tLabel).caption = ""
@@ -127,8 +124,7 @@ func refreshEventsTable(){
 		eventsTable[i][7].obj.(*tBtn).visible = false
 	}
 	
-	result := js.Global().Call("HttpRequest", "http://localhost:8085/api?cmd=get_evnt " + strconv.Itoa(CurEventsPage) + " 5", "").Get("response").String()
-	fmt.Println("Responsed: ", result)
+	result := Get("http://localhost:8085/api", "cmd=get_evnt " + strconv.Itoa(CurEventsPage) + " 5", "")
 	
 	var events []EventsFromDB 
 	err := json.Unmarshal([]byte(result), &events)
