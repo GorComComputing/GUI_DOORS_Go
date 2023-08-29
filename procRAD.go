@@ -49,13 +49,14 @@ var editPropText *Node
 var lblPropName *Node
 var editPropName *Node
 var lblPropMode *Node
-var editPropMode *Node
+var cmbPropMode *Node
 var lblPropVisible *Node
 var editPropVisible *Node
+var cmbPropVisible *Node
 var lblPropEnabled *Node
-var editPropEnabled *Node
+var cmbPropEnabled *Node
 var lblPropChecked *Node
-var editPropChecked *Node
+var cmbPropChecked *Node
 var lblEvntClick *Node
 var editEvntClick *Node
 var lblEvntEnter *Node
@@ -63,6 +64,18 @@ var editEvntEnter *Node
 var lblPropList *Node
 var cmbPropList *Node
 var edtFileName *Node
+var lblPropSelected *Node
+var editPropSelected *Node
+
+var btnAddComboBox *Node
+var btnAddListBox *Node
+
+var tabPropEvents *Node
+var pnlProperties *Node
+var pnlEvents *Node
+
+var listBool = []string{"true", "false"}
+var listMode = []string{"NONE", "WIN", "FLAT", "TASK"}
 
 
 func startRAD(){
@@ -74,16 +87,38 @@ func startRAD(){
 	btnAddMemo = CreateBtn(frmRAD, "btnAddMemo", 2+41+41+41+41, 18, 40, 40, 0xD8DCC0, 0x000000, "Mem", btnAddMemoClick)
 	btnAddPanel = CreateBtn(frmRAD, "btnAddPanel", 2+41+41+41+41+41, 18, 40, 40, 0xD8DCC0, 0x000000, "Pnl", btnAddPanelClick)
 	btnAddForm = CreateBtn(frmRAD, "btnAddForm", 2+41+41+41+41+41+41, 18, 40, 40, 0xD8DCC0, 0x000000, "Frm", btnAddFormClick)
-	btnCodeGen = CreateBtn(frmRAD, "btnCodeGen", 2+41+41+41+41+41+41+41+41, 18, 50, 40, 0xD8DCC0, 0x000000, "Code", btnCodeGenClick)
-	btnCodeSave = CreateBtn(frmRAD, "btnCodeSave", 2+41+41+41+41+41+41+41+41+51, 18, 50, 40, 0xD8DCC0, 0x000000, "Save", btnCodeSaveClick)
-	btnCodeOpen = CreateBtn(frmRAD, "btnCodeOpen", 2+41+41+41+41+41+41+41+41+51+51, 18, 50, 40, 0xD8DCC0, 0x000000, "Open", btnCodeOpenClick)
+	btnAddComboBox = CreateBtn(frmRAD, "btnAddComboBox", 2+41+41+41+41+41+41+41, 18, 40, 40, 0xD8DCC0, 0x000000, "Cmb", btnAddComboBoxClick)
+	btnAddListBox = CreateBtn(frmRAD, "btnAddListBox", 2+41+41+41+41+41+41+41+41, 18, 40, 40, 0xD8DCC0, 0x000000, "Lbx", btnAddListBoxClick)
 	
-	edtFileName = CreateEdit(frmRAD, "edtFileName", 2+41+41+41+41+41+41+41+41+51+51+70, 18+10, 200, 20, 0xf8fcf8, 0x0, "./files/tmp.go", nil, nil)
 	
-	frmProperties = CreateForm(&layout, "frmProperties", 0, 60, 180, 400, 0xD8DCC0, WIN, "Properties", false, nil)
 	
-	frmCode = CreateForm(&layout, "frmCode", 181, 60, 900, 800, 0xD8DCC0, WIN, "Code", false, nil)
+	
+	btnCodeGen = CreateBtn(frmRAD, "btnCodeGen", 2+41+41+41+41+41+41+41+41+41+41, 18, 50, 40, 0xD8DCC0, 0x000000, "Code", btnCodeGenClick)
+	btnCodeSave = CreateBtn(frmRAD, "btnCodeSave", 2+41+41+41+41+41+41+41+41+41+41+51, 18, 50, 40, 0xD8DCC0, 0x000000, "Save", btnCodeSaveClick)
+	btnCodeOpen = CreateBtn(frmRAD, "btnCodeOpen", 2+41+41+41+41+41+41+41+41+41+41+51+51, 18, 50, 40, 0xD8DCC0, 0x000000, "Open", btnCodeOpenClick)
+	
+	edtFileName = CreateEdit(frmRAD, "edtFileName", 2+41+41+41+41+41+41+41+41+41+41+51+51+70, 18+10, 200, 20, 0xf8fcf8, 0x0, "./files/tmp.go", nil, nil)
+	
+	frmProperties = CreateForm(&layout, "frmProperties", 0, 60, 185, 400, 0xD8DCC0, WIN, "Object Inspector", false, nil)
+	listTab := []string{"Properties", "Events"} 
+    pnlProperties = CreatePanel(frmProperties, "pnlPropertis", 2, 41, 181, 357, 0xd8dcc0, NONE, nil)
+    pnlEvents = CreatePanel(frmProperties, "pnlEvents", 2, 41, 181, 357, 0xd8dcc0, NONE, nil)
+    pnlEvents.obj.(*tPanel).visible = false
+	tabPropEvents = CreateTab(frmProperties, "tabPropEvents", 2, 20, 90, 20, 0xd8dcc0, 0x0, listTab, tabtabPropEventsClick, nil)
+	
+	frmCode = CreateForm(&layout, "frmCode", 185, 60, 900, 800, 0xD8DCC0, WIN, "Code", false, nil)
 	memCode = CreateMemo(frmCode, "memCode", 2, 18, 900-4, 800-17-4, 0xF8FCF8, 0x000000, "", nil)
+}
+
+
+func tabtabPropEventsClick(node *Node, x int, y int) {
+	if node.obj.(*tTab).selected == 0 {
+		pnlProperties.obj.(*tPanel).visible = true
+		pnlEvents.obj.(*tPanel).visible = false
+	} else {
+		pnlEvents.obj.(*tPanel).visible = true
+		pnlProperties.obj.(*tPanel).visible = false
+	}
 }
 
 
@@ -108,6 +143,10 @@ func editPropNameEnter(node *Node){
 	case *tCanvas:
 		obj.name  = node.obj.(*tEdit).text
 	case *tComboBox:
+		obj.name  = node.obj.(*tEdit).text
+	case *tListBox:
+		obj.name  = node.obj.(*tEdit).text
+	case *tTab:
 		obj.name  = node.obj.(*tEdit).text
 	}
 }
@@ -135,6 +174,10 @@ func editPropLeftEnter(node *Node){
 		obj.x, _ = strconv.Atoi(node.obj.(*tEdit).text)
 	case *tComboBox:
 		obj.x, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tListBox:
+		obj.x, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tTab:
+		obj.x, _ = strconv.Atoi(node.obj.(*tEdit).text)
 	}
 }
 
@@ -160,7 +203,11 @@ func editPropTopEnter(node *Node){
 	case *tCanvas:
 		obj.y, _ = strconv.Atoi(node.obj.(*tEdit).text)
 	case *tComboBox:
-		obj.x, _ = strconv.Atoi(node.obj.(*tEdit).text)
+		obj.y, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tListBox:
+		obj.y, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tTab:
+		obj.y, _ = strconv.Atoi(node.obj.(*tEdit).text)
 	}
 }
 
@@ -215,6 +262,10 @@ func editPropWidthEnter(node *Node){
 		obj.sizeX, _ = strconv.Atoi(node.obj.(*tEdit).text)
 	case *tComboBox:
 		obj.sizeX, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tListBox:
+		obj.sizeX, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tTab:
+		obj.sizeX, _ = strconv.Atoi(node.obj.(*tEdit).text)
 	}
 }
 
@@ -240,7 +291,11 @@ func editPropHeightEnter(node *Node){
 	case *tCanvas:
 		obj.sizeY, _ = strconv.Atoi(node.obj.(*tEdit).text)
 	case *tComboBox:
-		obj.sizeX, _ = strconv.Atoi(node.obj.(*tEdit).text)
+		obj.sizeY, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tListBox:
+		obj.sizeY, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tTab:
+		obj.sizeY, _ = strconv.Atoi(node.obj.(*tEdit).text)
 	}
 }
 
@@ -266,6 +321,10 @@ func editPropBCEnter(node *Node){
 		obj.BC = int(val)
 	case *tComboBox:
 		obj.BC = int(val)
+	case *tListBox:
+		obj.BC = int(val)
+	case *tTab:
+		obj.BC = int(val)
 	}
 }
 
@@ -287,156 +346,178 @@ func editPropTCEnter(node *Node){
 		obj.TC = int(val)
 	case *tComboBox:
 		obj.TC = int(val)
+	case *tListBox:
+		obj.TC = int(val)
+	case *tTab:
+		obj.TC = int(val)
 	}
 }
 
 
-func editPropModeEnter(node *Node){
-	//node.obj.(*tEdit).text = strings.ToLower(node.obj.(*tEdit).text)
+func cmbPropModeEnter(node *Node){
 	switch obj := RADElement.obj.(type) {
 	case *tForm:
-		if node.obj.(*tEdit).text == "NONE" {
+		if node.obj.(*tComboBox).text == "NONE" {
 			obj.mode = NONE	
-		} else if node.obj.(*tEdit).text == "WIN" {
+		} else if node.obj.(*tComboBox).text == "WIN" {
 			obj.mode = WIN
-		} else if node.obj.(*tEdit).text == "FLAT" {
+		} else if node.obj.(*tComboBox).text == "FLAT" {
 			obj.mode = FLAT
-		} else if node.obj.(*tEdit).text == "TASK" {
+		} else if node.obj.(*tComboBox).text == "TASK" {
 			obj.mode = TASK
 		}
 	case *tPanel:
-		if node.obj.(*tEdit).text == "NONE" {
+		if node.obj.(*tComboBox).text == "NONE" {
 			obj.mode = NONE	
-		} else if node.obj.(*tEdit).text == "WIN" {
+		} else if node.obj.(*tComboBox).text == "WIN" {
 			obj.mode = WIN
-		} else if node.obj.(*tEdit).text == "FLAT" {
+		} else if node.obj.(*tComboBox).text == "FLAT" {
 			obj.mode = FLAT
-		} else if node.obj.(*tEdit).text == "TASK" {
+		} else if node.obj.(*tComboBox).text == "TASK" {
 			obj.mode = TASK
 		}
 	}
 }
 
 
-func editPropVisibleEnter(node *Node){
-	node.obj.(*tEdit).text = strings.ToLower(node.obj.(*tEdit).text)
+func cmbPropVisibleEnter(node *Node){
 	switch obj := RADElement.obj.(type) {
 	case *tForm:
-		if node.obj.(*tEdit).text == "true" {
+		if node.obj.(*tComboBox).text == "true" {
 			obj.visible = true	
-		} else if node.obj.(*tEdit).text == "false" {
+		} else if node.obj.(*tComboBox).text == "false" {
 			obj.visible = false
 		}
 	case *tBtn:
-		if node.obj.(*tEdit).text == "true" {
+		if node.obj.(*tComboBox).text == "true" {
 			obj.visible = true	
-		} else if node.obj.(*tEdit).text == "false" {
+		} else if node.obj.(*tComboBox).text == "false" {
 			obj.visible = false
 		}
 	case *tEdit:
-		if node.obj.(*tEdit).text == "true" {
+		if node.obj.(*tComboBox).text == "true" {
 			obj.visible = true	
-		} else if node.obj.(*tEdit).text == "false" {
+		} else if node.obj.(*tComboBox).text == "false" {
 			obj.visible = false
 		}
 	case *tLabel:
-		if node.obj.(*tEdit).text == "true" {
+		if node.obj.(*tComboBox).text == "true" {
 			obj.visible = true	
-		} else if node.obj.(*tEdit).text == "false" {
+		} else if node.obj.(*tComboBox).text == "false" {
 			obj.visible = false
 		}
 	case *tPanel:
-		if node.obj.(*tEdit).text == "true" {
+		if node.obj.(*tComboBox).text == "true" {
 			obj.visible = true	
-		} else if node.obj.(*tEdit).text == "false" {
+		} else if node.obj.(*tComboBox).text == "false" {
 			obj.visible = false
 		}
 	case *tMemo:
-		if node.obj.(*tEdit).text == "true" {
+		if node.obj.(*tComboBox).text == "true" {
 			obj.visible = true	
-		} else if node.obj.(*tEdit).text == "false" {
+		} else if node.obj.(*tComboBox).text == "false" {
 			obj.visible = false
 		}
 	case *tBitBtn:
-		if node.obj.(*tEdit).text == "true" {
+		if node.obj.(*tComboBox).text == "true" {
 			obj.visible = true	
-		} else if node.obj.(*tEdit).text == "false" {
+		} else if node.obj.(*tComboBox).text == "false" {
 			obj.visible = false
 		}
 	case *tCheckBox:
-		if node.obj.(*tEdit).text == "true" {
+		if node.obj.(*tComboBox).text == "true" {
 			obj.visible = true	
-		} else if node.obj.(*tEdit).text == "false" {
+		} else if node.obj.(*tComboBox).text == "false" {
 			obj.visible = false
 		}
 	case *tCanvas:
-		if node.obj.(*tEdit).text == "true" {
+		if node.obj.(*tComboBox).text == "true" {
 			obj.visible = true	
-		} else if node.obj.(*tEdit).text == "false" {
+		} else if node.obj.(*tComboBox).text == "false" {
 			obj.visible = false
 		}
 	case *tComboBox:
-		if node.obj.(*tEdit).text == "true" {
+		if node.obj.(*tComboBox).text == "true" {
 			obj.visible = true	
-		} else if node.obj.(*tEdit).text == "false" {
+		} else if node.obj.(*tComboBox).text == "false" {
+			obj.visible = false
+		}
+	case *tListBox:
+		if node.obj.(*tComboBox).text == "true" {
+			obj.visible = true	
+		} else if node.obj.(*tComboBox).text == "false" {
+			obj.visible = false
+		}
+	case *tTab:
+		if node.obj.(*tComboBox).text == "true" {
+			obj.visible = true	
+		} else if node.obj.(*tComboBox).text == "false" {
 			obj.visible = false
 		}
 	}
 }
 
 
-func editPropEnabledEnter(node *Node){
-	node.obj.(*tEdit).text = strings.ToLower(node.obj.(*tEdit).text)
+func cmbPropEnabledEnter(node *Node){
 	switch obj := RADElement.obj.(type) {
-	case *tForm:
-		//obj.sizeY, _ = strconv.Atoi(node.obj.(*tEdit).text)
 	case *tBtn:
-		if node.obj.(*tEdit).text == "true" {
+		if node.obj.(*tComboBox).text == "true" {
 			obj.enabled = true	
-		} else if node.obj.(*tEdit).text == "false" {
+		} else if node.obj.(*tComboBox).text == "false" {
 			obj.enabled = false
 		}
 	case *tEdit:
-		if node.obj.(*tEdit).text == "true" {
+		if node.obj.(*tComboBox).text == "true" {
 			obj.enabled = true	
-		} else if node.obj.(*tEdit).text == "false" {
+		} else if node.obj.(*tComboBox).text == "false" {
 			obj.enabled = false
 		}
 	case *tMemo:
-		if node.obj.(*tEdit).text == "true" {
+		if node.obj.(*tComboBox).text == "true" {
 			obj.enabled = true	
-		} else if node.obj.(*tEdit).text == "false" {
+		} else if node.obj.(*tComboBox).text == "false" {
 			obj.enabled = false
 		}
 	case *tBitBtn:
-		if node.obj.(*tEdit).text == "true" {
+		if node.obj.(*tComboBox).text == "true" {
 			obj.enabled = true	
-		} else if node.obj.(*tEdit).text == "false" {
+		} else if node.obj.(*tComboBox).text == "false" {
 			obj.enabled = false
 		}
 	case *tCheckBox:
-		if node.obj.(*tEdit).text == "true" {
+		if node.obj.(*tComboBox).text == "true" {
 			obj.enabled = true	
-		} else if node.obj.(*tEdit).text == "false" {
+		} else if node.obj.(*tComboBox).text == "false" {
 			obj.enabled = false
 		}
 	case *tComboBox:
-		if node.obj.(*tEdit).text == "true" {
+		if node.obj.(*tComboBox).text == "true" {
 			obj.enabled = true	
-		} else if node.obj.(*tEdit).text == "false" {
+		} else if node.obj.(*tComboBox).text == "false" {
+			obj.enabled = false
+		}
+	case *tListBox:
+		if node.obj.(*tComboBox).text == "true" {
+			obj.enabled = true	
+		} else if node.obj.(*tComboBox).text == "false" {
+			obj.enabled = false
+		}
+	case *tTab:
+		if node.obj.(*tComboBox).text == "true" {
+			obj.enabled = true	
+		} else if node.obj.(*tComboBox).text == "false" {
 			obj.enabled = false
 		}
 	}
 }
 
 
-func editPropCheckedEnter(node *Node){
-	node.obj.(*tEdit).text = strings.ToLower(node.obj.(*tEdit).text)
+func cmbPropCheckedEnter(node *Node){
 	switch obj := RADElement.obj.(type) {
 	case *tCheckBox:
-		if node.obj.(*tEdit).text == "true" {
+		if node.obj.(*tComboBox).text == "true" {
 			obj.checked = true	
-		} else if node.obj.(*tEdit).text == "false" {
+		} else if node.obj.(*tComboBox).text == "false" {
 			obj.checked = false
 		}
 	}
@@ -448,6 +529,22 @@ func cmbPropListEnter(node *Node){
 	switch obj := RADElement.obj.(type) {
 	case *tComboBox:
 		obj.list = node.obj.(*tComboBox).list
+	case *tListBox:
+		obj.list = node.obj.(*tComboBox).list
+	case *tTab:
+		obj.list = node.obj.(*tComboBox).list
+	}
+}
+
+
+func editPropSelectedEnter(node *Node){
+	switch obj := RADElement.obj.(type) {
+	case *tListBox:
+		obj.selected, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tComboBox:
+		obj.selected, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tTab:
+		obj.selected, _ = strconv.Atoi(node.obj.(*tEdit).text)
 	}
 }
 
@@ -475,6 +572,10 @@ func editEvntClickEnter(node *Node){
 		obj.onClickStr = node.obj.(*tEdit).text
 	case *tComboBox:
 		obj.onClickStr = node.obj.(*tEdit).text
+	case *tListBox:
+		obj.onClickStr = node.obj.(*tEdit).text
+	case *tTab:
+		obj.onClickStr = node.obj.(*tEdit).text
 	}
 }
 
@@ -485,6 +586,10 @@ func editEvntEnterEnter(node *Node){
 	case *tEdit:
 		obj.onEnterStr = node.obj.(*tEdit).text
 	case *tComboBox:
+		obj.onEnterStr = node.obj.(*tEdit).text
+	case *tListBox:
+		obj.onEnterStr = node.obj.(*tEdit).text
+	case *tTab:
 		obj.onEnterStr = node.obj.(*tEdit).text
 	}
 }
@@ -523,6 +628,17 @@ func btnAddFormClick(node *Node){
 		sortChildren(i)
 	}
 }
+
+func btnAddComboBoxClick(node *Node){
+	CreateComboBox(RADFormElement, "cbxComboBox", 10, 24, 100, 16, 0xf8fcf8, 0x0, "", nil, nil, nil)
+    
+    	
+}
+
+func btnAddListBoxClick(node *Node){
+	CreateListBox(RADFormElement, "lbxListBox", 10, 24, 100, 100, 0xf8fcf8, 0x0, nil, nil, nil)
+}
+
 
 func btnCodeGenClick(node *Node){
 	memCode.obj.(*tMemo).text = ""	

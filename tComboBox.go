@@ -23,6 +23,7 @@ type tComboBox struct{
     enabled bool
     curX int
     list []string
+    selected int
     onClick func(*Node)
     onClickStr string
     onEnter func(*Node)
@@ -36,16 +37,40 @@ func CreateComboBox(parent *Node, name string, x int, y int, sizeX int, sizeY in
 	parent.children = append(parent.children, &node)
 	
 	CreateBitBtn(&node, "bitBtnComboBox"+name, obj.sizeX - 15, 1, 15, 15, 0xD8DCC0, 0x000000, "v", btnComboBox) 
-	objPnl := CreatePanel(&node, "pnlComboBox"+name, 0, obj.sizeY+1, obj.sizeX, 16, 0xd8dcc0, FLAT, nil)
-	CreateBtn(objPnl, "listComboBox"+name, 2, 2, obj.sizeX-4, 16-4, 0xd8dcc0, 0x0, "true", nil)
-	node.children[1].obj.(*tPanel).visible = false
+	
+	CreateListBox(&node, "objListBox"+name, 0, obj.sizeY, obj.sizeX, len(obj.list)*20, 0xf8fcf8, 0x0, obj.list, objListBoxClick, objListBoxEnter)
+	node.children[1].obj.(*tListBox).visible = false
 	
 	return &node
 }
 
 
 func btnComboBox(node *Node){
-	node.parent.children[1].obj.(*tPanel).visible = !(node.parent.children[1].obj.(*tPanel).visible)
+	if node.parent.obj.(*tComboBox).enabled && len(node.parent.obj.(*tComboBox).list) > 0 {
+		node.parent.children[1].obj.(*tListBox).visible = !(node.parent.children[1].obj.(*tListBox).visible)
+		if node.parent.children[1].obj.(*tListBox).visible {
+			ToUpPlane(node.parent)
+			SetFocus(node.parent.children[1])
+		} else {
+			SetFocus(nil)
+		}
+	}
+}
+
+
+func objListBoxEnter(node *Node){
+	node.parent.children[1].obj.(*tListBox).visible = !(node.parent.children[1].obj.(*tListBox).visible)
+	node.parent.obj.(*tComboBox).text = node.parent.children[1].obj.(*tListBox).list[node.parent.children[1].obj.(*tListBox).selected]
+	node.parent.obj.(*tComboBox).onEnter(node.parent)
+	SetFocus(nil)
+}
+
+
+func objListBoxClick(node *Node, x int, y int){
+	node.parent.children[1].obj.(*tListBox).visible = !(node.parent.children[1].obj.(*tListBox).visible)
+	node.parent.obj.(*tComboBox).text = node.parent.children[1].obj.(*tListBox).list[node.parent.children[1].obj.(*tListBox).selected]
+	node.parent.obj.(*tComboBox).onEnter(node.parent)
+	SetFocus(nil)
 }
 
 
@@ -54,24 +79,10 @@ func (obj *tComboBox) Draw(parX int, parY int, parSizeX int, parSizeY int){
 	
 	if obj.enabled {
     	SetColor(obj.BC);
-    	var p []tPoint
-
-    	p1 := tPoint{x: parX+obj.x, y: parY+obj.y}
-		p = append(p, p1)
-	
-		p2 := tPoint{x: parX+obj.x + obj.sizeX, y: parY+obj.y}
-		p = append(p, p2)
-	
-		p3 := tPoint{x: parX+obj.x + obj.sizeX, y: parY+obj.y + obj.sizeY}
-		p = append(p, p3)
-	
-		p4 := tPoint{x: parX+obj.x, y: parY+obj.y + obj.sizeY}
-		p = append(p, p4)
-
-    	FillPoly(nil, 4, p);
     } else {
     	SetColor(0xBFBFBF);
-    	var p []tPoint
+	}
+	var p []tPoint
 
     	p1 := tPoint{x: parX+obj.x, y: parY+obj.y}
 		p = append(p, p1)
@@ -86,7 +97,6 @@ func (obj *tComboBox) Draw(parX int, parY int, parSizeX int, parSizeY int){
 		p = append(p, p4)
 
     	FillPoly(nil, 4, p);
-	}
 
     SetColor(obj.TC);
     SetBackColor(obj.BC);
@@ -125,38 +135,40 @@ func (obj *tComboBox) RAD(x int, y int){
     			enabled = "false"
     		}
     		
-			frmProperties.obj.(*tForm).caption = "Properties: COMBOBOX"
+			//frmProperties.obj.(*tForm).caption = "Properties: COMBOBOX"
 			downX = x 
     		downY = y 
     		mouseIsDown = true
-    		lblPropName = CreateLabel(frmProperties, "lblPropName", 5, 20, 95, 20, 0xD8DCC0, 0x000000, "Name", nil)
-			editPropName = CreateEdit(frmProperties, "editPropName", 80, 20, 95, 20, 0xF8FCF8, 0x000000, obj.name, nil, editPropNameEnter)
-			lblPropLeft = CreateLabel(frmProperties, "lblPropLeft", 5, 40, 95, 20, 0xD8DCC0, 0x000000, "Left", nil)
-			editPropLeft = CreateEdit(frmProperties, "editPropLeft", 80, 40, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.x), nil, editPropLeftEnter)
-			lblPropTop = CreateLabel(frmProperties, "lblPropTop", 5, 60, 95, 20, 0xD8DCC0, 0x000000, "Top", nil)
-			editPropTop = CreateEdit(frmProperties, "editPropTop", 80, 60, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.y), nil, editPropTopEnter)
-			lblPropText = CreateLabel(frmProperties, "lblPropText", 5, 80, 95, 20, 0xD8DCC0, 0x000000, "Text", nil)
-			editPropText = CreateEdit(frmProperties, "editPropText", 80, 80, 95, 20, 0xF8FCF8, 0x000000, obj.text, nil, editPropTextEnter)
-			lblPropBC = CreateLabel(frmProperties, "lblPropBC", 5, 100, 95, 20, 0xD8DCC0, 0x000000, "BC", nil)
-			editPropBC = CreateEdit(frmProperties, "editPropBC", 80, 100, 95, 20, 0xF8FCF8, 0x000000, fmt.Sprintf("%x", obj.BC), nil, editPropBCEnter)
-			lblPropTC = CreateLabel(frmProperties, "lblPropTC", 5, 120, 95, 20, 0xD8DCC0, 0x000000, "TC", nil)
-			editPropTC = CreateEdit(frmProperties, "editPropTC", 80, 120, 95, 20, 0xF8FCF8, 0x000000, fmt.Sprintf("%x", obj.TC), nil, editPropTCEnter)
-			lblPropWidth = CreateLabel(frmProperties, "lblPropWidth", 5, 140, 95, 20, 0xD8DCC0, 0x000000, "Width", nil)
-			editPropWidth = CreateEdit(frmProperties, "editPropWidth", 80, 140, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.sizeX), nil, editPropWidthEnter)
-			lblPropHeight = CreateLabel(frmProperties, "lblPropHeight", 5, 160, 95, 20, 0xD8DCC0, 0x000000, "Height", nil)
-			editPropHeight = CreateEdit(frmProperties, "editPropHeight", 80, 160, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.sizeY), nil, editPropHeightEnter)
-			lblPropVisible = CreateLabel(frmProperties, "lblPropVisible", 5, 180, 95, 20, 0xD8DCC0, 0x000000, "Visible", nil)
-			editPropVisible = CreateEdit(frmProperties, "editPropVisible", 80, 180, 95, 20, 0xF8FCF8, 0x000000, visible, nil, editPropVisibleEnter)
-			lblPropEnabled = CreateLabel(frmProperties, "lblPropEnabled", 5, 200, 95, 20, 0xD8DCC0, 0x000000, "Enabled", nil)
-			editPropEnabled = CreateEdit(frmProperties, "editPropEnabled", 80, 200, 95, 20, 0xF8FCF8, 0x000000, enabled, nil, editPropEnabledEnter)
+    		lblPropName = CreateLabel(pnlProperties, "lblPropName", 5, 5, 95, 20, 0xD8DCC0, 0x000000, "Name", nil)
+			editPropName = CreateEdit(pnlProperties, "editPropName", 80, 5, 95, 20, 0xF8FCF8, 0x000000, obj.name, nil, editPropNameEnter)
+			lblPropLeft = CreateLabel(pnlProperties, "lblPropLeft", 5, 25, 95, 20, 0xD8DCC0, 0x000000, "Left", nil)
+			editPropLeft = CreateEdit(pnlProperties, "editPropLeft", 80, 25, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.x), nil, editPropLeftEnter)
+			lblPropTop = CreateLabel(pnlProperties, "lblPropTop", 5, 45, 95, 20, 0xD8DCC0, 0x000000, "Top", nil)
+			editPropTop = CreateEdit(pnlProperties, "editPropTop", 80, 45, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.y), nil, editPropTopEnter)
+			lblPropText = CreateLabel(pnlProperties, "lblPropText", 5, 65, 95, 20, 0xD8DCC0, 0x000000, "Text", nil)
+			editPropText = CreateEdit(pnlProperties, "editPropText", 80, 65, 95, 20, 0xF8FCF8, 0x000000, obj.text, nil, editPropTextEnter)
+			lblPropBC = CreateLabel(pnlProperties, "lblPropBC", 5, 85, 95, 20, 0xD8DCC0, 0x000000, "BC", nil)
+			editPropBC = CreateEdit(pnlProperties, "editPropBC", 80, 85, 95, 20, 0xF8FCF8, 0x000000, fmt.Sprintf("%x", obj.BC), nil, editPropBCEnter)
+			lblPropTC = CreateLabel(pnlProperties, "lblPropTC", 5, 105, 95, 20, 0xD8DCC0, 0x000000, "TC", nil)
+			editPropTC = CreateEdit(pnlProperties, "editPropTC", 80, 105, 95, 20, 0xF8FCF8, 0x000000, fmt.Sprintf("%x", obj.TC), nil, editPropTCEnter)
+			lblPropWidth = CreateLabel(pnlProperties, "lblPropWidth", 5, 125, 95, 20, 0xD8DCC0, 0x000000, "Width", nil)
+			editPropWidth = CreateEdit(pnlProperties, "editPropWidth", 80, 125, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.sizeX), nil, editPropWidthEnter)
+			lblPropHeight = CreateLabel(pnlProperties, "lblPropHeight", 5, 145, 95, 20, 0xD8DCC0, 0x000000, "Height", nil)
+			editPropHeight = CreateEdit(pnlProperties, "editPropHeight", 80, 145, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.sizeY), nil, editPropHeightEnter)
 			
-			lblPropList = CreateLabel(frmProperties, "lblPropList", 5, 220, 95, 20, 0xD8DCC0, 0x000000, "List", nil)
-    		cmbPropList = CreateComboBox(frmProperties, "cmbPropList", 80, 220, 95, 20, 0xF8FCF8, 0x000000, obj.text, obj.list, nil, cmbPropListEnter)
+			lblPropVisible = CreateLabel(pnlProperties, "lblPropVisible", 5, 165, 95, 20, 0xD8DCC0, 0x000000, "Visible", nil)
+			cmbPropVisible = CreateComboBox(pnlProperties, "cmbPropVisible", 80, 165, 95, 16, 0xF8FCF8, 0x000000, visible, listBool, nil, cmbPropVisibleEnter)
 			
-			lblEvntClick = CreateLabel(frmProperties, "lblEvntClick", 5, 260, 95, 20, 0xD8DCC0, 0x000000, "Click", nil)
-			editEvntClick = CreateEdit(frmProperties, "editEvntClick", 80, 260, 95, 20, 0xF8FCF8, 0x000000, obj.onClickStr, nil, editEvntClickEnter)
-			lblEvntEnter = CreateLabel(frmProperties, "lblEvntEnter", 5, 280, 95, 20, 0xD8DCC0, 0x000000, "Enter", nil)
-			editEvntEnter = CreateEdit(frmProperties, "editEvntEnter", 80, 280, 95, 20, 0xF8FCF8, 0x000000, obj.onEnterStr, nil, editEvntEnterEnter)
+			lblPropEnabled = CreateLabel(pnlProperties, "lblPropEnabled", 5, 185, 95, 20, 0xD8DCC0, 0x000000, "Enabled", nil)
+			cmbPropEnabled = CreateComboBox(pnlProperties, "cmbPropEnabled", 80, 185, 95, 16, 0xF8FCF8, 0x000000, enabled, listBool, nil, cmbPropEnabledEnter)
+			
+			lblPropList = CreateLabel(pnlProperties, "lblPropList", 5, 205, 95, 20, 0xD8DCC0, 0x000000, "List", nil)
+    		cmbPropList = CreateComboBox(pnlProperties, "cmbPropList", 80, 205, 95, 16, 0xF8FCF8, 0x000000, obj.text, obj.list, nil, cmbPropListEnter)
+			
+			lblEvntClick = CreateLabel(pnlEvents, "lblEvntClick", 5, 5, 95, 20, 0xD8DCC0, 0x000000, "Click", nil)
+			editEvntClick = CreateEdit(pnlEvents, "editEvntClick", 80, 5, 95, 20, 0xF8FCF8, 0x000000, obj.onClickStr, nil, editEvntClickEnter)
+			lblEvntEnter = CreateLabel(pnlEvents, "lblEvntEnter", 5, 25, 95, 20, 0xD8DCC0, 0x000000, "Enter", nil)
+			editEvntEnter = CreateEdit(pnlEvents, "editEvntEnter", 80, 25, 95, 20, 0xF8FCF8, 0x000000, obj.onEnterStr, nil, editEvntEnterEnter)
 }
 
 
@@ -165,11 +177,11 @@ func (obj *tComboBox) KeyDown(key int){
 }
 
 
-func (obj *tComboBox) Click(){
+func (obj *tComboBox) Click(x int, y int){
 	fmt.Println("CLICKED: " + obj.text)
-			if obj.onClick != nil && obj.enabled {
-				obj.onClick(list[len(list)-1])
-			}
+	if obj.onClick != nil && obj.enabled {
+		obj.onClick(list[len(list)-1])
+	}
 }
 
 

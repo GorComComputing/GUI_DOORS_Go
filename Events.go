@@ -33,13 +33,15 @@ const (
     MEMO
     CHECKBOX
     COMBOBOX
+    LISTBOX
+    TAB
 )
 
 type tWinComponents interface {
    Draw(parX int, parY int, parSizeX int, parSizeY int)
    RAD(x int, y int)
    KeyDown(key int)
-   Click()
+   Click(x int, y int)
    MouseMove(x int, y int)
    MouseDown(x int, y int)
 }
@@ -109,6 +111,10 @@ func DrawNode(node *Node, x int, y int){
 			visible = obj.visible
 		case *tComboBox:
 			visible = obj.visible
+		case *tListBox:
+			visible = obj.visible
+		case *tTab:
+			visible = obj.visible
 		}
 	}
 	
@@ -168,6 +174,16 @@ func DrawNode(node *Node, x int, y int){
 			parY = obj.y + y 
 			parSizeX = obj.sizeX
 			parSizeY = obj.sizeY
+		case *tListBox:
+			parX = obj.x + x 
+			parY = obj.y + y 
+			parSizeX = obj.sizeX
+			parSizeY = obj.sizeY
+		case *tTab:
+			parX = obj.x + x 
+			parY = obj.y + y 
+			parSizeX = obj.sizeX
+			parSizeY = obj.sizeY
 		}
 	}
 	
@@ -193,22 +209,26 @@ func eventClick(x int, y int)  {
 		if !RAD || list[len(list)-1] == cbxRAD || layout.children[len(layout.children)-1] == frmProperties || layout.children[len(layout.children)-1] == frmRAD || layout.children[len(layout.children)-1] == frmCode {
 		switch obj := list[len(list)-1].obj.(type) {
 		case *tBtn:
-			obj.Click()
+			obj.Click(x-X, y-Y)
 		case *tBitBtn:
-			obj.Click()
+			obj.Click(x-X, y-Y)
 		case *tCheckBox:
-			obj.Click()
+			obj.Click(x-X, y-Y)
 		case *tEdit:
-			obj.Click()
+			obj.Click(x-X, y-Y)
 		case *tComboBox:
-			obj.Click()
+			obj.Click(x-X, y-Y)
+		case *tListBox:
+			obj.Click(x-X, y-Y)
+		case *tTab:
+			obj.Click(x-X, y-Y)
 		}
 	}
 }
 
-
+var X, Y int = 0, 0
 func ClickRecurs(node *Node, x int, y int, parX int, parY int) {
-	
+	 
 	var visible bool = false
 	if node.obj != nil {
 		switch obj := node.obj.(type) {
@@ -231,6 +251,10 @@ func ClickRecurs(node *Node, x int, y int, parX int, parY int) {
 		case *tCheckBox:
 			visible = obj.visible
 		case *tComboBox:
+			visible = obj.visible
+		case *tListBox:
+			visible = obj.visible
+		case *tTab:
 			visible = obj.visible
 		}
 	}
@@ -267,6 +291,12 @@ func ClickRecurs(node *Node, x int, y int, parX int, parY int) {
 		case *tComboBox:
 			parX += obj.x
 			parY += obj.y
+		case *tListBox:
+			parX += obj.x
+			parY += obj.y
+		case *tTab:
+			parX += obj.x
+			parY += obj.y
 		}
 	}
 	
@@ -278,6 +308,8 @@ func ClickRecurs(node *Node, x int, y int, parX int, parY int) {
 			(parY+node.obj.(*tBtn).y) < y && 
 			(parY+node.obj.(*tBtn).y + node.obj.(*tBtn).sizeY) > y {
 				list = append(list, node)
+				X = parX+node.obj.(*tBtn).x
+				Y = parY+node.obj.(*tBtn).y
 			}
 		case *tForm:
 			if (parX+node.obj.(*tForm).x) < x && 
@@ -342,6 +374,24 @@ func ClickRecurs(node *Node, x int, y int, parX int, parY int) {
 			(parY+node.obj.(*tComboBox).y + node.obj.(*tComboBox).sizeY) > y {
 				list = append(list, node)
 			}
+		case *tListBox:
+			if (parX+node.obj.(*tListBox).x) < x && 
+			(parX+node.obj.(*tListBox).x + node.obj.(*tListBox).sizeX) > x && 
+			(parY+node.obj.(*tListBox).y) < y && 
+			(parY+node.obj.(*tListBox).y + node.obj.(*tListBox).sizeY) > y {
+				list = append(list, node)
+				X = parX+node.obj.(*tListBox).x
+				Y = parY+node.obj.(*tListBox).y
+			}
+		case *tTab:
+			if (parX+node.obj.(*tTab).x) < x && 
+			(parX+node.obj.(*tTab).x + node.obj.(*tTab).sizeX*len(node.obj.(*tTab).list)) > x && 
+			(parY+node.obj.(*tTab).y) < y && 
+			(parY+node.obj.(*tTab).y + node.obj.(*tTab).sizeY) > y {
+				list = append(list, node)
+				X = parX+node.obj.(*tTab).x
+				Y = parY+node.obj.(*tTab).y
+			}
 		}
 	}
 			
@@ -373,6 +423,7 @@ func findNode(node *Node) int {
 }
 
 
+// Установить фокус на окно
 func sortChildren(i int) {
 	tmp := layout.children[i]
 	copy(layout.children[i:], layout.children[i+1:])
@@ -382,7 +433,38 @@ func sortChildren(i int) {
 }
 
 
+// Вывести элемент на передний план
+func ToUpPlane(node *Node) {
+	var i int
+	for i = 0; i < len(node.parent.children); i++ {
+		if node == node.parent.children[i] {
+			break
+		}
+	}	
+	tmp := node.parent.children[i]
+	copy(node.parent.children[i:], node.parent.children[i+1:])
+	node.parent.children[len(node.parent.children)-1] = tmp
+}
 
+
+// Установитьь фокус на элемент
+func SetFocus(node *Node) {
+	// Сброс фокуса с прежнего элемента
+	if layout.children[len(layout.children)-1].obj.(*tForm).focus != nil {
+		switch obj := layout.children[len(layout.children)-1].obj.(*tForm).focus.obj.(type) {
+    	case *tEdit:
+			obj.focused = false
+		case *tMemo:
+			obj.focused = false
+		case *tComboBox:
+			obj.focused = false
+		case *tListBox:
+			obj.focused = false
+		}
+	}
+	// Установка нового фокуса элемента
+	layout.children[len(layout.children)-1].obj.(*tForm).focus = node
+}
 
 
 var downX int = 0
@@ -401,19 +483,7 @@ func eventMouseDown(x int, y int) {
 	if i > 0 {
 		sortChildren(i)
 	}
-	// Сброс фокуса с прежнего элемента
-	if layout.children[len(layout.children)-1].obj.(*tForm).focus != nil {
-		switch obj := layout.children[len(layout.children)-1].obj.(*tForm).focus.obj.(type) {
-    	case *tEdit:
-			obj.focused = false
-		case *tMemo:
-			obj.focused = false
-		case *tComboBox:
-			obj.focused = false
-		}
-	}
-	// Установка нового фокуса элемента
-	layout.children[len(layout.children)-1].obj.(*tForm).focus = list[len(list)-1]
+	SetFocus(list[len(list)-1])
 	// RAD
 	if RAD && layout.children[len(layout.children)-1] != frmProperties && layout.children[len(layout.children)-1] != frmRAD && layout.children[len(layout.children)-1] != frmCode {
 			RADElement = list[len(list)-1]
@@ -422,7 +492,7 @@ func eventMouseDown(x int, y int) {
 			}
 			layout.children[len(layout.children)-1].obj.(*tForm).isRAD = true
 			RADFormElement = layout.children[len(layout.children)-1]
-			frmProperties.children = nil
+			pnlProperties.children = nil
 	}
 	
 	switch obj := list[len(list)-1].obj.(type) {
@@ -443,6 +513,10 @@ func eventMouseDown(x int, y int) {
 	case *tPanel:
 		obj.MouseDown(x, y) 
 	case *tComboBox:
+		obj.MouseDown(x, y)
+	case *tListBox:
+		obj.MouseDown(x, y)
+	case *tTab:
 		obj.MouseDown(x, y)
 	}
 }
@@ -490,7 +564,11 @@ func eventMouseMove(x int, y int)  {
     case *tForm:
 		obj.MouseMove(x, y)
 	case *tComboBox:
-		obj.MouseMove(x, y)		
+		obj.MouseMove(x, y)	
+	case *tListBox:
+		obj.MouseMove(x, y)	
+	case *tTab:
+		obj.MouseMove(x, y)	
 	}
     downX = x 
     downY = y
@@ -519,6 +597,8 @@ func eventKeyDown(key int){
 		case *tMemo:
 			obj.KeyDown(key)
 		case *tBtn:
+			obj.KeyDown(key)
+		case *tListBox:
 			obj.KeyDown(key)
 		}
 		fmt.Println(key)

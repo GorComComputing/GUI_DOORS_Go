@@ -2,7 +2,7 @@
 main: *.go deps
 	#GOOS=js GOARCH=wasm go build -o GUI.wasm . 
 	tinygo build -o DOORS.wasm -target wasm .
-	cp DOORS.wasm ./WebServer/www
+	cp DOORS.wasm ./Server/www
 	rm ./DOORS.wasm
 
 

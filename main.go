@@ -7,11 +7,10 @@ import ()
 var programs = []*tProgram{
 	{"Flag", startFlag}, 
 	{"SNMP", startSNMP},
-	{"Users", startUsers},
-	{"Events", startEvents},
+	{"Dispatch", startDispatch},
 	{"Terminal", startTerminal},
 	{"TMP", startTMP},
-	{"Web Browser", startBrowser},
+	{"Browser", startBrowser},
 	}
 	
 

@@ -60,7 +60,7 @@ func (obj *tCanvas) KeyDown(key int){
 }
 
 
-func (obj *tCanvas) Click(){
+func (obj *tCanvas) Click(x int, y int){
 
 }
 

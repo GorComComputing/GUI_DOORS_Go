@@ -20,7 +20,6 @@ var frmMenuStart *Node
 var cnvMenuStart *Node
 var btnMenuFlag *Node
 var btnMenuTrap *Node
-var btnMenuUsers *Node
 var btnMenuEvents *Node
 var cbxRAD *Node
 
@@ -49,7 +48,6 @@ func startDesktop(){
 	
 	btnMenuFlag = CreateBtn(frmMenuStart, "btnMenuFlag", 24, 3, 100, 20, 0xD8DCC0, 0x000000, "Flag", btnMenuFlagClick)
 	btnMenuTrap = CreateBtn(frmMenuStart, "btnMenuTrap", 24, 3 + 20, 100, 20, 0xD8DCC0, 0x000000, "SNMP", btnMenuTrapClick)
-	btnMenuUsers = CreateBtn(frmMenuStart, "btnMenuUsers", 24, 3 + 20 + 20, 100, 20, 0xD8DCC0, 0x000000, "Users", btnMenuUsersClick)
 	btnMenuEvents = CreateBtn(frmMenuStart, "btnMenuEvents", 24, 3 + 20 + 20 + 20, 100, 20, 0xD8DCC0, 0x000000, "Events", btnMenuEventsClick)
 	btnMenuEvents = CreateBtn(frmMenuStart, "btnMenuEvents", 24, 3 + 20 + 20 + 20 + 20, 100, 20, 0xD8DCC0, 0x000000, "Terminal", btnMenuTerminalClick)
 	cbxRAD = CreateCheckBox(frmMenuStart, "cbxRAD", 24, 3 + 20 + 20 + 20 + 20 + 20, 100, 16, 0xD8DCC0, 0x000000, "RAD", false, cbxRADClick)
@@ -96,13 +94,8 @@ func btnMenuTrapClick(node *Node){
 }
 
 
-func btnMenuUsersClick(node *Node){
-	startProcess("Users", startUsers)
-}
-
-
 func btnMenuEventsClick(node *Node){
-	startProcess("Events", startEvents)
+	//startProcess("Events", startEvents)
 }
 
 func btnMenuTerminalClick(node *Node){
