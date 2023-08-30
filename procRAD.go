@@ -25,9 +25,6 @@ var btnAddPanel *Node
 var btnAddForm *Node 
 var frmCode *Node 
 var memCode *Node 
-//var btnCodeGen *Node
-//var btnCodeSave *Node
-//var btnCodeOpen *Node
 
 var menuWinRAD *Node
 var menuFileRAD *Node
@@ -94,12 +91,6 @@ func startRAD(){
 	btnAddComboBox = CreateBtn(frmRAD, "btnAddComboBox", 2+41+41+41+41+41+41+41, 18+21, 40, 40, 0xD8DCC0, 0x000000, "Cmb", btnAddComboBoxClick)
 	btnAddListBox = CreateBtn(frmRAD, "btnAddListBox", 2+41+41+41+41+41+41+41+41, 18+21, 40, 40, 0xD8DCC0, 0x000000, "Lbx", btnAddListBoxClick)
 	
-	
-	
-	
-	//btnCodeGen = CreateBtn(frmRAD, "btnCodeGen", 2+41+41+41+41+41+41+41+41+41+41, 18, 50, 40, 0xD8DCC0, 0x000000, "Code", btnCodeGenClick)
-	//btnCodeSave = CreateBtn(frmRAD, "btnCodeSave", 2+41+41+41+41+41+41+41+41+41+41+51, 18, 50, 40, 0xD8DCC0, 0x000000, "Save", btnCodeSaveClick)
-	//btnCodeOpen = CreateBtn(frmRAD, "btnCodeOpen", 2+41+41+41+41+41+41+41+41+41+41+51+51, 18, 50, 40, 0xD8DCC0, 0x000000, "Open", btnCodeOpenClick)
 	
 	edtFileName = CreateEdit(frmRAD, "edtFileName", 2+41+41+41+41+41+41+41+41+41+41+51+51+70, 18+21+10, 200, 20, 0xf8fcf8, 0x0, "./files/tmp.go", nil, nil)
 	
@@ -225,6 +216,8 @@ func editPropNameEnter(node *Node){
 		obj.name  = node.obj.(*tEdit).text
 	case *tMenu:
 		obj.name  = node.obj.(*tEdit).text
+	case *tListFileBox:
+		obj.name  = node.obj.(*tEdit).text
 	}
 }
 
@@ -257,6 +250,8 @@ func editPropLeftEnter(node *Node){
 		obj.x, _ = strconv.Atoi(node.obj.(*tEdit).text)
 	case *tMenu:
 		obj.x, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tListFileBox:
+		obj.x, _ = strconv.Atoi(node.obj.(*tEdit).text)
 	}
 }
 
@@ -288,6 +283,8 @@ func editPropTopEnter(node *Node){
 	case *tTab:
 		obj.y, _ = strconv.Atoi(node.obj.(*tEdit).text)
 	case *tMenu:
+		obj.y, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tListFileBox:
 		obj.y, _ = strconv.Atoi(node.obj.(*tEdit).text)
 	}
 }
@@ -349,6 +346,8 @@ func editPropWidthEnter(node *Node){
 		obj.sizeX, _ = strconv.Atoi(node.obj.(*tEdit).text)
 	case *tMenu:
 		obj.sizeX, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tListFileBox:
+		obj.sizeX, _ = strconv.Atoi(node.obj.(*tEdit).text)
 	}
 }
 
@@ -381,6 +380,8 @@ func editPropHeightEnter(node *Node){
 		obj.sizeY, _ = strconv.Atoi(node.obj.(*tEdit).text)
 	case *tMenu:
 		obj.sizeY, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tListFileBox:
+		obj.sizeY, _ = strconv.Atoi(node.obj.(*tEdit).text)
 	}
 }
 
@@ -412,6 +413,8 @@ func editPropBCEnter(node *Node){
 		obj.BC = int(val)
 	case *tMenu:
 		obj.BC = int(val)
+	case *tListFileBox:
+		obj.BC = int(val)
 	}
 }
 
@@ -438,6 +441,8 @@ func editPropTCEnter(node *Node){
 	case *tTab:
 		obj.TC = int(val)
 	case *tMenu:
+		obj.TC = int(val)
+	case *tListFileBox:
 		obj.TC = int(val)
 	}
 }
@@ -559,6 +564,12 @@ func cmbPropVisibleEnter(node *Node){
 		} else if node.obj.(*tComboBox).text == "false" {
 			obj.visible = false
 		}
+	case *tListFileBox:
+		if node.obj.(*tComboBox).text == "true" {
+			obj.visible = true	
+		} else if node.obj.(*tComboBox).text == "false" {
+			obj.visible = false
+		}
 	}
 }
 
@@ -619,6 +630,12 @@ func cmbPropEnabledEnter(node *Node){
 		} else if node.obj.(*tComboBox).text == "false" {
 			obj.enabled = false
 		}
+	case *tListFileBox:
+		if node.obj.(*tComboBox).text == "true" {
+			obj.enabled = true	
+		} else if node.obj.(*tComboBox).text == "false" {
+			obj.enabled = false
+		}
 	}
 }
 
@@ -646,6 +663,8 @@ func cmbPropListEnter(node *Node){
 		obj.list = node.obj.(*tComboBox).list
 	case *tMenu:
 		obj.list = node.obj.(*tComboBox).list
+	case *tListFileBox:
+		obj.list = node.obj.(*tComboBox).list
 	}
 }
 
@@ -659,6 +678,8 @@ func editPropSelectedEnter(node *Node){
 	case *tTab:
 		obj.selected, _ = strconv.Atoi(node.obj.(*tEdit).text)
 	case *tMenu:
+		obj.selected, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tListFileBox:
 		obj.selected, _ = strconv.Atoi(node.obj.(*tEdit).text)
 	}
 }
@@ -693,6 +714,8 @@ func editEvntClickEnter(node *Node){
 		obj.onClickStr = node.obj.(*tEdit).text
 	case *tMenu:
 		obj.onClickStr = node.obj.(*tEdit).text
+	case *tListFileBox:
+		obj.onClickStr = node.obj.(*tEdit).text
 	}
 }
 
@@ -709,6 +732,8 @@ func editEvntEnterEnter(node *Node){
 	case *tTab:
 		obj.onEnterStr = node.obj.(*tEdit).text
 	case *tMenu:
+		obj.onEnterStr = node.obj.(*tEdit).text
+	case *tListFileBox:
 		obj.onEnterStr = node.obj.(*tEdit).text
 	}
 }
@@ -758,34 +783,6 @@ func btnAddListBoxClick(node *Node){
 	CreateListBox(RADFormElement, "lbxListBox", 10, 24, 100, 100, 0xf8fcf8, 0x0, nil, nil, nil)
 }
 
-
-/*func btnCodeGenClick(node *Node){
-	memCode.obj.(*tMemo).text = ""	
-	//package main
-	//import ()
-	memCode.obj.(*tMemo).text += "package main" + string(13) + string(13) + "import ()" + string(13) + string(13)
-	PrintVarNode(RADFormElement)
-	memCode.obj.(*tMemo).text += string(13) + string(13)
-	//func startSNMP(frmMain *Node){
-	memCode.obj.(*tMemo).text += "func startProc(frmMain *Node){ " + string(13)
-	
-	//frmMain.obj.(*tForm).x = 190
-	//frmMain.obj.(*tForm).y = 70
-	//frmMain.obj.(*tForm).sizeX = 550
-	//frmMain.obj.(*tForm).sizeY = 300
-	//frmMain.children[0].obj.(*tBitBtn).x = frmMain.obj.(*tForm).sizeX - 17
-	memCode.obj.(*tMemo).text += "    frmMain.obj.(*tForm).x = " + strconv.Itoa(RADFormElement.obj.(*tForm).x) + string(13)
-	memCode.obj.(*tMemo).text += "    frmMain.obj.(*tForm).y = " + strconv.Itoa(RADFormElement.obj.(*tForm).y) + string(13)
-	memCode.obj.(*tMemo).text += "    frmMain.obj.(*tForm).sizeX = " + strconv.Itoa(RADFormElement.obj.(*tForm).sizeX) + string(13)
-	memCode.obj.(*tMemo).text += "    frmMain.obj.(*tForm).sizeY = " + strconv.Itoa(RADFormElement.obj.(*tForm).sizeY) + string(13)
-	memCode.obj.(*tMemo).text += "    frmMain.children[0].obj.(*tBitBtn).x = frmMain.obj.(*tForm).sizeX - 17" + string(13) + string(13)
-	
-	PrintElementNode(RADFormElement, &layout)	
-	// }		
-	memCode.obj.(*tMemo).text += "}" + string(13) + string(13) + string(13)
-	
-	PrintFuncNode(RADFormElement)
-}*/
 
 func PrintFuncNode(node *Node){
 	if node.obj != nil {

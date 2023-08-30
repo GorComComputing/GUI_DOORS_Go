@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	//"fmt"
     "syscall/js"
 )
 
@@ -9,7 +9,7 @@ import (
 
 func WriteFile(name string, str string) string {
 	result := js.Global().Call("HttpRequest", "http://localhost:8081/save?name=" + name, str).Get("response").String() 
-	fmt.Println("Responsed: ", result)
+	//fmt.Println("Responsed: ", result)
 	return result
 }
 
@@ -17,7 +17,14 @@ func WriteFile(name string, str string) string {
 
 func ReadFile(name string) string {
 	result := js.Global().Call("HttpRequest", "http://localhost:8081/api?cmd=read " + name, "").Get("response").String() 
-	fmt.Println("Responsed: ", result)
+	//fmt.Println("Responsed: ", result)
+	return result
+}
+
+
+func GetCatalog(name string) string {
+	result := js.Global().Call("HttpRequest", "http://localhost:8081/api?cmd=ls " + name, "").Get("response").String() 
+	//fmt.Println("Responsed: ", result)
 	return result
 }
 
@@ -27,6 +34,6 @@ func Get(url string, s string, body string) string {
 		url += "?" + s
 	}
 	result := js.Global().Call("HttpRequest", "http://localhost:8081/api?cmd=curl_get " + url, body).Get("response").String()
-	fmt.Println("Responsed: ", result)
+	//fmt.Println("Responsed: ", result)
 	return result
 }

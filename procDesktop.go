@@ -5,7 +5,7 @@ import (
     //"syscall/js"
     //"math/rand"
     //"strconv"
-    //"strings"
+    "strings"
     //"reflect"
 
 )
@@ -15,6 +15,7 @@ var frmDesktop *Node
 var pnlTask *Node
 var btnStart *Node
 var lblTime *Node
+var lsfDesktop *Node
 
 var frmMenuStart *Node
 var cnvMenuStart *Node
@@ -29,6 +30,9 @@ func startDesktop(){
 	frmDesktop = CreateForm(&layout, "frmDesktop", 0, 0, BITMAP_WIDTH-1, BITMAP_HEIGHT-2, 0x0080C0, FLAT, "", true, nil)
 	pnlTask = CreatePanel(frmDesktop, "pnlTask", 0, frmDesktop.obj.(*tForm).sizeY - 28, BITMAP_WIDTH - 1, 28, 0x30B410, TASK, nil)
 	btnStart = CreateBtn(pnlTask, "btnStart", 2, 2, 70, 28 - 4, 0x50A0F8, 0xF8FCF8, "START", btnStartClick)
+
+	listFileDesktop := strings.Fields(GetCatalog("."))
+    lsfDesktop = CreateListFileBox(frmDesktop, "lsfDesktop", 10, 30, 300, 1000, 0x0080C0, 0xF8FCF8, listFileDesktop, lsfDesktopClick, nil)
 	
 	lblFPS = CreateLabel(frmDesktop, "lblFPS", 10, 10, 200, 20, 0x0080C0, 0xF8FCF8, "", nil)
 	
@@ -60,6 +64,14 @@ func startDesktop(){
 	menuStartPrograms.obj.(*tMenu).visible = false
 	
 	cbxRAD = CreateCheckBox(frmMenuStart, "cbxRAD", 24, menuStart.obj.(*tMenu).y + menuStart.obj.(*tMenu).sizeY + 2, 100, 16, 0xD8DCC0, 0x000000, "RAD", false, cbxRADClick)
+}
+
+
+func lsfDesktopClick(node *Node, x int, y int){
+	result := ReadFile(node.obj.(*tListFileBox).list[node.obj.(*tListFileBox).selected])
+	result = strings.Replace(result, "\r\n", string(13), -1)
+	result = strings.Replace(result, "\t", string(0x20) + string(0x20) + string(0x20) + string(0x20), -1)
+	memTerminal.obj.(*tMemo).text = result
 }
 
 

@@ -36,6 +36,7 @@ const (
     LISTBOX
     TAB
     MENU
+    LISTFILEBOX
 )
 
 type tWinComponents interface {
@@ -56,19 +57,11 @@ type Node struct {
     obj tWinComponents 
 }
          
-//var timeFPS
 
 //export eventDraw
-func eventDraw() {
-	/*if btnStart != nil {
-		btnStart.obj.(*tBtn).caption = string(time.Now() - timeFPS)
-	}
-	timeFPS = time.Now()*/
-	
+func eventDraw() {	
 	start := time.Now()
 
-
-	
 	SetBackColor(0x000000) //0x111111 0xFFFFFF
 	SetColor(0x000000)
 	SetViewPort(0, 0, GETMAX_X, GETMAX_Y)
@@ -113,6 +106,8 @@ func DrawNode(node *Node, x int, y int){
 		case *tTab:
 			visible = obj.visible
 		case *tMenu:
+			visible = obj.visible
+		case *tListFileBox:
 			visible = obj.visible
 		}
 	}
@@ -188,6 +183,11 @@ func DrawNode(node *Node, x int, y int){
 			parY = obj.y + y 
 			parSizeX = obj.sizeX
 			parSizeY = obj.sizeY
+		case *tListFileBox:
+			parX = obj.x + x 
+			parY = obj.y + y 
+			parSizeX = obj.sizeX
+			parSizeY = obj.sizeY
 		}
 	}
 	
@@ -228,39 +228,12 @@ func eventClick(x int, y int)  {
 			obj.Click(x-X, y-Y)
 		case *tMenu:
 			obj.Click(x-X, y-Y)
+		case *tListFileBox:
+			obj.Click(x-X, y-Y)
 		}
 	}
 }
 
-/*
-//export eventRightClick
-func eventRightClick(x int, y int)  {
-		fmt.Println("Right Click Event: " + strconv.Itoa(x) + " " + strconv.Itoa(y))
-		list = nil
-		ClickRecurs(&layout, x, y, 0, 0)
-		
-		if !RAD || list[len(list)-1] == cbxRAD || layout.children[len(layout.children)-1] == frmProperties || layout.children[len(layout.children)-1] == frmRAD || layout.children[len(layout.children)-1] == frmCode {
-		switch obj := list[len(list)-1].obj.(type) {
-		case *tBtn:
-			obj.Click(x-X, y-Y)
-		case *tBitBtn:
-			obj.Click(x-X, y-Y)
-		case *tCheckBox:
-			obj.Click(x-X, y-Y)
-		case *tEdit:
-			obj.Click(x-X, y-Y)
-		case *tComboBox:
-			obj.Click(x-X, y-Y)
-		case *tListBox:
-			obj.Click(x-X, y-Y)
-		case *tTab:
-			obj.Click(x-X, y-Y)
-		case *tMenu:
-			obj.Click(x-X, y-Y)
-		}
-	}
-}
-*/
 
 var X, Y int = 0, 0
 func ClickRecurs(node *Node, x int, y int, parX int, parY int) {
@@ -293,6 +266,8 @@ func ClickRecurs(node *Node, x int, y int, parX int, parY int) {
 		case *tTab:
 			visible = obj.visible
 		case *tMenu:
+			visible = obj.visible
+		case *tListFileBox:
 			visible = obj.visible
 		}
 	}
@@ -336,6 +311,9 @@ func ClickRecurs(node *Node, x int, y int, parX int, parY int) {
 			parX += obj.x
 			parY += obj.y
 		case *tMenu:
+			parX += obj.x
+			parY += obj.y
+		case *tListFileBox:
 			parX += obj.x
 			parY += obj.y
 		}
@@ -460,6 +438,15 @@ func ClickRecurs(node *Node, x int, y int, parX int, parY int) {
 				X = parX+node.obj.(*tMenu).x
 				Y = parY+node.obj.(*tMenu).y
 			}
+		case *tListFileBox:
+			if (parX+node.obj.(*tListFileBox).x) < x && 
+			(parX+node.obj.(*tListFileBox).x + node.obj.(*tListFileBox).sizeX) > x && 
+			(parY+node.obj.(*tListFileBox).y) < y && 
+			(parY+node.obj.(*tListFileBox).y + node.obj.(*tListFileBox).sizeY) > y {
+				list = append(list, node)
+				X = parX+node.obj.(*tListFileBox).x
+				Y = parY+node.obj.(*tListFileBox).y
+			}
 		}
 	}
 			
@@ -529,6 +516,8 @@ func SetFocus(node *Node) {
 		case *tListBox:
 			obj.focused = false
 		case *tMenu:
+			obj.focused = false
+		case *tListFileBox:
 			obj.focused = false
 		}
 	}
@@ -603,6 +592,8 @@ func eventMouseDown(x int, y int) {
 		obj.MouseDown(x, y)
 	case *tMenu:
 		obj.MouseDown(x, y)
+	case *tListFileBox:
+		obj.MouseDown(x, y)
 	}
 }
 
@@ -662,6 +653,8 @@ func eventMouseMove(x int, y int)  {
 		obj.MouseMove(x, y, x-X, y-Y)	
 	case *tMenu:
 		obj.MouseMove(x, y, x-X, y-Y)
+	case *tListFileBox:
+		obj.MouseMove(x, y, x-X, y-Y)
 	}
 	}
     downX = x 
@@ -694,6 +687,8 @@ func eventKeyDown(key int){
 		case *tListBox:
 			obj.KeyDown(key)
 		case *tMenu:
+			obj.KeyDown(key)
+		case *tListFileBox:
 			obj.KeyDown(key)
 		}
 		fmt.Println(key)
@@ -728,20 +723,3 @@ func findRight(str string, current int) int {
 }
 
 
-/*func findNodeByObj(obj tWinComponents) *Node {
-	var i int
-	if node.typ == FORM {
-		for i := 0; i < len(layout.children); i++ {
-			if node == layout.children[i] {
-				return i
-			}
-		}
-	} else {
-		if node.parent != nil {
-			i = findNode(node.parent)
-		} else {
-			return -1
-		}
-	}
-	return i
-}*/

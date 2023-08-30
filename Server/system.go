@@ -25,6 +25,7 @@ func cmd_tst(words []string) string {
 
 
 func cmd_ls(words []string) string {
+	var output string
 	if len(words) < 2 {
 		fmt.Println("Too little parameters")
 	} else {
@@ -33,9 +34,11 @@ func cmd_ls(words []string) string {
 		if err != nil {
 			fmt.Println("could not run command: ", err)
 		}
+		output = string(out)
 		fmt.Println(string(out))
 	}
-	return ""
+	
+	return output
 }
 
 
