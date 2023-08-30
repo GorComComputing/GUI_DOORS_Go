@@ -8,7 +8,7 @@ var lblLabel *Node
 var cbxChBox *Node
 var cmbTest *Node
 var lsbTest *Node
-var tabPropEvents2 *Node
+
 
 
 func startTMP(frmMain *Node){ 
@@ -27,10 +27,6 @@ func startTMP(frmMain *Node){
     cmbTest = CreateComboBox(frmMain, "cmbTest", 191, 350, 100, 16, 0xf8fcf8, 0x0, "true", list, nil, nil)
     lsbTest = CreateListBox(frmMain, "lsbTest", 191, 80, 100, 60, 0xf8fcf8, 0x0, list, nil, nil)
     
-    listTab := []string{"Properties", "Events"} 
-    
-	tabPropEvents2 = CreateTab(frmMain, "tabPropEvents", 2, 20, 90, 20, 0xd8dcc0, 0x0, listTab, tabtabPropEventsClick, nil)
-
 }
 
 

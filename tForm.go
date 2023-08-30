@@ -33,6 +33,7 @@ const (
     WIN
     FLAT
     TASK
+    LINE
 )
 
 
@@ -49,22 +50,23 @@ func CreateForm(parent *Node, name string, x int, y int, sizeX int, sizeY int, B
 
 
 func formClose(node *Node){
-	//node.parent.obj.(*tForm).visible = false
-	
+	node.parent.obj.(*tForm).visible = false
 	
 	var btn *Node
 	var i int
 	for i = 0; i < len(process); i++ {
 		if node.parent == process[i].form {
+			process[i].isRun = false
 			btn = process[i].btn
-			copy(process[i:], process[i+1:])
-			process[len(process)-1] = nil
-			process = process[:len(process)-1]
-			//process[i].form.obj.(*tForm).visible = !(process[i].form.obj.(*tForm).visible)
+			//copy(process[i:], process[i+1:])
+			//process[len(process)-1] = nil
+			//process = process[:len(process)-1]
+						//process[i].form.obj.(*tForm).visible = false
 			break
 		}
 	}
 	
+	// Удаляет кнопку
 	for i = 0; i < len(pnlTask.children); i++ {
 		if btn == pnlTask.children[i] {
 			copy(pnlTask.children[i:], pnlTask.children[i+1:])
@@ -74,6 +76,7 @@ func formClose(node *Node){
 		}
 	}
 
+	// Сдвигает кнопки
 	xTask = 2-10 
 	for i = 1; i < len(pnlTask.children); i++ {
 		switch obj := pnlTask.children[i].obj.(type) {
@@ -83,19 +86,18 @@ func formClose(node *Node){
 		xTask += 81
 	}
 	
+	// Устанавливает фокус
 	layout.children[len(layout.children)-3].obj.(*tForm).focused = true
-	for i = 0; i < len(layout.children); i++ {
+	
+	// Удаляет форму
+	/*for i = 0; i < len(layout.children); i++ {
 		if node.parent == layout.children[i] {
 			copy(layout.children[i:], layout.children[i+1:])
 			layout.children[len(layout.children)-1] = nil
 			layout.children = layout.children[:len(layout.children)-1]
 			break
 		}
-	}
-	
-	
-	
-
+	}*/
 }
 
 
@@ -228,9 +230,10 @@ func (obj *tForm) Click(x int, y int){
 }
 
 
-func (obj *tForm) MouseMove(x int, y int){
+func (obj *tForm) MouseMove(x int, y int, Xl int, Yl int){
+	if !mouseIsDown {return}
 	obj.x += x - downX
-    	obj.y += y - downY	
+    obj.y += y - downY	
     	if RAD && layout.children[len(layout.children)-1] != frmProperties && layout.children[len(layout.children)-1] != frmRAD && layout.children[len(layout.children)-1] != frmCode {
 			editPropLeft.obj.(*tEdit).text = strconv.Itoa(obj.x)
 			editPropTop.obj.(*tEdit).text = strconv.Itoa(obj.y)	

@@ -81,7 +81,7 @@ func startDispatch(frmMain *Node){
 	frmMain.obj.(*tForm).x = 100
 	frmMain.obj.(*tForm).y = 100
 	frmMain.obj.(*tForm).sizeX = 600
-	frmMain.obj.(*tForm).sizeY = 250
+	frmMain.obj.(*tForm).sizeY = 252
 	frmMain.children[0].obj.(*tBitBtn).x = frmMain.obj.(*tForm).sizeX - 17
 	frmMain.obj.(*tForm).visible = false
 	

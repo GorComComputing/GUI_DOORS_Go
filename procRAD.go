@@ -25,9 +25,13 @@ var btnAddPanel *Node
 var btnAddForm *Node 
 var frmCode *Node 
 var memCode *Node 
-var btnCodeGen *Node
-var btnCodeSave *Node
-var btnCodeOpen *Node
+//var btnCodeGen *Node
+//var btnCodeSave *Node
+//var btnCodeOpen *Node
+
+var menuWinRAD *Node
+var menuFileRAD *Node
+var menuBuildRAD *Node
 
 
 var lblPropTop *Node
@@ -79,39 +83,110 @@ var listMode = []string{"NONE", "WIN", "FLAT", "TASK"}
 
 
 func startRAD(){
-	frmRAD = CreateForm(&layout, "frmRAD", 0, 0, BITMAP_WIDTH-1, 59, 0xD8DCC0, WIN, "RAD", false, nil)
-	btnAddBtn = CreateBtn(frmRAD, "btnAddBtn", 2, 18, 40, 40, 0xD8DCC0, 0x000000, "Btn", btnAddBtnClick)
-	btnAddLabel = CreateBtn(frmRAD, "btnAddLabel", 2+41, 18, 40, 40, 0xD8DCC0, 0x000000, "Lbl", btnAddLabelClick)
-	btnAddEdit = CreateBtn(frmRAD, "btnAddEdit", 2+41+41, 18, 40, 40, 0xD8DCC0, 0x000000, "Edt", btnAddEditClick)
-	btnAddCheckBox = CreateBtn(frmRAD, "btnAddCheckBox", 2+41+41+41, 18, 40, 40, 0xD8DCC0, 0x000000, "Cbx", btnAddCheckBoxClick)
-	btnAddMemo = CreateBtn(frmRAD, "btnAddMemo", 2+41+41+41+41, 18, 40, 40, 0xD8DCC0, 0x000000, "Mem", btnAddMemoClick)
-	btnAddPanel = CreateBtn(frmRAD, "btnAddPanel", 2+41+41+41+41+41, 18, 40, 40, 0xD8DCC0, 0x000000, "Pnl", btnAddPanelClick)
-	btnAddForm = CreateBtn(frmRAD, "btnAddForm", 2+41+41+41+41+41+41, 18, 40, 40, 0xD8DCC0, 0x000000, "Frm", btnAddFormClick)
-	btnAddComboBox = CreateBtn(frmRAD, "btnAddComboBox", 2+41+41+41+41+41+41+41, 18, 40, 40, 0xD8DCC0, 0x000000, "Cmb", btnAddComboBoxClick)
-	btnAddListBox = CreateBtn(frmRAD, "btnAddListBox", 2+41+41+41+41+41+41+41+41, 18, 40, 40, 0xD8DCC0, 0x000000, "Lbx", btnAddListBoxClick)
+	frmRAD = CreateForm(&layout, "frmRAD", 0, 0, BITMAP_WIDTH-1, 80, 0xD8DCC0, WIN, "RAD", false, nil)
+	btnAddBtn = CreateBtn(frmRAD, "btnAddBtn", 2, 18+21, 40, 40, 0xD8DCC0, 0x000000, "Btn", btnAddBtnClick)
+	btnAddLabel = CreateBtn(frmRAD, "btnAddLabel", 2+41, 18+21, 40, 40, 0xD8DCC0, 0x000000, "Lbl", btnAddLabelClick)
+	btnAddEdit = CreateBtn(frmRAD, "btnAddEdit", 2+41+41, 18+21, 40, 40, 0xD8DCC0, 0x000000, "Edt", btnAddEditClick)
+	btnAddCheckBox = CreateBtn(frmRAD, "btnAddCheckBox", 2+41+41+41, 18+21, 40, 40, 0xD8DCC0, 0x000000, "Cbx", btnAddCheckBoxClick)
+	btnAddMemo = CreateBtn(frmRAD, "btnAddMemo", 2+41+41+41+41, 18+21, 40, 40, 0xD8DCC0, 0x000000, "Mem", btnAddMemoClick)
+	btnAddPanel = CreateBtn(frmRAD, "btnAddPanel", 2+41+41+41+41+41, 18+21, 40, 40, 0xD8DCC0, 0x000000, "Pnl", btnAddPanelClick)
+	btnAddForm = CreateBtn(frmRAD, "btnAddForm", 2+41+41+41+41+41+41, 18+21, 40, 40, 0xD8DCC0, 0x000000, "Frm", btnAddFormClick)
+	btnAddComboBox = CreateBtn(frmRAD, "btnAddComboBox", 2+41+41+41+41+41+41+41, 18+21, 40, 40, 0xD8DCC0, 0x000000, "Cmb", btnAddComboBoxClick)
+	btnAddListBox = CreateBtn(frmRAD, "btnAddListBox", 2+41+41+41+41+41+41+41+41, 18+21, 40, 40, 0xD8DCC0, 0x000000, "Lbx", btnAddListBoxClick)
 	
 	
 	
 	
-	btnCodeGen = CreateBtn(frmRAD, "btnCodeGen", 2+41+41+41+41+41+41+41+41+41+41, 18, 50, 40, 0xD8DCC0, 0x000000, "Code", btnCodeGenClick)
-	btnCodeSave = CreateBtn(frmRAD, "btnCodeSave", 2+41+41+41+41+41+41+41+41+41+41+51, 18, 50, 40, 0xD8DCC0, 0x000000, "Save", btnCodeSaveClick)
-	btnCodeOpen = CreateBtn(frmRAD, "btnCodeOpen", 2+41+41+41+41+41+41+41+41+41+41+51+51, 18, 50, 40, 0xD8DCC0, 0x000000, "Open", btnCodeOpenClick)
+	//btnCodeGen = CreateBtn(frmRAD, "btnCodeGen", 2+41+41+41+41+41+41+41+41+41+41, 18, 50, 40, 0xD8DCC0, 0x000000, "Code", btnCodeGenClick)
+	//btnCodeSave = CreateBtn(frmRAD, "btnCodeSave", 2+41+41+41+41+41+41+41+41+41+41+51, 18, 50, 40, 0xD8DCC0, 0x000000, "Save", btnCodeSaveClick)
+	//btnCodeOpen = CreateBtn(frmRAD, "btnCodeOpen", 2+41+41+41+41+41+41+41+41+41+41+51+51, 18, 50, 40, 0xD8DCC0, 0x000000, "Open", btnCodeOpenClick)
 	
-	edtFileName = CreateEdit(frmRAD, "edtFileName", 2+41+41+41+41+41+41+41+41+41+41+51+51+70, 18+10, 200, 20, 0xf8fcf8, 0x0, "./files/tmp.go", nil, nil)
+	edtFileName = CreateEdit(frmRAD, "edtFileName", 2+41+41+41+41+41+41+41+41+41+41+51+51+70, 18+21+10, 200, 20, 0xf8fcf8, 0x0, "./files/tmp.go", nil, nil)
 	
-	frmProperties = CreateForm(&layout, "frmProperties", 0, 60, 185, 400, 0xD8DCC0, WIN, "Object Inspector", false, nil)
+	frmProperties = CreateForm(&layout, "frmProperties", 0, 81, 185, 400, 0xD8DCC0, WIN, "Object Inspector", false, nil)
 	listTab := []string{"Properties", "Events"} 
     pnlProperties = CreatePanel(frmProperties, "pnlPropertis", 2, 41, 181, 357, 0xd8dcc0, NONE, nil)
     pnlEvents = CreatePanel(frmProperties, "pnlEvents", 2, 41, 181, 357, 0xd8dcc0, NONE, nil)
     pnlEvents.obj.(*tPanel).visible = false
-	tabPropEvents = CreateTab(frmProperties, "tabPropEvents", 2, 20, 90, 20, 0xd8dcc0, 0x0, listTab, tabtabPropEventsClick, nil)
+	tabPropEvents = CreateTab(frmProperties, "tabPropEvents", 2, 20, 90, 20, 0xd8dcc0, 0x0, listTab, tabPropEventsClick, nil)
 	
-	frmCode = CreateForm(&layout, "frmCode", 185, 60, 900, 800, 0xD8DCC0, WIN, "Code", false, nil)
+	frmCode = CreateForm(&layout, "frmCode", 185, 81, 900, 800, 0xD8DCC0, WIN, "Code", false, nil)
 	memCode = CreateMemo(frmCode, "memCode", 2, 18, 900-4, 800-17-4, 0xF8FCF8, 0x000000, "", nil)
+	
+	listWinRAD := []string{"File", "Build"} 
+	menuWinRAD = CreateMenu(frmRAD, "menuWinRAD", 2, 18, BITMAP_WIDTH-1-1-4, 20, 0xd8dcc0, 0x0, LINE, listWinRAD, menuWinRADClick, nil)
+	
+	listFileRAD := []string{"Open", "Save"}
+	menuFileRAD = CreateMenu(frmRAD, "menuFileRAD", 2, 18+20, 100, len(listFileRAD)*20, 0xd8dcc0, 0x0, NONE, listFileRAD, menuFileRADClick, nil)
+	menuFileRAD.obj.(*tMenu).visible = false
+	
+	listBuildRAD := []string{"Generate"}
+	menuBuildRAD = CreateMenu(frmRAD, "menuBuildRAD", 2+60, 18+20, 100, len(listBuildRAD)*20, 0xd8dcc0, 0x0, NONE, listBuildRAD, menuBuildRADClick, nil)
+	menuBuildRAD.obj.(*tMenu).visible = false
 }
 
 
-func tabtabPropEventsClick(node *Node, x int, y int) {
+func menuWinRADClick(node *Node, x int, y int){
+	if node.obj.(*tMenu).selected == 0 {
+		menuFileRAD.obj.(*tMenu).visible = true
+		menuBuildRAD.obj.(*tMenu).visible = false
+	} else if node.obj.(*tMenu).selected == 1 {
+		menuFileRAD.obj.(*tMenu).visible = false
+		menuBuildRAD.obj.(*tMenu).visible = true
+	} else {
+		menuFileRAD.obj.(*tMenu).visible = false
+		menuBuildRAD.obj.(*tMenu).visible = false
+	}
+}
+
+
+func menuFileRADClick(node *Node, x int, y int){
+	node.obj.(*tMenu).visible = false
+	if node.obj.(*tMenu).selected == 0 {
+		result := ReadFile(edtFileName.obj.(*tEdit).text)
+		result = strings.Replace(result, "\r\n", string(13), -1)
+		result = strings.Replace(result, "\t", string(0x20) + string(0x20) + string(0x20) + string(0x20), -1)
+		memCode.obj.(*tMemo).text = result
+	} else if node.obj.(*tMenu).selected == 1 {
+		tmp := strings.Replace(memCode.obj.(*tMemo).text, string(13), "\r\n", -1)
+		memTerminal.obj.(*tMemo).text = WriteFile(edtFileName.obj.(*tEdit).text, tmp)
+	}
+}
+
+
+func menuBuildRADClick(node *Node, x int, y int){
+	node.obj.(*tMenu).visible = false
+	if node.obj.(*tMenu).selected == 0 {
+		memCode.obj.(*tMemo).text = ""	
+		//package main
+		//import ()
+		memCode.obj.(*tMemo).text += "package main" + string(13) + string(13) + "import ()" + string(13) + string(13)
+		PrintVarNode(RADFormElement)
+		memCode.obj.(*tMemo).text += string(13) + string(13)
+		//func startSNMP(frmMain *Node){
+		memCode.obj.(*tMemo).text += "func startProc(frmMain *Node){ " + string(13)
+	
+		//frmMain.obj.(*tForm).x = 190
+		//frmMain.obj.(*tForm).y = 70
+		//frmMain.obj.(*tForm).sizeX = 550
+		//frmMain.obj.(*tForm).sizeY = 300
+		//frmMain.children[0].obj.(*tBitBtn).x = frmMain.obj.(*tForm).sizeX - 17
+		memCode.obj.(*tMemo).text += "    frmMain.obj.(*tForm).x = " + strconv.Itoa(RADFormElement.obj.(*tForm).x) + string(13)
+		memCode.obj.(*tMemo).text += "    frmMain.obj.(*tForm).y = " + strconv.Itoa(RADFormElement.obj.(*tForm).y) + string(13)
+		memCode.obj.(*tMemo).text += "    frmMain.obj.(*tForm).sizeX = " + strconv.Itoa(RADFormElement.obj.(*tForm).sizeX) + string(13)
+		memCode.obj.(*tMemo).text += "    frmMain.obj.(*tForm).sizeY = " + strconv.Itoa(RADFormElement.obj.(*tForm).sizeY) + string(13)
+		memCode.obj.(*tMemo).text += "    frmMain.children[0].obj.(*tBitBtn).x = frmMain.obj.(*tForm).sizeX - 17" + string(13) + string(13)
+	
+		PrintElementNode(RADFormElement, &layout)	
+		// }		
+		memCode.obj.(*tMemo).text += "}" + string(13) + string(13) + string(13)
+	
+		PrintFuncNode(RADFormElement)
+	} 
+}
+
+
+func tabPropEventsClick(node *Node, x int, y int) {
 	if node.obj.(*tTab).selected == 0 {
 		pnlProperties.obj.(*tPanel).visible = true
 		pnlEvents.obj.(*tPanel).visible = false
@@ -148,6 +223,8 @@ func editPropNameEnter(node *Node){
 		obj.name  = node.obj.(*tEdit).text
 	case *tTab:
 		obj.name  = node.obj.(*tEdit).text
+	case *tMenu:
+		obj.name  = node.obj.(*tEdit).text
 	}
 }
 
@@ -178,6 +255,8 @@ func editPropLeftEnter(node *Node){
 		obj.x, _ = strconv.Atoi(node.obj.(*tEdit).text)
 	case *tTab:
 		obj.x, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tMenu:
+		obj.x, _ = strconv.Atoi(node.obj.(*tEdit).text)
 	}
 }
 
@@ -207,6 +286,8 @@ func editPropTopEnter(node *Node){
 	case *tListBox:
 		obj.y, _ = strconv.Atoi(node.obj.(*tEdit).text)
 	case *tTab:
+		obj.y, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tMenu:
 		obj.y, _ = strconv.Atoi(node.obj.(*tEdit).text)
 	}
 }
@@ -266,6 +347,8 @@ func editPropWidthEnter(node *Node){
 		obj.sizeX, _ = strconv.Atoi(node.obj.(*tEdit).text)
 	case *tTab:
 		obj.sizeX, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tMenu:
+		obj.sizeX, _ = strconv.Atoi(node.obj.(*tEdit).text)
 	}
 }
 
@@ -296,6 +379,8 @@ func editPropHeightEnter(node *Node){
 		obj.sizeY, _ = strconv.Atoi(node.obj.(*tEdit).text)
 	case *tTab:
 		obj.sizeY, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tMenu:
+		obj.sizeY, _ = strconv.Atoi(node.obj.(*tEdit).text)
 	}
 }
 
@@ -325,6 +410,8 @@ func editPropBCEnter(node *Node){
 		obj.BC = int(val)
 	case *tTab:
 		obj.BC = int(val)
+	case *tMenu:
+		obj.BC = int(val)
 	}
 }
 
@@ -350,6 +437,8 @@ func editPropTCEnter(node *Node){
 		obj.TC = int(val)
 	case *tTab:
 		obj.TC = int(val)
+	case *tMenu:
+		obj.TC = int(val)
 	}
 }
 
@@ -367,6 +456,16 @@ func cmbPropModeEnter(node *Node){
 			obj.mode = TASK
 		}
 	case *tPanel:
+		if node.obj.(*tComboBox).text == "NONE" {
+			obj.mode = NONE	
+		} else if node.obj.(*tComboBox).text == "WIN" {
+			obj.mode = WIN
+		} else if node.obj.(*tComboBox).text == "FLAT" {
+			obj.mode = FLAT
+		} else if node.obj.(*tComboBox).text == "TASK" {
+			obj.mode = TASK
+		}
+	case *tMenu:
 		if node.obj.(*tComboBox).text == "NONE" {
 			obj.mode = NONE	
 		} else if node.obj.(*tComboBox).text == "WIN" {
@@ -454,6 +553,12 @@ func cmbPropVisibleEnter(node *Node){
 		} else if node.obj.(*tComboBox).text == "false" {
 			obj.visible = false
 		}
+	case *tMenu:
+		if node.obj.(*tComboBox).text == "true" {
+			obj.visible = true	
+		} else if node.obj.(*tComboBox).text == "false" {
+			obj.visible = false
+		}
 	}
 }
 
@@ -508,6 +613,12 @@ func cmbPropEnabledEnter(node *Node){
 		} else if node.obj.(*tComboBox).text == "false" {
 			obj.enabled = false
 		}
+	case *tMenu:
+		if node.obj.(*tComboBox).text == "true" {
+			obj.enabled = true	
+		} else if node.obj.(*tComboBox).text == "false" {
+			obj.enabled = false
+		}
 	}
 }
 
@@ -533,6 +644,8 @@ func cmbPropListEnter(node *Node){
 		obj.list = node.obj.(*tComboBox).list
 	case *tTab:
 		obj.list = node.obj.(*tComboBox).list
+	case *tMenu:
+		obj.list = node.obj.(*tComboBox).list
 	}
 }
 
@@ -544,6 +657,8 @@ func editPropSelectedEnter(node *Node){
 	case *tComboBox:
 		obj.selected, _ = strconv.Atoi(node.obj.(*tEdit).text)
 	case *tTab:
+		obj.selected, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tMenu:
 		obj.selected, _ = strconv.Atoi(node.obj.(*tEdit).text)
 	}
 }
@@ -576,6 +691,8 @@ func editEvntClickEnter(node *Node){
 		obj.onClickStr = node.obj.(*tEdit).text
 	case *tTab:
 		obj.onClickStr = node.obj.(*tEdit).text
+	case *tMenu:
+		obj.onClickStr = node.obj.(*tEdit).text
 	}
 }
 
@@ -590,6 +707,8 @@ func editEvntEnterEnter(node *Node){
 	case *tListBox:
 		obj.onEnterStr = node.obj.(*tEdit).text
 	case *tTab:
+		obj.onEnterStr = node.obj.(*tEdit).text
+	case *tMenu:
 		obj.onEnterStr = node.obj.(*tEdit).text
 	}
 }
@@ -640,7 +759,7 @@ func btnAddListBoxClick(node *Node){
 }
 
 
-func btnCodeGenClick(node *Node){
+/*func btnCodeGenClick(node *Node){
 	memCode.obj.(*tMemo).text = ""	
 	//package main
 	//import ()
@@ -666,7 +785,7 @@ func btnCodeGenClick(node *Node){
 	memCode.obj.(*tMemo).text += "}" + string(13) + string(13) + string(13)
 	
 	PrintFuncNode(RADFormElement)
-}
+}*/
 
 func PrintFuncNode(node *Node){
 	if node.obj != nil {
@@ -976,22 +1095,4 @@ func PrintElementNode(node *Node, parent *Node){
 }
 
 
-func btnCodeSaveClick(node *Node){
-	tmp := strings.Replace(memCode.obj.(*tMemo).text, string(13), "\r\n", -1)
-	
-	//result := js.Global().Call("HttpRequest", "http://localhost:8085/save", tmp).Get("response").String() 
-	//fmt.Println("Responsed: ", result)
-	
-	memTerminal.obj.(*tMemo).text = WriteFile(edtFileName.obj.(*tEdit).text, tmp)	
-}
 
-func btnCodeOpenClick(node *Node){	
-	result := ReadFile(edtFileName.obj.(*tEdit).text)
-	//result := js.Global().Call("HttpRequest", "http://localhost:8085/api?cmd=read ./files/tmp.go", "").Get("response").String()  //?" + memCode.obj.(*tMemo).text
-	//fmt.Println("Responsed: ", result)
-	
-	result = strings.Replace(result, "\r\n", string(13), -1)
-	result = strings.Replace(result, "\t", string(0x20) + string(0x20) + string(0x20) + string(0x20), -1)
-	memCode.obj.(*tMemo).text = result
-	
-}

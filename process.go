@@ -29,6 +29,7 @@ type tProc struct {
 	name string 
     form *Node 
     btn  *Node
+    isRun bool
 }
 
 
@@ -46,17 +47,18 @@ func initDOORS(programs []*tProgram) {
 
 var xTask int = 2 + 71
 func startProcess(name string, onStart func(*Node)){
-	obj := tBtn{name: "btnTask"+name, x: xTask, y: 2, sizeX: 80, sizeY: 28 - 4, BC: 0xD8DCC0, TC: 0x000000, caption: name, visible: true, pressed: false, enabled: true, onClick: btnTaskClick}
+	/*obj := tBtn{name: "btnTask"+name, x: xTask, y: 2, sizeX: 80, sizeY: 28 - 4, BC: 0xD8DCC0, TC: 0x000000, caption: name, visible: true, pressed: false, enabled: true, onClick: btnTaskClick}
 	node := Node{typ: BUTTON, parent: pnlTask, previous: nil, children: nil, obj: &obj}
-	pnlTask.children = append(pnlTask.children, &node)
+	pnlTask.children = append(pnlTask.children, &node)*/
 	
 	frm := CreateForm(&layout, "frm" + name, 400, 400, 200, 130, 0xD8DCC0, WIN, name, true, nil)
+	frm.obj.(*tForm).visible = false
 	
-	proc := tProc{name: name, form: frm, btn: &node}
+	proc := tProc{name: name, form: frm, btn: nil, isRun: false} //, btn: &node
 	process = append(process, &proc)
-	xTask += 81
-	layout.children[len(layout.children)-2].obj.(*tForm).focused = false
-	layout.children[len(layout.children)-1].obj.(*tForm).focused = true
+	//xTask += 81
+	//layout.children[len(layout.children)-2].obj.(*tForm).focused = false
+	//layout.children[len(layout.children)-1].obj.(*tForm).focused = true
 	onStart(frm)
 }
 

@@ -9,7 +9,7 @@ import (
 )
 
 
-type tListBox struct{
+type tMenu struct{
 	name string
     x int
     y int
@@ -17,16 +17,12 @@ type tListBox struct{
     sizeY int
     BC int
     TC int
-    //text string
+    mode tMode
     visible bool
     focused bool
     enabled bool
-    //curX int
-    //curY int
     list []string
     selected int
-    //pos int
-    //line_start int
     onClick func(*Node, int, int)
     onClickStr string
     onEnter func(*Node)
@@ -34,15 +30,15 @@ type tListBox struct{
 }
 
 
-func CreateListBox(parent *Node, name string, x int, y int, sizeX int, sizeY int, BC int, TC int, list []string, onClick func(*Node, int, int), onEnter func(*Node)) *Node {
-	obj := tListBox{name: name, x: x, y: y, sizeX: sizeX, sizeY: sizeY, BC: BC, TC: TC, visible: true, enabled: true, list: list, selected: 0, onClick: onClick, onEnter: onEnter}
-	node := Node{typ: LISTBOX, parent: parent, previous: nil, children: nil, obj: &obj}
+func CreateMenu(parent *Node, name string, x int, y int, sizeX int, sizeY int, BC int, TC int, mode tMode, list []string, onClick func(*Node, int, int), onEnter func(*Node)) *Node {
+	obj := tMenu{name: name, x: x, y: y, sizeX: sizeX, sizeY: sizeY, BC: BC, TC: TC, mode: mode, visible: true, enabled: true, list: list, selected: 0, onClick: onClick, onEnter: onEnter}
+	node := Node{typ: MENU, parent: parent, previous: nil, children: nil, obj: &obj}
 	parent.children = append(parent.children, &node)
 	return &node
 }
 
 
-func (obj *tListBox) Draw(parX int, parY int, parSizeX int, parSizeY int){
+func (obj *tMenu) Draw(parX int, parY int, parSizeX int, parSizeY int){
 	SetLocalViewPort(parX + obj.x, parY + obj.y, parX + obj.x + obj.sizeX, parY + obj.y + obj.sizeY)
     
     if obj.enabled {
@@ -66,9 +62,15 @@ func (obj *tListBox) Draw(parX int, parY int, parSizeX int, parSizeY int){
 
     FillPoly(nil, 4, p);
 
-
-    SetColor(obj.TC);
+	var xd int = 0
+	if obj.mode != FLAT {
+		xd = 2
+	}
+	
+	SetColor(obj.TC);
     SetBackColor(obj.BC);
+    
+	if obj.mode != LINE {
     for i := 0; i < len(obj.list); i++ {
     	if i == obj.selected && obj.enabled {
     		SetColor(0x0054E0);
@@ -91,22 +93,60 @@ func (obj *tListBox) Draw(parX int, parY int, parSizeX int, parSizeY int){
     	} else {
     		SetColor(obj.TC);
     	}
-    	TextOutgl(nil, obj.list[i], parX+obj.x + 4, parY+obj.y + 4 + i*20, 1);
+    	TextOutgl(nil, obj.list[i], parX+obj.x + 4 + xd, parY+obj.y + 4 + i*20, 1);
     	
     }
     
-   /* if obj.focused && cursor {
-    	TextOutgl(nil, "|", parX+obj.x + 4 + obj.curX*8, parY+obj.y + 4 + (7+2)*obj.curY, 1);
-    }*/
+    if obj.mode != FLAT {
+    	SetColor(0xF8FCF8);
+    	LinePP(nil, parX + obj.x, parY + obj.y, parX + obj.x + obj.sizeX, parY + obj.y);
+    	LinePP(nil, parX + obj.x, parY + obj.y, parX + obj.x, parY + obj.y + obj.sizeY);
+    	SetColor(0xE0E0E0);
+    	LinePP(nil, parX + obj.x+1, parY + obj.y+1, parX + obj.x + obj.sizeX - 2, parY + obj.y+1);
+    	LinePP(nil, parX + obj.x+1, parY + obj.y+1, parX + obj.x+1, parY + obj.y + obj.sizeY - 1);
+    	SetColor(0x787C78);
+    	LinePP(nil, parX + obj.x+2, parY + obj.y + obj.sizeY - 1, parX + obj.x + obj.sizeX - 1, parY + obj.y + obj.sizeY - 1);
+    	LinePP(nil, parX + obj.x + obj.sizeX - 1, parY + obj.y + 1, parX + obj.x + obj.sizeX - 1, parY + obj.y + obj.sizeY - 1);
+    	SetColor(0x000000);
+    	LinePP(nil, parX + obj.x, parY + obj.y + obj.sizeY, parX + obj.x + obj.sizeX, parY + obj.y + obj.sizeY);
+    	LinePP(nil, parX + obj.x + obj.sizeX, parY + obj.y, parX + obj.x + obj.sizeX, parY + obj.y + obj.sizeY);  
+    } 
+    } else {
+    	for i := 0; i < len(obj.list); i++ {
+    	if i == obj.selected && obj.enabled {
 
-    
-    /*SetColor(0x000000);
-    LinePP(nil, parX+obj.x, parY+obj.y, parX+obj.x + obj.sizeX, parY+obj.y);
-    LinePP(nil, parX+obj.x, parY+obj.y, parX+obj.x, parY+obj.y + obj.sizeY);*/
+
+
+   			/*p1 := tPoint{x: parX+obj.x + i*60, y: parY+obj.y}
+			p2 := tPoint{x: parX+obj.x + 60 + i*60, y: parY+obj.y}
+			p3 := tPoint{x: parX+obj.x + 60 + i*60, y: parY+obj.y + obj.sizeY}
+			p4 := tPoint{x: parX+obj.x + i*60, y: parY+obj.y + obj.sizeY}*/
+
+    		
+    	SetColor(0xF8FCF8);
+    	LinePP(nil, parX + obj.x + i*60, parY + obj.y, parX + obj.x + 60 + i*60, parY + obj.y);
+    	LinePP(nil, parX + obj.x + i*60, parY + obj.y, parX + obj.x + i*60, parY + obj.y + obj.sizeY);
+    	SetColor(0xE0E0E0);
+    	LinePP(nil, parX + obj.x+1 + i*60, parY + obj.y+1, parX + obj.x + 60 - 2 + i*60, parY + obj.y+1);
+    	LinePP(nil, parX + obj.x+1 + i*60, parY + obj.y+1, parX + obj.x+1 + i*60, parY + obj.y + obj.sizeY - 1);
+    	SetColor(0x787C78);
+    	LinePP(nil, parX + obj.x+2 + i*60, parY + obj.y + obj.sizeY - 1, parX + obj.x + 60 - 1 + i*60, parY + obj.y + obj.sizeY - 1);
+    	LinePP(nil, parX + obj.x + 60 - 1 + i*60, parY + obj.y + 1, parX + obj.x + 60 - 1 + i*60, parY + obj.y + obj.sizeY - 1);
+    	SetColor(0x000000);
+    	LinePP(nil, parX + obj.x + i*60, parY + obj.y + obj.sizeY, parX + obj.x + 60 + i*60, parY + obj.y + obj.sizeY);
+    	LinePP(nil, parX + obj.x + 60 + i*60, parY + obj.y, parX + obj.x + 60 + i*60, parY + obj.y + obj.sizeY);
+    		
+    		SetColor(obj.TC);
+    	} else {
+    		SetColor(obj.TC);
+    	}
+    	TextOutgl(nil, obj.list[i], parX+obj.x + 4 + xd + i*60, parY+obj.y + 4, 1);
+    }		
+    }
 }
 
 
-func (obj *tListBox) RAD(x int, y int){
+func (obj *tMenu) RAD(x int, y int){
 	var visible string
     	if obj.visible {
     		visible = "true"
@@ -119,8 +159,17 @@ func (obj *tListBox) RAD(x int, y int){
     	} else {
     		enabled = "false"
     	}
+    	var mode string
+    	if obj.mode == NONE {
+    		mode = "NONE"
+    	} else if obj.mode == WIN {
+    		mode = "WIN"
+    	} else if obj.mode == FLAT {
+    		mode = "FLAT"
+    	} else if obj.mode == TASK {
+    		mode = "TASK"
+    	}
     		
-		//frmProperties.obj.(*tForm).caption = "Properties: LISTBOX"
 		downX = x 
     	downY = y 
     	mouseIsDown = true
@@ -136,12 +185,14 @@ func (obj *tListBox) RAD(x int, y int){
 		editPropBC = CreateEdit(pnlProperties, "editPropBC", 80, 85, 95, 20, 0xF8FCF8, 0x000000, fmt.Sprintf("%x", obj.BC), nil, editPropBCEnter)
 		lblPropTC = CreateLabel(pnlProperties, "lblPropTC", 5, 105, 95, 20, 0xD8DCC0, 0x000000, "TC", nil)
 		editPropTC = CreateEdit(pnlProperties, "editPropTC", 80, 105, 95, 20, 0xF8FCF8, 0x000000, fmt.Sprintf("%x", obj.TC), nil, editPropTCEnter)
-		lblPropWidth = CreateLabel(pnlProperties, "lblPropWidth", 5, 125, 95, 20, 0xD8DCC0, 0x000000, "Width", nil)
-		editPropWidth = CreateEdit(pnlProperties, "editPropWidth", 80, 125, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.sizeX), nil, editPropWidthEnter)
-		lblPropHeight = CreateLabel(pnlProperties, "lblPropHeight", 5, 145, 95, 20, 0xD8DCC0, 0x000000, "Height", nil)
-		editPropHeight = CreateEdit(pnlProperties, "editPropHeight", 80, 145, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.sizeY), nil, editPropHeightEnter)
-		lblPropVisible = CreateLabel(pnlProperties, "lblPropVisible", 5, 165, 95, 20, 0xD8DCC0, 0x000000, "Visible", nil)
-		cmbPropVisible = CreateComboBox(pnlProperties, "cmbPropVisible", 80, 165, 95, 16, 0xF8FCF8, 0x000000, visible, listBool, nil, cmbPropVisibleEnter)
+		lblPropMode = CreateLabel(pnlProperties, "lblPropMode", 5, 125, 95, 20, 0xD8DCC0, 0x000000, "Mode", nil)
+		cmbPropMode = CreateComboBox(pnlProperties, "cmbPropMode", 80, 125, 95, 16, 0xF8FCF8, 0x000000, mode, listMode, nil, cmbPropModeEnter)
+		lblPropWidth = CreateLabel(pnlProperties, "lblPropWidth", 5, 145, 95, 20, 0xD8DCC0, 0x000000, "Width", nil)
+		editPropWidth = CreateEdit(pnlProperties, "editPropWidth", 80, 145, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.sizeX), nil, editPropWidthEnter)
+		lblPropHeight = CreateLabel(pnlProperties, "lblPropHeight", 5, 165, 95, 20, 0xD8DCC0, 0x000000, "Height", nil)
+		editPropHeight = CreateEdit(pnlProperties, "editPropHeight", 80, 165, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.sizeY), nil, editPropHeightEnter)
+		lblPropVisible = CreateLabel(pnlProperties, "lblPropVisible", 5, 185, 95, 20, 0xD8DCC0, 0x000000, "Visible", nil)
+		cmbPropVisible = CreateComboBox(pnlProperties, "cmbPropVisible", 80, 185, 95, 16, 0xF8FCF8, 0x000000, visible, listBool, nil, cmbPropVisibleEnter)
 			
 		lblPropEnabled = CreateLabel(pnlProperties, "lblPropEnabled", 5, 185, 95, 20, 0xD8DCC0, 0x000000, "Enabled", nil)
 		cmbPropEnabled = CreateComboBox(pnlProperties, "cmbPropEnabled", 80, 185, 95, 16, 0xF8FCF8, 0x000000, enabled, listBool, nil, cmbPropEnabledEnter)
@@ -154,7 +205,7 @@ func (obj *tListBox) RAD(x int, y int){
 }
 
 
-func (obj *tListBox) KeyDown(key int){
+func (obj *tMenu) KeyDown(key int){
 	if key == 8 {
     			
     } else if key == 13 {
@@ -179,10 +230,12 @@ func (obj *tListBox) KeyDown(key int){
 }
 
 
-func (obj *tListBox) Click(x int, y int){
+func (obj *tMenu) Click(x int, y int){
 	fmt.Println("CLICKED: ", strconv.Itoa(x), strconv.Itoa(y))
-	if obj.enabled && len(list) > 0 {
+	if obj.enabled && len(list) > 0 && obj.mode != LINE {
 		obj.selected = int(y/20)
+	} else if obj.enabled && len(list) > 0 && obj.mode == LINE {
+		obj.selected = int(x/60)
 	}
 	
 	if obj.onClick != nil && obj.enabled {
@@ -191,17 +244,31 @@ func (obj *tListBox) Click(x int, y int){
 }
 
 
-func (obj *tListBox) MouseMove(x int, y int, Xl int, Yl int){
+func (obj *tMenu) MouseMove(x int, y int, Xl int, Yl int){
 	if RAD && layout.children[len(layout.children)-1] != frmProperties && layout.children[len(layout.children)-1] != frmRAD && layout.children[len(layout.children)-1] != frmCode && mouseIsDown {
 		obj.x += x - downX
     	obj.y += y - downY
     	editPropLeft.obj.(*tEdit).text = strconv.Itoa(obj.x)
 		editPropTop.obj.(*tEdit).text = strconv.Itoa(obj.y)
-    }
+    } else if obj.enabled && len(list) > 0 && 
+    		  Xl > 0 &&
+    		  Xl < obj.sizeX &&
+    		  int(Yl/20) >= 0 && 
+    		  int(Yl/20) < len(obj.list) && 
+    		  obj.mode != LINE {
+		obj.selected = int(Yl/20)	
+    } else if obj.enabled && len(list) > 0 && 
+    		  Yl > 0 &&
+    		  Yl < obj.sizeY &&
+    		  int(Xl/60) >= 0 && 
+    		  int(Xl/60) < len(obj.list) && 
+    		  obj.mode == LINE {
+		obj.selected = int(Xl/60)	
+    } 
 }
 
 
-func (obj *tListBox) MouseDown(x int, y int){
+func (obj *tMenu) MouseDown(x int, y int){
 	// RAD
 	if RAD && layout.children[len(layout.children)-1] != frmProperties && layout.children[len(layout.children)-1] != frmRAD && layout.children[len(layout.children)-1] != frmCode {
 		obj.RAD(x, y)

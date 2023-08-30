@@ -202,8 +202,8 @@ func (obj *tBtn) Click(x int, y int){
 }
 
 
-func (obj *tBtn) MouseMove(x int, y int){
-	if RAD && layout.children[len(layout.children)-1] != frmProperties && layout.children[len(layout.children)-1] != frmRAD && layout.children[len(layout.children)-1] != frmCode {
+func (obj *tBtn) MouseMove(x int, y int, Xl int, Yl int){
+	if RAD && layout.children[len(layout.children)-1] != frmProperties && layout.children[len(layout.children)-1] != frmRAD && layout.children[len(layout.children)-1] != frmCode && mouseIsDown {
 			obj.x += x - downX
     		obj.y += y - downY
     		editPropLeft.obj.(*tEdit).text = strconv.Itoa(obj.x)
