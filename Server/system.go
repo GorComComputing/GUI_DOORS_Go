@@ -29,7 +29,7 @@ func cmd_ls(words []string) string {
 	if len(words) < 2 {
 		fmt.Println("Too little parameters")
 	} else {
-		cmd := exec.Command(words[0], words[1])
+		cmd := exec.Command(words[0], words[1], words[2])
 		out, err := cmd.Output()
 		if err != nil {
 			fmt.Println("could not run command: ", err)

@@ -37,6 +37,7 @@ const (
     TAB
     MENU
     LISTFILEBOX
+    TABLE
 )
 
 type tWinComponents interface {
@@ -108,6 +109,8 @@ func DrawNode(node *Node, x int, y int){
 		case *tMenu:
 			visible = obj.visible
 		case *tListFileBox:
+			visible = obj.visible
+		case *tTable:
 			visible = obj.visible
 		}
 	}
@@ -188,6 +191,11 @@ func DrawNode(node *Node, x int, y int){
 			parY = obj.y + y 
 			parSizeX = obj.sizeX
 			parSizeY = obj.sizeY
+		case *tTable:
+			parX = obj.x + x 
+			parY = obj.y + y 
+			parSizeX = obj.sizeX
+			parSizeY = obj.sizeY
 		}
 	}
 	
@@ -230,6 +238,8 @@ func eventClick(x int, y int)  {
 			obj.Click(x-X, y-Y)
 		case *tListFileBox:
 			obj.Click(x-X, y-Y)
+		case *tTable:
+			obj.Click(x-X, y-Y)
 		}
 	}
 }
@@ -268,6 +278,8 @@ func ClickRecurs(node *Node, x int, y int, parX int, parY int) {
 		case *tMenu:
 			visible = obj.visible
 		case *tListFileBox:
+			visible = obj.visible
+		case *tTable:
 			visible = obj.visible
 		}
 	}
@@ -314,6 +326,9 @@ func ClickRecurs(node *Node, x int, y int, parX int, parY int) {
 			parX += obj.x
 			parY += obj.y
 		case *tListFileBox:
+			parX += obj.x
+			parY += obj.y
+		case *tTable:
 			parX += obj.x
 			parY += obj.y
 		}
@@ -447,6 +462,15 @@ func ClickRecurs(node *Node, x int, y int, parX int, parY int) {
 				X = parX+node.obj.(*tListFileBox).x
 				Y = parY+node.obj.(*tListFileBox).y
 			}
+		case *tTable:
+			if (parX+node.obj.(*tTable).x) < x && 
+			(parX+node.obj.(*tTable).x + node.obj.(*tTable).sizeX) > x && 
+			(parY+node.obj.(*tTable).y) < y && 
+			(parY+node.obj.(*tTable).y + node.obj.(*tTable).sizeY) > y {
+				list = append(list, node)
+				X = parX+node.obj.(*tTable).x
+				Y = parY+node.obj.(*tTable).y
+			}
 		}
 	}
 			
@@ -519,6 +543,8 @@ func SetFocus(node *Node) {
 			obj.focused = false
 		case *tListFileBox:
 			obj.focused = false
+		case *tTable:
+			obj.focused = false
 		}
 	}
 	// Установка нового фокуса элемента
@@ -565,6 +591,7 @@ func eventMouseDown(x int, y int) {
 			layout.children[len(layout.children)-1].obj.(*tForm).isRAD = true
 			RADFormElement = layout.children[len(layout.children)-1]
 			pnlProperties.children = nil
+			pnlEvents.children = nil
 	}
 	
 	switch obj := list[len(list)-1].obj.(type) {
@@ -593,6 +620,8 @@ func eventMouseDown(x int, y int) {
 	case *tMenu:
 		obj.MouseDown(x, y)
 	case *tListFileBox:
+		obj.MouseDown(x, y)
+	case *tTable:
 		obj.MouseDown(x, y)
 	}
 }
@@ -655,6 +684,8 @@ func eventMouseMove(x int, y int)  {
 		obj.MouseMove(x, y, x-X, y-Y)
 	case *tListFileBox:
 		obj.MouseMove(x, y, x-X, y-Y)
+	case *tTable:
+		obj.MouseMove(x, y, x-X, y-Y)
 	}
 	}
     downX = x 
@@ -671,7 +702,8 @@ func eventKeyDown(key int){
 				copy(RADElement.parent.children[i:], RADElement.parent.children[i+1:])
 				RADElement.parent.children[len(RADElement.parent.children)-1] = nil
 				RADElement.parent.children = RADElement.parent.children[:len(RADElement.parent.children)-1]
-				frmProperties.children = nil
+				pnlProperties.children = nil
+				pnlEvents.children = nil
 			}		
 		}
 	}
@@ -689,6 +721,8 @@ func eventKeyDown(key int){
 		case *tMenu:
 			obj.KeyDown(key)
 		case *tListFileBox:
+			obj.KeyDown(key)
+		case *tTable:
 			obj.KeyDown(key)
 		}
 		fmt.Println(key)

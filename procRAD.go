@@ -64,7 +64,7 @@ var lblEvntEnter *Node
 var editEvntEnter *Node
 var lblPropList *Node
 var cmbPropList *Node
-var edtFileName *Node
+
 var lblPropSelected *Node
 var editPropSelected *Node
 
@@ -92,7 +92,6 @@ func startRAD(){
 	btnAddListBox = CreateBtn(frmRAD, "btnAddListBox", 2+41+41+41+41+41+41+41+41, 18+21, 40, 40, 0xD8DCC0, 0x000000, "Lbx", btnAddListBoxClick)
 	
 	
-	edtFileName = CreateEdit(frmRAD, "edtFileName", 2+41+41+41+41+41+41+41+41+41+41+51+51+70, 18+21+10, 200, 20, 0xf8fcf8, 0x0, "./files/tmp.go", nil, nil)
 	
 	frmProperties = CreateForm(&layout, "frmProperties", 0, 81, 185, 400, 0xD8DCC0, WIN, "Object Inspector", false, nil)
 	listTab := []string{"Properties", "Events"} 
@@ -134,13 +133,18 @@ func menuWinRADClick(node *Node, x int, y int){
 func menuFileRADClick(node *Node, x int, y int){
 	node.obj.(*tMenu).visible = false
 	if node.obj.(*tMenu).selected == 0 {
-		result := ReadFile(edtFileName.obj.(*tEdit).text)
+		OpenDialog("./files/", &(memCode.obj.(*tMemo).text))
+		
+	
+		/*result := ReadFile(edtFileName.obj.(*tEdit).text)
 		result = strings.Replace(result, "\r\n", string(13), -1)
 		result = strings.Replace(result, "\t", string(0x20) + string(0x20) + string(0x20) + string(0x20), -1)
-		memCode.obj.(*tMemo).text = result
+		memCode.obj.(*tMemo).text = result*/
 	} else if node.obj.(*tMenu).selected == 1 {
-		tmp := strings.Replace(memCode.obj.(*tMemo).text, string(13), "\r\n", -1)
-		memTerminal.obj.(*tMemo).text = WriteFile(edtFileName.obj.(*tEdit).text, tmp)
+		SaveDialog("./files/", &(memCode.obj.(*tMemo).text))
+		
+		/*tmp := strings.Replace(memCode.obj.(*tMemo).text, string(13), "\r\n", -1)
+		memTerminal.obj.(*tMemo).text = WriteFile(edtFileName.obj.(*tEdit).text, tmp)*/
 	}
 }
 
@@ -663,8 +667,8 @@ func cmbPropListEnter(node *Node){
 		obj.list = node.obj.(*tComboBox).list
 	case *tMenu:
 		obj.list = node.obj.(*tComboBox).list
-	case *tListFileBox:
-		obj.list = node.obj.(*tComboBox).list
+	//case *tListFileBox:
+	//	obj.list = node.obj.(*tComboBox).list
 	}
 }
 

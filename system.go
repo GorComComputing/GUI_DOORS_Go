@@ -3,6 +3,7 @@ package main
 import (
 	//"fmt"
     "syscall/js"
+    "strings"
 )
 
 
@@ -22,11 +23,40 @@ func ReadFile(name string) string {
 }
 
 
-func GetCatalog(name string) string {
+type Catalog struct {
+		name string 
+    	typ string
+}
+
+func GetCatalogList(name string) []Catalog {
+	output := make([]Catalog, 0)
+	var typCat string
+
+	//name = strings.Replace(name, ".", "%2e", -1)
+	
+	result := js.Global().Call("HttpRequest", "http://localhost:8081/api?cmd=ls -l " + name, "").Get("response").String() 
+	words := strings.Split(result, "\n")
+
+	for i := 1; i < len(words)-1; i++ {
+		row := strings.Fields(words[i])
+
+		if row[0][0] == byte('d') {
+			typCat = "D"
+		} else if row[0][0] == byte('-') {
+			typCat = "F"
+		} 
+		cat := Catalog{row[8], typCat}
+		output = append(output, cat)
+	}
+	//fmt.Println("Responsed: ", output)
+	return output
+}
+
+/*func GetFileList(name string) string {
 	result := js.Global().Call("HttpRequest", "http://localhost:8081/api?cmd=ls " + name, "").Get("response").String() 
 	//fmt.Println("Responsed: ", result)
 	return result
-}
+}*/
 
 
 func Get(url string, s string, body string) string {
