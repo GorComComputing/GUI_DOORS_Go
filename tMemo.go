@@ -184,7 +184,7 @@ func (obj *tMemo) Click(x int, y int){
 
 
 func (obj *tMemo) MouseMove(x int, y int, Xl int, Yl int){
-	if RAD && layout.children[len(layout.children)-1] != frmProperties && layout.children[len(layout.children)-1] != frmRAD && layout.children[len(layout.children)-1] != frmCode && mouseIsDown {
+	if RAD && layout.children[len(layout.children)-1] != frmProperties && layout.children[len(layout.children)-1] != frmRAD && layout.children[len(layout.children)-1] != frmCode && mouseIsDown && layout.children[len(layout.children)-1].obj.(*tForm).mode != DIALOG {
 			obj.x += x - downX
     		obj.y += y - downY
     		editPropLeft.obj.(*tEdit).text = strconv.Itoa(obj.x)
@@ -195,7 +195,7 @@ func (obj *tMemo) MouseMove(x int, y int, Xl int, Yl int){
 
 func (obj *tMemo) MouseDown(x int, y int){
 	// RAD
-		if RAD && layout.children[len(layout.children)-1] != frmProperties && layout.children[len(layout.children)-1] != frmRAD && layout.children[len(layout.children)-1] != frmCode {
+		if RAD && layout.children[len(layout.children)-1] != frmProperties && layout.children[len(layout.children)-1] != frmRAD && layout.children[len(layout.children)-1] != frmCode && layout.children[len(layout.children)-1].obj.(*tForm).mode != DIALOG {
 			obj.RAD(x, y)
 		} else {
 			// Фокус

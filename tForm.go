@@ -31,9 +31,12 @@ type tMode int
 const (
     NONE tMode = iota
     WIN
+    DIALOG
     FLAT
     TASK
     LINE
+    LISTICON
+    BIGICON
 )
 
 
@@ -42,7 +45,7 @@ func CreateForm(parent *Node, name string, x int, y int, sizeX int, sizeY int, B
 	node := Node{typ: FORM, parent: parent, previous: nil, children: nil, obj: &obj}
 	parent.children = append(parent.children, &node)
 	
-	if obj.mode == WIN {
+	if obj.mode == WIN || obj.mode == DIALOG {
 		CreateBitBtn(&node, "bitbtnClose"+name, obj.sizeX - 17, 2, 15, 15, 0xD8DCC0, 0x000000, "X", formClose)
 	}
 	return &node
@@ -89,15 +92,17 @@ func formClose(node *Node){
 	// Устанавливает фокус
 	layout.children[len(layout.children)-3].obj.(*tForm).focused = true
 	
+	if node.parent.obj.(*tForm).mode == DIALOG {
 	// Удаляет форму
-	/*for i = 0; i < len(layout.children); i++ {
+	for i = 0; i < len(layout.children); i++ {
 		if node.parent == layout.children[i] {
 			copy(layout.children[i:], layout.children[i+1:])
 			layout.children[len(layout.children)-1] = nil
 			layout.children = layout.children[:len(layout.children)-1]
 			break
 		}
-	}*/
+	}
+	}
 }
 
 
@@ -129,7 +134,7 @@ func (obj *tForm) Draw(parX int, parY int, parSizeX int, parSizeY int){
     	}
     }
     
-    if obj.mode == WIN {
+    if obj.mode == WIN || obj.mode == DIALOG {
     	if obj.focused {
     		SetColor(0x0054E0)
     	} else {
@@ -183,6 +188,8 @@ func (obj *tForm) RAD(x int, y int){
     			mode = "NONE"
     		} else if obj.mode == WIN {
     			mode = "WIN"
+    		} else if obj.mode == DIALOG {
+    			mode = "DIALOG"
     		} else if obj.mode == FLAT {
     			mode = "FLAT"
     		} else if obj.mode == TASK {
@@ -195,7 +202,6 @@ func (obj *tForm) RAD(x int, y int){
     			visible = "false"
     		} 
 
-    		//frmProperties.obj.(*tForm).caption = "Properties: FORM"
     		lblPropName = CreateLabel(pnlProperties, "lblPropName", 5, 5, 95, 20, 0xD8DCC0, 0x000000, "Name", nil)
 			editPropName = CreateEdit(pnlProperties, "editPropName", 80, 5, 95, 20, 0xF8FCF8, 0x000000, obj.name, nil, editPropNameEnter)
     		lblPropLeft = CreateLabel(pnlProperties, "lblPropLeft", 5, 25, 95, 20, 0xD8DCC0, 0x000000, "Left", nil)
@@ -234,7 +240,7 @@ func (obj *tForm) MouseMove(x int, y int, Xl int, Yl int){
 	if !mouseIsDown {return}
 	obj.x += x - downX
     obj.y += y - downY	
-    	if RAD && layout.children[len(layout.children)-1] != frmProperties && layout.children[len(layout.children)-1] != frmRAD && layout.children[len(layout.children)-1] != frmCode {
+    	if RAD && layout.children[len(layout.children)-1] != frmProperties && layout.children[len(layout.children)-1] != frmRAD && layout.children[len(layout.children)-1] != frmCode && layout.children[len(layout.children)-1].obj.(*tForm).mode != DIALOG{
 			editPropLeft.obj.(*tEdit).text = strconv.Itoa(obj.x)
 			editPropTop.obj.(*tEdit).text = strconv.Itoa(obj.y)	
 		}
@@ -243,7 +249,7 @@ func (obj *tForm) MouseMove(x int, y int, Xl int, Yl int){
 
 func (obj *tForm) MouseDown(x int, y int){
 	// Перенос окна
-		if (obj.mode == WIN) &&
+		if (obj.mode == WIN || obj.mode == DIALOG) &&
 			(obj.x) < x && 
 			(obj.x + obj.sizeX) > x && 
 			(obj.y) < y && 
@@ -253,7 +259,7 @@ func (obj *tForm) MouseDown(x int, y int){
     			mouseIsDown = true
     	}
     	// RAD
-    	if RAD && layout.children[len(layout.children)-1] != frmProperties && layout.children[len(layout.children)-1] != frmRAD && layout.children[len(layout.children)-1] != frmCode {
+    	if RAD && layout.children[len(layout.children)-1] != frmProperties && layout.children[len(layout.children)-1] != frmRAD && layout.children[len(layout.children)-1] != frmCode && layout.children[len(layout.children)-1].obj.(*tForm).mode != DIALOG {
     		obj.RAD(x, y)
 		}
 }

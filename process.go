@@ -112,3 +112,27 @@ func onTimer() {
 	ctx.Call("fillText", "Fill text", 20, 50)
 */
 }
+
+
+func execProcess(num int) {
+	if !(process[num].isRun) {
+		process[num].isRun = true
+		process[num].form.obj.(*tForm).visible = true
+	
+		obj := tBtn{name: "btnTask"+process[num].name, x: xTask, y: 2, sizeX: 80, sizeY: 28 - 4, BC: 0xD8DCC0, TC: 0x000000, caption: process[num].name, visible: true, pressed: false, enabled: true, onClick: btnTaskClick}
+		node_new := Node{typ: BUTTON, parent: pnlTask, previous: nil, children: nil, obj: &obj}
+		pnlTask.children = append(pnlTask.children, &node_new)
+		//obj.pressed = true
+	
+		process[num].btn = &node_new
+		xTask += 81
+		layout.children[len(layout.children)-2].obj.(*tForm).focused = false
+		process[num].form.obj.(*tForm).focused = true
+	
+		i := findNode(process[num].form)
+		fmt.Println(i)
+		if i > 0 {
+			sortChildren(i)
+		}	
+	}
+}

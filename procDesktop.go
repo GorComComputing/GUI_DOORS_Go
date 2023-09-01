@@ -31,7 +31,7 @@ func startDesktop(){
 	btnStart = CreateBtn(pnlTask, "btnStart", 2, 2, 70, 28 - 4, 0x50A0F8, 0xF8FCF8, "START", btnStartClick)
 
 	listFileDesktop := GetCatalogList(".")
-    lsfDesktop = CreateListFileBox(frmDesktop, "lsfDesktop", 10, 30, 300, 300, 0xF8FCF8, 0x0, listFileDesktop, lsfDesktopClick, nil)
+    lsfDesktop = CreateListFileBox(frmDesktop, "lsfDesktop", 10, 30, 300, 800, 0x0080C0, 0xF8FCF8, listFileDesktop, BIGICON, lsfDesktopClick, nil)
 	
 	lblFPS = CreateLabel(frmDesktop, "lblFPS", 10, 10, 200, 20, 0x0080C0, 0xF8FCF8, "", nil)
 	
@@ -59,7 +59,7 @@ func startDesktop(){
 	for i := 0; i < len(programs); i++ {
 		listStartPrograms = append(listStartPrograms, programs[i].name)
 	}
-	menuStartPrograms = CreateMenu(frmMenuStart, "menuStartPrograms", 127, -103, 100, len(listStartPrograms)*20, 0xd8dcc0, 0x0, NONE, listStartPrograms, menuStartProgramsClick, nil)
+	menuStartPrograms = CreateMenu(frmMenuStart, "menuStartPrograms", 127, -143, 100, len(listStartPrograms)*20, 0xd8dcc0, 0x0, NONE, listStartPrograms, menuStartProgramsClick, nil)
 	menuStartPrograms.obj.(*tMenu).visible = false
 	
 	cbxRAD = CreateCheckBox(frmMenuStart, "cbxRAD", 24, menuStart.obj.(*tMenu).y + menuStart.obj.(*tMenu).sizeY + 2, 100, 16, 0xD8DCC0, 0x000000, "RAD", false, cbxRADClick)
@@ -129,26 +129,8 @@ func menuStartProgramsClick(node *Node, x int, y int){
 	menuStartPrograms.obj.(*tMenu).visible = false
 	frmMenuStart.obj.(*tForm).visible = false
 	
-	if !(process[node.obj.(*tMenu).selected].isRun) {
-	process[node.obj.(*tMenu).selected].isRun = true
-	process[node.obj.(*tMenu).selected].form.obj.(*tForm).visible = true
+	execProcess(node.obj.(*tMenu).selected)
 	
-	obj := tBtn{name: "btnTask"+process[node.obj.(*tMenu).selected].name, x: xTask, y: 2, sizeX: 80, sizeY: 28 - 4, BC: 0xD8DCC0, TC: 0x000000, caption: process[node.obj.(*tMenu).selected].name, visible: true, pressed: false, enabled: true, onClick: btnTaskClick}
-	node_new := Node{typ: BUTTON, parent: pnlTask, previous: nil, children: nil, obj: &obj}
-	pnlTask.children = append(pnlTask.children, &node_new)
-	//obj.pressed = true
-	
-	process[node.obj.(*tMenu).selected].btn = &node_new
-	xTask += 81
-	layout.children[len(layout.children)-2].obj.(*tForm).focused = false
-	process[node.obj.(*tMenu).selected].form.obj.(*tForm).focused = true
-	
-	i := findNode(process[node.obj.(*tMenu).selected].form)
-	fmt.Println(i)
-	if i > 0 {
-		sortChildren(i)
-	}
-	}
 }
 
 

@@ -76,7 +76,7 @@ var pnlProperties *Node
 var pnlEvents *Node
 
 var listBool = []string{"true", "false"}
-var listMode = []string{"NONE", "WIN", "FLAT", "TASK"}
+var listMode = []string{"NONE", "WIN", "DIALOG", "FLAT", "TASK"}
 
 
 func startRAD(){
@@ -133,7 +133,7 @@ func menuWinRADClick(node *Node, x int, y int){
 func menuFileRADClick(node *Node, x int, y int){
 	node.obj.(*tMenu).visible = false
 	if node.obj.(*tMenu).selected == 0 {
-		OpenDialog("./files/", &(memCode.obj.(*tMemo).text))
+		OpenDialog("/home/gor/WORK/Go/projects/DOORS/Server/files/", &(memCode.obj.(*tMemo).text))
 		
 	
 		/*result := ReadFile(edtFileName.obj.(*tEdit).text)
@@ -141,7 +141,7 @@ func menuFileRADClick(node *Node, x int, y int){
 		result = strings.Replace(result, "\t", string(0x20) + string(0x20) + string(0x20) + string(0x20), -1)
 		memCode.obj.(*tMemo).text = result*/
 	} else if node.obj.(*tMenu).selected == 1 {
-		SaveDialog("./files/", &(memCode.obj.(*tMemo).text))
+		SaveDialog("/home/gor/WORK/Go/projects/DOORS/Server/files/", &(memCode.obj.(*tMemo).text))
 		
 		/*tmp := strings.Replace(memCode.obj.(*tMemo).text, string(13), "\r\n", -1)
 		memTerminal.obj.(*tMemo).text = WriteFile(edtFileName.obj.(*tEdit).text, tmp)*/
@@ -459,6 +459,8 @@ func cmbPropModeEnter(node *Node){
 			obj.mode = NONE	
 		} else if node.obj.(*tComboBox).text == "WIN" {
 			obj.mode = WIN
+		} else if node.obj.(*tComboBox).text == "DIALOG" {
+			obj.mode = DIALOG
 		} else if node.obj.(*tComboBox).text == "FLAT" {
 			obj.mode = FLAT
 		} else if node.obj.(*tComboBox).text == "TASK" {
@@ -469,6 +471,8 @@ func cmbPropModeEnter(node *Node){
 			obj.mode = NONE	
 		} else if node.obj.(*tComboBox).text == "WIN" {
 			obj.mode = WIN
+		} else if node.obj.(*tComboBox).text == "DIALOG" {
+			obj.mode = DIALOG
 		} else if node.obj.(*tComboBox).text == "FLAT" {
 			obj.mode = FLAT
 		} else if node.obj.(*tComboBox).text == "TASK" {
@@ -479,6 +483,8 @@ func cmbPropModeEnter(node *Node){
 			obj.mode = NONE	
 		} else if node.obj.(*tComboBox).text == "WIN" {
 			obj.mode = WIN
+		} else if node.obj.(*tComboBox).text == "DIALOG" {
+			obj.mode = DIALOG
 		} else if node.obj.(*tComboBox).text == "FLAT" {
 			obj.mode = FLAT
 		} else if node.obj.(*tComboBox).text == "TASK" {

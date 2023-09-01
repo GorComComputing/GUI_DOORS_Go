@@ -22,6 +22,7 @@ type tListFileBox struct{
     enabled bool
     list []Catalog
     selected int
+    mode tMode 
     onClick func(*Node, int, int)
     onClickStr string
     onEnter func(*Node)
@@ -29,8 +30,8 @@ type tListFileBox struct{
 }
 
 
-func CreateListFileBox(parent *Node, name string, x int, y int, sizeX int, sizeY int, BC int, TC int, list []Catalog, onClick func(*Node, int, int), onEnter func(*Node)) *Node {
-	obj := tListFileBox{name: name, x: x, y: y, sizeX: sizeX, sizeY: sizeY, BC: BC, TC: TC, visible: true, enabled: true, list: list, selected: 0, onClick: onClick, onEnter: onEnter}
+func CreateListFileBox(parent *Node, name string, x int, y int, sizeX int, sizeY int, BC int, TC int, list []Catalog, mode tMode, onClick func(*Node, int, int), onEnter func(*Node)) *Node {
+	obj := tListFileBox{name: name, x: x, y: y, sizeX: sizeX, sizeY: sizeY, BC: BC, TC: TC, visible: true, enabled: true, list: list, selected: 0, mode: mode, onClick: onClick, onEnter: onEnter}
 	node := Node{typ: LISTFILEBOX, parent: parent, previous: nil, children: nil, obj: &obj}
 	parent.children = append(parent.children, &node)
 	return &node
@@ -64,6 +65,7 @@ func (obj *tListFileBox) Draw(parX int, parY int, parSizeX int, parSizeY int){
 
     SetColor(obj.TC);
     SetBackColor(obj.BC);
+    if obj.mode == LISTICON {
     for i := 0; i < len(obj.list); i++ {
     	if i == obj.selected && obj.enabled {
     		SetColor(0x0054E0);
@@ -95,6 +97,51 @@ func (obj *tListFileBox) Draw(parX int, parY int, parSizeX int, parSizeY int){
     		SetColor(0x8F8F8F)
     		DrawBitmapTransparent(nil, icoFile, parX+obj.x + 4, parY+obj.y + 4 + i*20, 12, 14, 1)
     	}   	
+    }
+    } else if obj.mode == BIGICON {
+    	var row int = 0
+    	var col int = 0
+    	
+    	for i := 0; i < len(obj.list); i++ {
+    		if (4 + 30 + col*100) > obj.sizeX {
+    			row++
+    			col = 0
+    		}
+    	
+    		if i == obj.selected && obj.enabled {
+    			SetColor(0x0054E0);
+    			var p []tPoint
+
+   				p1 := tPoint{x: parX+obj.x + 4 + 30+10 - len(obj.list[i].name)*10/2+ (col)*100, y: parY+obj.y + row*70+40}
+				p = append(p, p1)
+	
+				p2 := tPoint{x: parX+obj.x + len(obj.list[i].name)*10  + 4 + 30+10 - len(obj.list[i].name)*10/2+ (col)*100, y: parY+obj.y  + row*70+40}
+				p = append(p, p2)
+	
+				p3 := tPoint{x: parX+obj.x + len(obj.list[i].name)*10  + 4 + 30+10 - len(obj.list[i].name)*10/2+ (col)*100, y: parY+obj.y + 20 + row*70+40}
+				p = append(p, p3)
+	
+				p4 := tPoint{x: parX+obj.x  + 4 + 30+10 - len(obj.list[i].name)*10/2+ (col)*100, y: parY+obj.y + 20 + row*70+40}
+				p = append(p, p4)
+
+    			FillPoly(nil, 4, p);
+    			SetColor(0xF8FCF8);
+    		} else {
+    			SetColor(obj.TC);
+    		}
+    		
+    		
+    		TextOutgl(nil, obj.list[i].name, parX+obj.x + 4 + 30+20 - len(obj.list[i].name)*10/2+ (col)*100, parY+obj.y + 4 + row*70+40, 1);
+    	
+    		if obj.list[i].typ == "D" {
+    			SetColor(0x906017)
+    			DrawBitmapTransparent(nil, icoDir, parX+obj.x + 4 + 30 + (col)*100, parY+obj.y + 4 + row*70, 16, 12, 2)
+    		} else if obj.list[i].typ == "F" {
+    			SetColor(0x8F8F8F)
+    			DrawBitmapTransparent(nil, icoFile, parX+obj.x + 4 + 30 + (col)*100, parY+obj.y + 4 + row*70, 12, 14, 2)
+    		}
+    		col++
+    	}
     }
 }
 
@@ -207,7 +254,22 @@ func (obj *tListFileBox) KeyDown(key int){
 func (obj *tListFileBox) Click(x int, y int){
 	fmt.Println("CLICKED: ", strconv.Itoa(x), strconv.Itoa(y))
 	if obj.enabled && len(list) > 0 {
-		obj.selected = int(y/20)
+		if obj.mode == LISTICON {
+			obj.selected = int(y/20)
+		} else if obj.mode == BIGICON {
+			//var add int = 0
+			//if int(y/70) > 0 {
+			//	add = 2*int(y/70)
+			//}
+			obj.selected = int(y/70*(obj.sizeX/100) + (x/100)) //+ add   + x/100
+			fmt.Println("Full " + strconv.Itoa(obj.selected))
+			fmt.Println("Y " + strconv.Itoa(y/70*(obj.sizeX/100)))
+			fmt.Println("X " + strconv.Itoa(x/100))
+		
+		
+		
+		
+		}
 	}
 	
 	if obj.onClick != nil && obj.enabled {
@@ -217,7 +279,7 @@ func (obj *tListFileBox) Click(x int, y int){
 
 
 func (obj *tListFileBox) MouseMove(x int, y int, Xl int, Yl int){
-	if RAD && layout.children[len(layout.children)-1] != frmProperties && layout.children[len(layout.children)-1] != frmRAD && layout.children[len(layout.children)-1] != frmCode && mouseIsDown {
+	if RAD && layout.children[len(layout.children)-1] != frmProperties && layout.children[len(layout.children)-1] != frmRAD && layout.children[len(layout.children)-1] != frmCode && mouseIsDown && layout.children[len(layout.children)-1].obj.(*tForm).mode != DIALOG {
 		obj.x += x - downX
     	obj.y += y - downY
     	editPropLeft.obj.(*tEdit).text = strconv.Itoa(obj.x)
@@ -228,7 +290,7 @@ func (obj *tListFileBox) MouseMove(x int, y int, Xl int, Yl int){
 
 func (obj *tListFileBox) MouseDown(x int, y int){
 	// RAD
-	if RAD && layout.children[len(layout.children)-1] != frmProperties && layout.children[len(layout.children)-1] != frmRAD && layout.children[len(layout.children)-1] != frmCode {
+	if RAD && layout.children[len(layout.children)-1] != frmProperties && layout.children[len(layout.children)-1] != frmRAD && layout.children[len(layout.children)-1] != frmCode && layout.children[len(layout.children)-1].obj.(*tForm).mode != DIALOG {
 		obj.RAD(x, y)
 	} else {
 		// Фокус

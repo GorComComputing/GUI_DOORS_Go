@@ -5,6 +5,8 @@ import ()
 
 // Список программ
 var programs = []*tProgram{
+	{"Explorer", startExplorer},
+	{"Notepad", startNotepad},
 	{"Flag", startFlag}, 
 	{"SNMP", startSNMP},
 	{"Dispatch", startDispatch},

@@ -1933,6 +1933,13 @@ var char60 string =
 }
 
 
+func showBMP(Wall [256*10*3]int, x int, y int, width int, height int){
+    for i := 0; i < height; i++ {
+        for j = 0; j < width; j++ {
+            DrawPutPixel(nil, x + j, y + height - i, 0x10000*Wall[i*width*3+j*3] + 0x100*Wall[i*width*3+j*3+1] + Wall[i*width*3+j*3+2])
+        }
+    }
+}
 
 
 

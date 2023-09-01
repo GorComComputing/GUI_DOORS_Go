@@ -72,6 +72,8 @@ func eventDraw() {
 	//Circle(nil, 0, 200, 30)
 	onTimer()
 	
+	showBMP(bmp, 100, 100, 256, 10)
+	
 	t := time.Now()
 	lblFPS.obj.(*tLabel).caption = t.Sub(start).String()
 }
@@ -218,7 +220,7 @@ func eventClick(x int, y int)  {
 		list = nil
 		ClickRecurs(&layout, x, y, 0, 0)
 		
-		if !RAD || list[len(list)-1] == cbxRAD || layout.children[len(layout.children)-1] == frmProperties || layout.children[len(layout.children)-1] == frmRAD || layout.children[len(layout.children)-1] == frmCode {
+		if !RAD || list[len(list)-1] == cbxRAD || layout.children[len(layout.children)-1] == frmProperties || layout.children[len(layout.children)-1] == frmRAD || layout.children[len(layout.children)-1] == frmCode || layout.children[len(layout.children)-1].obj.(*tForm).mode == DIALOG {
 		switch obj := list[len(list)-1].obj.(type) {
 		case *tBtn:
 			obj.Click(x-X, y-Y)
@@ -583,7 +585,7 @@ func eventMouseDown(x int, y int) {
 	
 	
 	// RAD
-	if RAD && layout.children[len(layout.children)-1] != frmProperties && layout.children[len(layout.children)-1] != frmRAD && layout.children[len(layout.children)-1] != frmCode {
+	if RAD && layout.children[len(layout.children)-1] != frmProperties && layout.children[len(layout.children)-1] != frmRAD && layout.children[len(layout.children)-1] != frmCode && layout.children[len(layout.children)-1].obj.(*tForm).mode != DIALOG {
 			RADElement = list[len(list)-1]
 			for i := 0; i < len(layout.children); i++ {
 				layout.children[i].obj.(*tForm).isRAD = false
@@ -696,7 +698,7 @@ func eventMouseMove(x int, y int)  {
 //export eventKeyDown
 func eventKeyDown(key int){
 	// Удаление элемента RAD (Del)
-	if RAD && layout.children[len(layout.children)-1] != frmProperties && layout.children[len(layout.children)-1] != frmRAD && layout.children[len(layout.children)-1] != frmCode && key == 46 {
+	if RAD && layout.children[len(layout.children)-1] != frmProperties && layout.children[len(layout.children)-1] != frmRAD && layout.children[len(layout.children)-1] != frmCode && key == 46 && layout.children[len(layout.children)-1].obj.(*tForm).mode != DIALOG {
 		for i := 0; i < len(RADElement.parent.children); i++ {
 			if RADElement.parent.children[i] == RADElement {
 				copy(RADElement.parent.children[i:], RADElement.parent.children[i+1:])
