@@ -16,7 +16,7 @@ var lsfSaveDialog *Node
 var FROM *string
 
 func SaveDialog(path string, from *string){ 
-    frmSaveDialog := CreateForm(&layout, "frmSaveDialog", BITMAP_WIDTH/2-465/2, BITMAP_HEIGHT/2-310/2, 465, 310, 0xD8DCC0, DIALOG, "Save File", true, nil)
+    frmSaveDialog := CreateForm(&layout, "frmSaveDialog", nil, BITMAP_WIDTH/2-465/2, BITMAP_HEIGHT/2-310/2, 465, 310, 0xD8DCC0, DIALOG, "Save File", true, nil)
     btnSaveDialogSave = CreateBtn(frmSaveDialog, "btnSaveDialogSave", 389, 251, 70, 24, 0xd8dcc0, 0x0, "Save", btnSaveDialogSaveClick)
     edtSaveDialogPath = CreateEdit(frmSaveDialog, "edtSaveDialogPath", 60, 22, 400, 20, 0xf8fcf8, 0x0, path, nil, nil)
     edtSaveDialogFile = CreateEdit(frmSaveDialog, "edtSaveDialogFile", 5, 252, 375, 20, 0xf8fcf8, 0x0, "", nil, nil)

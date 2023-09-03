@@ -22,6 +22,7 @@ type tForm struct{
     focused bool
     focus *Node
     isRAD bool
+    picture []byte
     onClick func(*Node)
     onClickStr string
 }
@@ -40,13 +41,13 @@ const (
 )
 
 
-func CreateForm(parent *Node, name string, x int, y int, sizeX int, sizeY int, BC int, mode tMode, caption string, visible bool, onClick func(*Node)) *Node {
-	obj := tForm{name: name, x: x, y: y, sizeX: sizeX, sizeY: sizeY, BC: BC, mode: mode, caption: caption, visible: visible, focus: nil, isRAD: false, onClick: onClick}
+func CreateForm(parent *Node, name string, picture []byte, x int, y int, sizeX int, sizeY int, BC int, mode tMode, caption string, visible bool, onClick func(*Node)) *Node {
+	obj := tForm{name: name, picture: picture, x: x, y: y, sizeX: sizeX, sizeY: sizeY, BC: BC, mode: mode, caption: caption, visible: visible, focus: nil, isRAD: false, onClick: onClick}
 	node := Node{typ: FORM, parent: parent, previous: nil, children: nil, obj: &obj}
 	parent.children = append(parent.children, &node)
 	
 	if obj.mode == WIN || obj.mode == DIALOG {
-		CreateBitBtn(&node, "bitbtnClose"+name, obj.sizeX - 17, 2, 15, 15, 0xD8DCC0, 0x000000, "X", formClose)
+		CreateBitBtn(&node, "bitbtnClose"+name, nil, obj.sizeX - 17, 2, 15, 15, 0xD8DCC0, 0x000000, "X", formClose)
 	}
 	return &node
 }
@@ -80,13 +81,15 @@ func formClose(node *Node){
 	}
 
 	// Сдвигает кнопки
-	xTask = 2-10 
+	xTask = 2-30 
 	for i = 1; i < len(pnlTask.children); i++ {
 		switch obj := pnlTask.children[i].obj.(type) {
 		case *tBtn:
 			obj.x = xTask
+		case *tBitBtn:
+			obj.x = xTask
 		}
-		xTask += 81
+		xTask += 101
 	}
 	
 	// Устанавливает фокус
@@ -162,7 +165,12 @@ func (obj *tForm) Draw(parX int, parY int, parSizeX int, parSizeY int){
     		SetColor(0x787C78)
     		SetBackColor(0x80A8E8);
     	}
-    	TextOutgl(nil, obj.caption, parX + obj.x + 9, parY + obj.y + 6, 1);
+    	if obj.picture != nil {
+    		showBMP(nil, obj.picture, parX + obj.x + 7, parY + obj.y + 2)
+    		TextOutgl(nil, obj.caption, parX + obj.x + 7 + 20, parY + obj.y + 6, 1);
+    	} else {
+    		TextOutgl(nil, obj.caption, parX + obj.x + 9, parY + obj.y + 6, 1);
+    	}
     }
 
 	if obj.mode != FLAT {

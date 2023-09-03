@@ -21,27 +21,27 @@ var cnvMenuStart *Node
 var menuStart *Node
 var menuStartPrograms *Node
 var cbxRAD *Node
-
 var lblFPS *Node
+var imgLogoMenu *Node
 
 
 func startDesktop(){
-	frmDesktop = CreateForm(&layout, "frmDesktop", 0, 0, BITMAP_WIDTH-1, BITMAP_HEIGHT-2, 0x0080C0, FLAT, "", true, nil)
+	frmDesktop = CreateForm(&layout, "frmDesktop", nil, 0, 0, BITMAP_WIDTH-1, BITMAP_HEIGHT-2, 0x0080C0, FLAT, "", true, nil)
 	pnlTask = CreatePanel(frmDesktop, "pnlTask", 0, frmDesktop.obj.(*tForm).sizeY - 28, BITMAP_WIDTH - 1, 28, 0x30B410, TASK, nil)
 	btnStart = CreateBtn(pnlTask, "btnStart", 2, 2, 70, 28 - 4, 0x50A0F8, 0xF8FCF8, "START", btnStartClick)
 
-	listFileDesktop := GetCatalogList(".")
-    lsfDesktop = CreateListFileBox(frmDesktop, "lsfDesktop", 10, 30, 300, 800, 0x0080C0, 0xF8FCF8, listFileDesktop, BIGICON, lsfDesktopClick, nil)
+	listFileDesktop := GetCatalogList(DesktopDir)
+    lsfDesktop = CreateListFileBox(frmDesktop, "lsfDesktop", 10, 30, 590, 800, 0x0080C0, 0xF8FCF8, listFileDesktop, BIGICON, lsfDesktopClick, nil)
 	
 	lblFPS = CreateLabel(frmDesktop, "lblFPS", 10, 10, 200, 20, 0x0080C0, 0xF8FCF8, "", nil)
 	
 	lblTime = CreateLabel(pnlTask, "lblTime", pnlTask.obj.(*tPanel).sizeX - 45, 6, 40, 20, 0x30B410, 0xF8FCF8, "", nil)
 
 	
-	listMenuStart := []string{"Programs", "Settings"}
+	listMenuStart := []tMenuList{{"Programs", bmpPrograms}, {"Settings", bmpSettings}}
 	
-	frmMenuStart = CreateForm(&layout, "frmMenuStart", 0, BITMAP_HEIGHT-len(listMenuStart)*20-20-37, 127, len(listMenuStart)*20+26, 0xD8DCC0, NONE, "", false, nil)
-	cnvMenuStart = CreateCanvas(frmMenuStart, "cnvMenuStart", 2, 2, 20, len(listMenuStart)*20+20, nil)
+	frmMenuStart = CreateForm(&layout, "frmMenuStart", nil, 0, BITMAP_HEIGHT-len(listMenuStart)*20-20-37-40, 127, len(listMenuStart)*20+26+40, 0xD8DCC0, NONE, "", false, nil)
+	cnvMenuStart = CreateCanvas(frmMenuStart, "cnvMenuStart", 2, 2, 20, len(listMenuStart)*20+20+40, nil)
 	for y := 0; y < cnvMenuStart.obj.(*tCanvas).sizeY; y++ {
     	for x := 0; x < cnvMenuStart.obj.(*tCanvas).sizeX; x++ {
     			squareNumber := (y * cnvMenuStart.obj.(*tCanvas).sizeX) + x;
@@ -53,25 +53,37 @@ func startDesktop(){
       			cnvMenuStart.obj.(*tCanvas).buffer[squareRgbaIndex + 3] = 255; 	// Alpha
     	}
     }
+    imgLogoMenu = CreateImage(frmMenuStart, "imgLogoMenu", bmpLogo_menu, 6, 2+35, 12, 60, nil)
+    
 	menuStart = CreateMenu(frmMenuStart, "menuStart", 24, 3, 100, len(listMenuStart)*20, 0xd8dcc0, 0x0, FLAT, listMenuStart, menuStartClick, nil)
 	
-	var listStartPrograms []string = make([]string, 0)
+	var listStartPrograms []tMenuList = make([]tMenuList, 0)
 	for i := 0; i < len(programs); i++ {
-		listStartPrograms = append(listStartPrograms, programs[i].name)
+		var pic []byte
+		if programs[i].picture != nil {
+			pic = *programs[i].picture
+		}
+		listItem := tMenuList{programs[i].name, pic}
+		listStartPrograms = append(listStartPrograms, listItem)
 	}
-	menuStartPrograms = CreateMenu(frmMenuStart, "menuStartPrograms", 127, -143, 100, len(listStartPrograms)*20, 0xd8dcc0, 0x0, NONE, listStartPrograms, menuStartProgramsClick, nil)
+	menuStartPrograms = CreateMenu(frmMenuStart, "menuStartPrograms", 127, -143, 120, len(listStartPrograms)*20, 0xd8dcc0, 0x0, NONE, listStartPrograms, menuStartProgramsClick, nil)
 	menuStartPrograms.obj.(*tMenu).visible = false
 	
-	cbxRAD = CreateCheckBox(frmMenuStart, "cbxRAD", 24, menuStart.obj.(*tMenu).y + menuStart.obj.(*tMenu).sizeY + 2, 100, 16, 0xD8DCC0, 0x000000, "RAD", false, cbxRADClick)
+	cbxRAD = CreateCheckBox(frmMenuStart, "cbxRAD", 24, frmMenuStart.obj.(*tForm).sizeY - 20, 100, 16, 0xD8DCC0, 0x000000, "RAD", false, cbxRADClick)
 }
 
 
 func lsfDesktopClick(node *Node, x int, y int){
 	if node.obj.(*tListFileBox).list[node.obj.(*tListFileBox).selected].typ == "F" {
-		result := ReadFile(node.obj.(*tListFileBox).list[node.obj.(*tListFileBox).selected].name)
+		execProcess(1)  // Run Notepad
+		result := ReadFile(DesktopDir + node.obj.(*tListFileBox).list[node.obj.(*tListFileBox).selected].name)
 		result = strings.Replace(result, "\r\n", string(13), -1)
 		result = strings.Replace(result, "\t", string(0x20) + string(0x20) + string(0x20) + string(0x20), -1)
-		memTerminal.obj.(*tMemo).text = result
+		memNotepad.obj.(*tMemo).text = result
+	} else if node.obj.(*tListFileBox).list[node.obj.(*tListFileBox).selected].typ == "D" {
+		execProcess(0)  // Run Explorer
+		edtExplorerPath.obj.(*tEdit).text = DesktopDir + node.obj.(*tListFileBox).list[node.obj.(*tListFileBox).selected].name + "/"
+		lsfExplorer.obj.(*tListFileBox).list = GetCatalogList(edtExplorerPath.obj.(*tEdit).text)
 	}
 }
 
@@ -103,6 +115,7 @@ func cbxRADClick(node *Node){
 
 func btnStartClick(node *Node){
 	frmMenuStart.obj.(*tForm).visible = !(frmMenuStart.obj.(*tForm).visible)
+	node.obj.(*tBtn).pressed = frmMenuStart.obj.(*tForm).visible
 	i := findNode(frmMenuStart)
 	fmt.Println(i)
 	if i > 0 {
@@ -128,6 +141,7 @@ func menuStartClick(node *Node, x int, y int){
 func menuStartProgramsClick(node *Node, x int, y int){
 	menuStartPrograms.obj.(*tMenu).visible = false
 	frmMenuStart.obj.(*tForm).visible = false
+	btnStart.obj.(*tBtn).pressed = false
 	
 	execProcess(node.obj.(*tMenu).selected)
 	

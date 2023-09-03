@@ -138,9 +138,7 @@ func (obj *tBtn) Draw(parX int, parY int, parSizeX int, parSizeY int){
     	SetColor(0x787C78);
     	SetBackColor(obj.BC);
     	TextOutgl(nil, obj.caption, parX + obj.x + obj.sizeX/2-((len(obj.caption)-1)*8)/2, parY + obj.y + obj.sizeY/2-4, 1);
-    }
-    
-	//SetViewPort(0, 0, GETMAX_X, GETMAX_Y)    
+    }   
 }
 
 

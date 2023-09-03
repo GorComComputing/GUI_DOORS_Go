@@ -21,13 +21,14 @@ type tBitBtn struct{
     visible bool
     pressed bool
     enabled bool
+    picture []byte
     onClick func(*Node)
     onClickStr string
 }
 
 
-func CreateBitBtn(parent *Node, name string, x int, y int, sizeX int, sizeY int, BC int, TC int, caption string, onClick func(*Node)) *Node {
-	obj := tBitBtn{name: name, x: x, y: y, sizeX: sizeX, sizeY: sizeY, BC: BC, TC: TC, caption: caption, visible: true, pressed: false, enabled: true, onClick: onClick}
+func CreateBitBtn(parent *Node, name string, picture []byte, x int, y int, sizeX int, sizeY int, BC int, TC int, caption string, onClick func(*Node)) *Node {
+	obj := tBitBtn{name: name, x: x, y: y, sizeX: sizeX, sizeY: sizeY, BC: BC, TC: TC, caption: caption, visible: true, pressed: false, enabled: true, picture: picture, onClick: onClick}
 	node := Node{typ: BIT_BUTTON, parent: parent, previous: nil, children: nil, obj: &obj}
 	parent.children = append(parent.children, &node)
 	return &node
@@ -85,11 +86,21 @@ func (obj *tBitBtn) Draw(parX int, parY int, parSizeX int, parSizeY int){
 	if obj.enabled {
     	SetColor(obj.TC);
     	SetBackColor(obj.BC);
-    	TextOutgl(nil, obj.caption, parX+obj.x + obj.sizeX/2-((len(obj.caption)-1)*8)/2 - 3, parY+obj.y + obj.sizeY/2-4, 1);
+    	var add int = 0
+    	if obj.picture != nil {
+    		showBMP(nil, obj.picture, parX + obj.x + obj.sizeX/2-((len(obj.caption)-1)*8+20)/2 - 3, parY + obj.y + obj.sizeY/2-4-3)
+    		add = 20
+    	}
+    	TextOutgl(nil, obj.caption, parX+obj.x + obj.sizeX/2-((len(obj.caption)-1)*8 + add)/2 - 3 + add, parY+obj.y + obj.sizeY/2-4, 1)
     } else {
     	SetColor(0x787C78);
     	SetBackColor(obj.BC);
-    	TextOutgl(nil, obj.caption, parX+obj.x + obj.sizeX/2-((len(obj.caption)-1)*8)/2 - 3, parY+obj.y + obj.sizeY/2-4, 1);
+    	var add int = 0
+    	if obj.picture != nil {
+    		showBMP(nil, obj.picture, parX + obj.x + obj.sizeX/2-((len(obj.caption)-1)*8+20)/2 - 3, parY + obj.y + obj.sizeY/2-4-3)
+    		add = 20
+    	}
+    	TextOutgl(nil, obj.caption, parX+obj.x + obj.sizeX/2-((len(obj.caption)-1)*8 + add)/2 - 3 + add, parY+obj.y + obj.sizeY/2-4, 1)
     }
 }
 

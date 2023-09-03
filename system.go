@@ -7,9 +7,8 @@ import (
 )
 
 
-
 func WriteFile(name string, str string) string {
-	result := js.Global().Call("HttpRequest", "http://localhost:8081/save?name=" + name, str).Get("response").String() 
+	result := js.Global().Call("HttpRequest", "http://"+ServerIP+":8081/save?name=" + name, str).Get("response").String() 
 	//fmt.Println("Responsed: ", result)
 	return result
 }
@@ -17,7 +16,7 @@ func WriteFile(name string, str string) string {
 
 
 func ReadFile(name string) string {
-	result := js.Global().Call("HttpRequest", "http://localhost:8081/api?cmd=read " + name, "").Get("response").String() 
+	result := js.Global().Call("HttpRequest", "http://"+ServerIP+":8081/api?cmd=read " + name, "").Get("response").String() 
 	//fmt.Println("Responsed: ", result)
 	return result
 }
@@ -34,7 +33,7 @@ func GetCatalogList(name string) []Catalog {
 
 	//name = strings.Replace(name, ".", "%2e", -1)
 	
-	result := js.Global().Call("HttpRequest", "http://localhost:8081/api?cmd=ls -l " + name, "").Get("response").String() 
+	result := js.Global().Call("HttpRequest", "http://"+ServerIP+":8081/api?cmd=ls -l " + name, "").Get("response").String() 
 	words := strings.Split(result, "\n")
 
 	for i := 1; i < len(words)-1; i++ {
@@ -52,18 +51,12 @@ func GetCatalogList(name string) []Catalog {
 	return output
 }
 
-/*func GetFileList(name string) string {
-	result := js.Global().Call("HttpRequest", "http://localhost:8081/api?cmd=ls " + name, "").Get("response").String() 
-	//fmt.Println("Responsed: ", result)
-	return result
-}*/
-
 
 func Get(url string, s string, body string) string {
 	if s != "" {
 		url += "?" + s
 	}
-	result := js.Global().Call("HttpRequest", "http://localhost:8081/api?cmd=curl_get " + url, body).Get("response").String()
+	result := js.Global().Call("HttpRequest", "http://"+ServerIP+":8081/api?cmd=curl_get " + url, body).Get("response").String()
 	//fmt.Println("Responsed: ", result)
 	return result
 }

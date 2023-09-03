@@ -14,12 +14,15 @@ import (
     //"io/ioutil"
     //"encoding/json"
     "time"
+    "encoding/base64"
+    //"encoding/hex"
 )
 
 
 type tProgram struct {
 	name string 
     start func(*Node)
+    picture *[]byte
 }
 
 
@@ -30,31 +33,56 @@ type tProc struct {
     form *Node 
     btn  *Node
     isRun bool
+    picture []byte
 }
 
 
 // Инициализация DOORS 
 func initDOORS(programs []*tProgram) {
+	
 	fmt.Println("👋 DOORS started OK! 🌍")
+	
+	//Декодируем base64 в bmp
+  	bmpFolder, _ = base64.StdEncoding.DecodeString(b64Folder)
+  	bmpFile, _ = base64.StdEncoding.DecodeString(b64File)
+  	bmpFolder_small, _ = base64.StdEncoding.DecodeString(b64Folder_small)
+  	bmpFile_small, _ = base64.StdEncoding.DecodeString(b64File_small)
+  	bmpProgram, _ = base64.StdEncoding.DecodeString(b64Program)
+  	bmpNotepad, _ = base64.StdEncoding.DecodeString(b64Notepad)
+  	bmpForm_close, _ = base64.StdEncoding.DecodeString(b64Form_close)
+  	bmpComboBox, _ = base64.StdEncoding.DecodeString(b64ComboBox)
+  	bmpLogo_menu, _ = base64.StdEncoding.DecodeString(b64Logo_menu)
+  	bmpNew_file, _ = base64.StdEncoding.DecodeString(b64New_file)
+  	bmpOpen_file, _ = base64.StdEncoding.DecodeString(b64Open_file)
+  	bmpSave_file, _ = base64.StdEncoding.DecodeString(b64Save_file)
+  	bmpUp, _ = base64.StdEncoding.DecodeString(b64Up)
+  	//bmpHelp, _ = base64.StdEncoding.DecodeString(b64Help)
+  	//bmpBrowser, _ = base64.StdEncoding.DecodeString(b64Browser)
+  	bmpPrograms, _ = base64.StdEncoding.DecodeString(b64Programs)
+  	bmpSettings, _ = base64.StdEncoding.DecodeString(b64Settings)
+  	
 	startDesktop()
 	startRAD()
 	// Запуск программ
 	for i := 0; i < len(programs); i++ {
-		startProcess(programs[i].name, programs[i].start) 
-	}
+		startProcess(programs[i].name, programs[i].start, programs[i].picture) 
+	} 	
 }
 
 
 var xTask int = 2 + 71
-func startProcess(name string, onStart func(*Node)){
+func startProcess(name string, onStart func(*Node), picture *[]byte){
 	/*obj := tBtn{name: "btnTask"+name, x: xTask, y: 2, sizeX: 80, sizeY: 28 - 4, BC: 0xD8DCC0, TC: 0x000000, caption: name, visible: true, pressed: false, enabled: true, onClick: btnTaskClick}
 	node := Node{typ: BUTTON, parent: pnlTask, previous: nil, children: nil, obj: &obj}
 	pnlTask.children = append(pnlTask.children, &node)*/
-	
-	frm := CreateForm(&layout, "frm" + name, 400, 400, 200, 130, 0xD8DCC0, WIN, name, true, nil)
+	var pic []byte
+	if picture != nil {
+		pic = *picture
+	}
+	frm := CreateForm(&layout, "frm" + name, pic, 400, 400, 200, 130, 0xD8DCC0, WIN, name, true, nil)
 	frm.obj.(*tForm).visible = false
 	
-	proc := tProc{name: name, form: frm, btn: nil, isRun: false} //, btn: &node
+	proc := tProc{name: name, form: frm, btn: nil, isRun: false, picture: pic} //, btn: &node
 	process = append(process, &proc)
 	//xTask += 81
 	//layout.children[len(layout.children)-2].obj.(*tForm).focused = false
@@ -119,13 +147,13 @@ func execProcess(num int) {
 		process[num].isRun = true
 		process[num].form.obj.(*tForm).visible = true
 	
-		obj := tBtn{name: "btnTask"+process[num].name, x: xTask, y: 2, sizeX: 80, sizeY: 28 - 4, BC: 0xD8DCC0, TC: 0x000000, caption: process[num].name, visible: true, pressed: false, enabled: true, onClick: btnTaskClick}
+		obj := tBitBtn{name: "btnTask"+process[num].name, x: xTask, y: 2, sizeX: 100, sizeY: 28 - 4, BC: 0xD8DCC0, TC: 0x000000, caption: process[num].name, visible: true, pressed: false, enabled: true, picture: process[num].picture, onClick: btnTaskClick}
 		node_new := Node{typ: BUTTON, parent: pnlTask, previous: nil, children: nil, obj: &obj}
 		pnlTask.children = append(pnlTask.children, &node_new)
 		//obj.pressed = true
 	
 		process[num].btn = &node_new
-		xTask += 81
+		xTask += 101
 		layout.children[len(layout.children)-2].obj.(*tForm).focused = false
 		process[num].form.obj.(*tForm).focused = true
 	

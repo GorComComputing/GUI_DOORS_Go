@@ -9,6 +9,12 @@ import (
 )
 
 
+type tMenuList struct{
+	name string
+	picture []byte
+}
+
+
 type tMenu struct{
 	name string
     x int
@@ -21,7 +27,7 @@ type tMenu struct{
     visible bool
     focused bool
     enabled bool
-    list []string
+    list []tMenuList
     selected int
     onClick func(*Node, int, int)
     onClickStr string
@@ -30,7 +36,7 @@ type tMenu struct{
 }
 
 
-func CreateMenu(parent *Node, name string, x int, y int, sizeX int, sizeY int, BC int, TC int, mode tMode, list []string, onClick func(*Node, int, int), onEnter func(*Node)) *Node {
+func CreateMenu(parent *Node, name string, x int, y int, sizeX int, sizeY int, BC int, TC int, mode tMode, list []tMenuList, onClick func(*Node, int, int), onEnter func(*Node)) *Node {
 	obj := tMenu{name: name, x: x, y: y, sizeX: sizeX, sizeY: sizeY, BC: BC, TC: TC, mode: mode, visible: true, enabled: true, list: list, selected: 0, onClick: onClick, onEnter: onEnter}
 	node := Node{typ: MENU, parent: parent, previous: nil, children: nil, obj: &obj}
 	parent.children = append(parent.children, &node)
@@ -93,7 +99,10 @@ func (obj *tMenu) Draw(parX int, parY int, parSizeX int, parSizeY int){
     	} else {
     		SetColor(obj.TC);
     	}
-    	TextOutgl(nil, obj.list[i], parX+obj.x + 4 + xd, parY+obj.y + 4 + i*20, 1);
+    	if obj.list[i].picture != nil {
+    		showBMP(nil, obj.list[i].picture, parX+obj.x + 4 + xd, parY+obj.y + 2 + i*20)
+    	}
+    	TextOutgl(nil, obj.list[i].name, parX+obj.x + 4 + 20 + xd, parY+obj.y + 4 + i*20, 1);
     	
     }
     
@@ -140,7 +149,8 @@ func (obj *tMenu) Draw(parX int, parY int, parSizeX int, parSizeY int){
     	} else {
     		SetColor(obj.TC);
     	}
-    	TextOutgl(nil, obj.list[i], parX+obj.x + 4 + xd + i*60, parY+obj.y + 4, 1);
+    	
+    	TextOutgl(nil, obj.list[i].name, parX+obj.x + 4 + xd + i*60, parY+obj.y + 4, 1);
     }		
     }
 }
@@ -198,7 +208,7 @@ func (obj *tMenu) RAD(x int, y int){
 		cmbPropEnabled = CreateComboBox(pnlProperties, "cmbPropEnabled", 80, 185, 95, 16, 0xF8FCF8, 0x000000, enabled, listBool, nil, cmbPropEnabledEnter)
 			
 		lblPropList = CreateLabel(pnlProperties, "lblPropList", 5, 205, 95, 20, 0xD8DCC0, 0x000000, "List", nil)
-    	cmbPropList = CreateComboBox(pnlProperties, "cmbPropList", 80, 205, 95, 16, 0xF8FCF8, 0x000000, "", obj.list, nil, cmbPropListEnter)
+    	//cmbPropList = CreateComboBox(pnlProperties, "cmbPropList", 80, 205, 95, 16, 0xF8FCF8, 0x000000, "", obj.list, nil, cmbPropListEnter)
 			
 		lblEvntClick = CreateLabel(pnlEvents, "lblEvntClick", 5, 5, 95, 20, 0xD8DCC0, 0x000000, "Click", nil)
 		editEvntClick = CreateEdit(pnlEvents, "editEvntClick", 80, 5, 95, 20, 0xF8FCF8, 0x000000, obj.onClickStr, nil, editEvntClickEnter)

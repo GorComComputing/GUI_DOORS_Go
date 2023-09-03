@@ -70,7 +70,7 @@ func startSNMP(frmMain *Node){
 	editValue = CreateEdit(frmMain, "editValue", 200, 200, 200, 20, 0xF8FCF8, 0x000000, "", nil, nil)
 
 	
-	btnSendHelp = CreateBtn(frmMain, "btnSendHelp", 470, 200, 70, 24, 0xD8DCC0, 0x000000, "Help", btnSendHelpClick)
+	btnSendHelp = CreateBitBtn(frmMain, "btnSendHelp", nil, 470, 200, 70, 24, 0xD8DCC0, 0x000000, "Help", btnSendHelpClick)
 	
 	cbxVersion1 = CreateCheckBox(frmMain, "cbxVersion1", 430, 30, 140, 16, 0xD8DCC0, 0x000000, "Version 1", false, cbxVersion1Click)
 	cbxVersion2 = CreateCheckBox(frmMain, "cbxVersion2", 430, 60, 140, 16, 0xD8DCC0, 0x000000, "Version 2", true, cbxVersion2Click)
@@ -110,31 +110,31 @@ func cbxVersion3Click(node *Node){
 
 
 func btnSendTrapClick(node *Node){
-	printSNMPTerminal(Get("http://localhost:8087/api", "cmd=trap_v2 "  + editIPaddr.obj.(*tEdit).text + " " + editPortGet.obj.(*tEdit).text + " " + editOID.obj.(*tEdit).text + " " + editValue.obj.(*tEdit).text, ""))
+	printSNMPTerminal(Get("http://"+editIPaddr.obj.(*tEdit).text+":8087/api", "cmd=trap_v2 "  + editIPaddr.obj.(*tEdit).text + " " + editPortGet.obj.(*tEdit).text + " " + editOID.obj.(*tEdit).text + " " + editValue.obj.(*tEdit).text, ""))
 }
 
 
 func btnTrapServerClick(node *Node){
-	printSNMPTerminal(Get("http://localhost:8087/api", "cmd=trap_srv", ""))
+	printSNMPTerminal(Get("http://"+editIPaddr.obj.(*tEdit).text+":8087/api", "cmd=trap_srv", ""))
 }
 
 
 func btnSendHelpClick(node *Node){
-	result := Get("http://localhost:8087/api", "cmd=.help", "")
+	result := Get("http://"+editIPaddr.obj.(*tEdit).text+":8087/api", "cmd=.help", "")
 	result = strings.Replace(result, "\n", string(13), -1)
 	printSNMPTerminal(result)
 }
 
 
 func btnSendGetClick(node *Node){
-	result := Get("http://localhost:8087/api", "cmd=get_param " + editIPaddr.obj.(*tEdit).text + " " + editPortGet.obj.(*tEdit).text + " " + editOID.obj.(*tEdit).text, "")	
+	result := Get("http://"+editIPaddr.obj.(*tEdit).text+":8087/api", "cmd=get_param " + editIPaddr.obj.(*tEdit).text + " " + editPortGet.obj.(*tEdit).text + " " + editOID.obj.(*tEdit).text, "")	
 	result = strings.Replace(result, "\n", string(13), -1)
 	printSNMPTerminal(result)
 }
 
 
 func btnSetClick(node *Node){
-	result := Get("http://localhost:8087/api", "cmd=set " + editIPaddr.obj.(*tEdit).text + " " + editPortGet.obj.(*tEdit).text + " " + editOID.obj.(*tEdit).text + " " + editValue.obj.(*tEdit).text, "")	
+	result := Get("http://"+editIPaddr.obj.(*tEdit).text+":8087/api", "cmd=set " + editIPaddr.obj.(*tEdit).text + " " + editPortGet.obj.(*tEdit).text + " " + editOID.obj.(*tEdit).text + " " + editValue.obj.(*tEdit).text, "")	
 	result = strings.Replace(result, "\n", string(13), -1)
 	printSNMPTerminal(result)
 }

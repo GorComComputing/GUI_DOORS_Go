@@ -4,6 +4,7 @@ import (
 	"math"
 	//"strings"
 	//"fmt"
+	//"strconv"
 )
 
 
@@ -1933,12 +1934,25 @@ var char60 string =
 }
 
 
-func showBMP(Wall [256*10*3]int, x int, y int, width int, height int){
-    for i := 0; i < height; i++ {
-        for j = 0; j < width; j++ {
-            DrawPutPixel(nil, x + j, y + height - i, 0x10000*Wall[i*width*3+j*3] + 0x100*Wall[i*width*3+j*3+1] + Wall[i*width*3+j*3+2])
-        }
-    }
+func showBMP(buffer []uint8, Wall []byte, x int, y int){
+	if Wall != nil {
+		pos := 0x1000000*int(Wall[0x0D]) + 0x10000*int(Wall[0x0C]) + 0x100*int(Wall[0x0B]) + int(Wall[0x0A]) //0x36
+		width := 0x1000000*int(Wall[0x15]) + 0x10000*int(Wall[0x14]) + 0x100*int(Wall[0x13]) + int(Wall[0x12])
+		height := 0x1000000*int(Wall[0x19]) + 0x10000*int(Wall[0x18]) + 0x100*int(Wall[0x17]) + int(Wall[0x16])
+    	for i := 0; i < height; i++ {
+        	for j := 0; j < width; j++ {
+        		if 0x10000*int(Wall[pos+2]) + 0x100*int(Wall[pos+1]) + int(Wall[pos]) != 0xFEFEFE {
+        			if x + j >= xleft_loc && x + j <= xright_loc && y + i >= ytop_loc && y + i <= ybottom_loc {
+						PutPixel(nil, x + j, y + height - i, 0x10000*int(Wall[pos+2]) + 0x100*int(Wall[pos+1]) + int(Wall[pos])) 
+					}	
+				}
+				pos += 3
+			}
+			if width%4 != 0 {
+				pos += (((width/4 + 1)*4) - width)*3
+			}
+		}
+	}
 }
 
 

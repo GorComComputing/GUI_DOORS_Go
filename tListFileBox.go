@@ -91,11 +91,9 @@ func (obj *tListFileBox) Draw(parX int, parY int, parSizeX int, parSizeY int){
     	TextOutgl(nil, obj.list[i].name, parX+obj.x + 4 + 23, parY+obj.y + 4 + i*20, 1);
     	
     	if obj.list[i].typ == "D" {
-    		SetColor(0x906017)
-    		DrawBitmapTransparent(nil, icoDir, parX+obj.x + 4, parY+obj.y + 4 + i*20, 16, 12, 1)
+    		showBMP(nil, bmpFolder_small, parX+obj.x + 4, parY+obj.y + 4 + i*20)
     	} else if obj.list[i].typ == "F" {
-    		SetColor(0x8F8F8F)
-    		DrawBitmapTransparent(nil, icoFile, parX+obj.x + 4, parY+obj.y + 4 + i*20, 12, 14, 1)
+    		showBMP(nil, bmpFile_small, parX+obj.x + 4, parY+obj.y + 4 + i*20)
     	}   	
     }
     } else if obj.mode == BIGICON {
@@ -134,49 +132,14 @@ func (obj *tListFileBox) Draw(parX int, parY int, parSizeX int, parSizeY int){
     		TextOutgl(nil, obj.list[i].name, parX+obj.x + 4 + 30+20 - len(obj.list[i].name)*10/2+ (col)*100, parY+obj.y + 4 + row*70+40, 1);
     	
     		if obj.list[i].typ == "D" {
-    			SetColor(0x906017)
-    			DrawBitmapTransparent(nil, icoDir, parX+obj.x + 4 + 30 + (col)*100, parY+obj.y + 4 + row*70, 16, 12, 2)
+    			showBMP(nil, bmpFolder, parX+obj.x + 4 + 30 + (col)*100, parY+obj.y + 4 + row*70)
     		} else if obj.list[i].typ == "F" {
-    			SetColor(0x8F8F8F)
-    			DrawBitmapTransparent(nil, icoFile, parX+obj.x + 4 + 30 + (col)*100, parY+obj.y + 4 + row*70, 12, 14, 2)
+    			showBMP(nil, bmpFile, parX+obj.x + 4 + 30 + (col)*100, parY+obj.y + 4 + row*70)
     		}
     		col++
     	}
     }
 }
-
-
-var icoDir string =
-    " ppppp          " +
-    "p     pppppp    " +
-    "p          ppppp" +
-    "p        ppppppp" +
-    "p       p     p " +
-    "p   pppp      p " +
-    "p   p        p  " +
-    "p  p         p  " +
-    "p  p        p   " +
-    "p p         p   " + 
-    "ppp        p    " +
-    "pppppppppppp    "
-    //16x12
-
-var icoFile string =
-    "pppppppp    " +
-    "p      pp   " +
-    "p      p p  " +
-    "p ppp  p  p " +
-    "p ppp  p   p" +
-    "p ppp  ppppp" +
-    "p          p" +
-    "p          p" +
-    "p pppppppp p" +
-    "p          p" +
-    "p pppppppp p" +
-    "p          p" +
-    "p          p" +
-    "pppppppppppp" 
-    //12x14
 
 
 func (obj *tListFileBox) RAD(x int, y int){

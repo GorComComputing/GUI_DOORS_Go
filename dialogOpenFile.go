@@ -17,7 +17,7 @@ var lsfOpenDialog *Node
 var TO *string
 
 func OpenDialog(path string, to *string){ 
-    frmOpenDialog := CreateForm(&layout, "frmOpenDialog", BITMAP_WIDTH/2-465/2, BITMAP_HEIGHT/2-310/2, 465, 310, 0xD8DCC0, DIALOG, "Open File", true, nil)
+    frmOpenDialog := CreateForm(&layout, "frmOpenDialog", nil, BITMAP_WIDTH/2-465/2, BITMAP_HEIGHT/2-310/2, 465, 310, 0xD8DCC0, DIALOG, "Open File", true, nil)
     btnOpenDialogOpen = CreateBtn(frmOpenDialog, "btnOpenDialogOpen", 389, 251, 70, 24, 0xd8dcc0, 0x0, "Open", btnOpenDialogOpenClick)
     edtOpenDialogPath = CreateEdit(frmOpenDialog, "edtOpenDialogPath", 60, 22, 400, 20, 0xf8fcf8, 0x0, path, nil, nil)
     edtOpenDialogFile = CreateEdit(frmOpenDialog, "edtOpenDialogFile", 5, 252, 375, 20, 0xf8fcf8, 0x0, "", nil, nil)

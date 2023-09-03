@@ -36,7 +36,7 @@ func CreateComboBox(parent *Node, name string, x int, y int, sizeX int, sizeY in
 	node := Node{typ: COMBOBOX, parent: parent, previous: nil, children: nil, obj: &obj}
 	parent.children = append(parent.children, &node)
 	
-	CreateBitBtn(&node, "bitBtnComboBox"+name, obj.sizeX - 15, 1, 15, 15, 0xD8DCC0, 0x000000, "v", btnComboBox) 
+	CreateBitBtn(&node, "bitBtnComboBox"+name, nil, obj.sizeX - 15, 1, 15, 15, 0xD8DCC0, 0x000000, "V", btnComboBox) 
 	
 	CreateListBox(&node, "objListBox"+name, 0, obj.sizeY, obj.sizeX, len(obj.list)*20, 0xf8fcf8, 0x0, obj.list, objListBoxClick, objListBoxEnter)
 	node.children[1].obj.(*tListBox).visible = false

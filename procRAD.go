@@ -80,7 +80,7 @@ var listMode = []string{"NONE", "WIN", "DIALOG", "FLAT", "TASK"}
 
 
 func startRAD(){
-	frmRAD = CreateForm(&layout, "frmRAD", 0, 0, BITMAP_WIDTH-1, 80, 0xD8DCC0, WIN, "RAD", false, nil)
+	frmRAD = CreateForm(&layout, "frmRAD", nil, 0, 0, BITMAP_WIDTH-1, 80, 0xD8DCC0, WIN, "RAD", false, nil)
 	btnAddBtn = CreateBtn(frmRAD, "btnAddBtn", 2, 18+21, 40, 40, 0xD8DCC0, 0x000000, "Btn", btnAddBtnClick)
 	btnAddLabel = CreateBtn(frmRAD, "btnAddLabel", 2+41, 18+21, 40, 40, 0xD8DCC0, 0x000000, "Lbl", btnAddLabelClick)
 	btnAddEdit = CreateBtn(frmRAD, "btnAddEdit", 2+41+41, 18+21, 40, 40, 0xD8DCC0, 0x000000, "Edt", btnAddEditClick)
@@ -93,24 +93,24 @@ func startRAD(){
 	
 	
 	
-	frmProperties = CreateForm(&layout, "frmProperties", 0, 81, 185, 400, 0xD8DCC0, WIN, "Object Inspector", false, nil)
+	frmProperties = CreateForm(&layout, "frmProperties", nil, 0, 81, 185, 400, 0xD8DCC0, WIN, "Object Inspector", false, nil)
 	listTab := []string{"Properties", "Events"} 
     pnlProperties = CreatePanel(frmProperties, "pnlPropertis", 2, 41, 181, 357, 0xd8dcc0, NONE, nil)
     pnlEvents = CreatePanel(frmProperties, "pnlEvents", 2, 41, 181, 357, 0xd8dcc0, NONE, nil)
     pnlEvents.obj.(*tPanel).visible = false
 	tabPropEvents = CreateTab(frmProperties, "tabPropEvents", 2, 20, 90, 20, 0xd8dcc0, 0x0, listTab, tabPropEventsClick, nil)
 	
-	frmCode = CreateForm(&layout, "frmCode", 185, 81, 900, 800, 0xD8DCC0, WIN, "Code", false, nil)
+	frmCode = CreateForm(&layout, "frmCode", nil, 185, 81, 900, 800, 0xD8DCC0, WIN, "Code", false, nil)
 	memCode = CreateMemo(frmCode, "memCode", 2, 18, 900-4, 800-17-4, 0xF8FCF8, 0x000000, "", nil)
 	
-	listWinRAD := []string{"File", "Build"} 
+	listWinRAD := []tMenuList{{"File", nil}, {"Build", nil}}
 	menuWinRAD = CreateMenu(frmRAD, "menuWinRAD", 2, 18, BITMAP_WIDTH-1-1-4, 20, 0xd8dcc0, 0x0, LINE, listWinRAD, menuWinRADClick, nil)
 	
-	listFileRAD := []string{"Open", "Save"}
+	listFileRAD := []tMenuList{{"New", bmpNew_file}, {"Open", bmpOpen_file}, {"Save", bmpSave_file}}
 	menuFileRAD = CreateMenu(frmRAD, "menuFileRAD", 2, 18+20, 100, len(listFileRAD)*20, 0xd8dcc0, 0x0, NONE, listFileRAD, menuFileRADClick, nil)
 	menuFileRAD.obj.(*tMenu).visible = false
 	
-	listBuildRAD := []string{"Generate"}
+	listBuildRAD := []tMenuList{{"Generate", nil}}
 	menuBuildRAD = CreateMenu(frmRAD, "menuBuildRAD", 2+60, 18+20, 100, len(listBuildRAD)*20, 0xd8dcc0, 0x0, NONE, listBuildRAD, menuBuildRADClick, nil)
 	menuBuildRAD.obj.(*tMenu).visible = false
 }
@@ -133,18 +133,11 @@ func menuWinRADClick(node *Node, x int, y int){
 func menuFileRADClick(node *Node, x int, y int){
 	node.obj.(*tMenu).visible = false
 	if node.obj.(*tMenu).selected == 0 {
-		OpenDialog("/home/gor/WORK/Go/projects/DOORS/Server/files/", &(memCode.obj.(*tMemo).text))
-		
-	
-		/*result := ReadFile(edtFileName.obj.(*tEdit).text)
-		result = strings.Replace(result, "\r\n", string(13), -1)
-		result = strings.Replace(result, "\t", string(0x20) + string(0x20) + string(0x20) + string(0x20), -1)
-		memCode.obj.(*tMemo).text = result*/
+		memCode.obj.(*tMemo).text = ""
 	} else if node.obj.(*tMenu).selected == 1 {
-		SaveDialog("/home/gor/WORK/Go/projects/DOORS/Server/files/", &(memCode.obj.(*tMemo).text))
-		
-		/*tmp := strings.Replace(memCode.obj.(*tMemo).text, string(13), "\r\n", -1)
-		memTerminal.obj.(*tMemo).text = WriteFile(edtFileName.obj.(*tEdit).text, tmp)*/
+		OpenDialog(RootDir+"files/", &(memCode.obj.(*tMemo).text))
+	} else if node.obj.(*tMenu).selected == 2 {
+		SaveDialog(RootDir+"files/", &(memCode.obj.(*tMemo).text))
 	}
 }
 
@@ -222,6 +215,8 @@ func editPropNameEnter(node *Node){
 		obj.name  = node.obj.(*tEdit).text
 	case *tListFileBox:
 		obj.name  = node.obj.(*tEdit).text
+	case *tImage:
+		obj.name  = node.obj.(*tEdit).text
 	}
 }
 
@@ -256,6 +251,8 @@ func editPropLeftEnter(node *Node){
 		obj.x, _ = strconv.Atoi(node.obj.(*tEdit).text)
 	case *tListFileBox:
 		obj.x, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tImage:
+		obj.x, _ = strconv.Atoi(node.obj.(*tEdit).text)
 	}
 }
 
@@ -289,6 +286,8 @@ func editPropTopEnter(node *Node){
 	case *tMenu:
 		obj.y, _ = strconv.Atoi(node.obj.(*tEdit).text)
 	case *tListFileBox:
+		obj.y, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tImage:
 		obj.y, _ = strconv.Atoi(node.obj.(*tEdit).text)
 	}
 }
@@ -352,6 +351,8 @@ func editPropWidthEnter(node *Node){
 		obj.sizeX, _ = strconv.Atoi(node.obj.(*tEdit).text)
 	case *tListFileBox:
 		obj.sizeX, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tImage:
+		obj.sizeX, _ = strconv.Atoi(node.obj.(*tEdit).text)
 	}
 }
 
@@ -385,6 +386,8 @@ func editPropHeightEnter(node *Node){
 	case *tMenu:
 		obj.sizeY, _ = strconv.Atoi(node.obj.(*tEdit).text)
 	case *tListFileBox:
+		obj.sizeY, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tImage:
 		obj.sizeY, _ = strconv.Atoi(node.obj.(*tEdit).text)
 	}
 }
@@ -580,6 +583,12 @@ func cmbPropVisibleEnter(node *Node){
 		} else if node.obj.(*tComboBox).text == "false" {
 			obj.visible = false
 		}
+	case *tImage:
+		if node.obj.(*tComboBox).text == "true" {
+			obj.visible = true	
+		} else if node.obj.(*tComboBox).text == "false" {
+			obj.visible = false
+		}
 	}
 }
 
@@ -672,7 +681,7 @@ func cmbPropListEnter(node *Node){
 	case *tTab:
 		obj.list = node.obj.(*tComboBox).list
 	case *tMenu:
-		obj.list = node.obj.(*tComboBox).list
+		//obj.list = node.obj.(*tComboBox).list
 	//case *tListFileBox:
 	//	obj.list = node.obj.(*tComboBox).list
 	}
@@ -726,6 +735,8 @@ func editEvntClickEnter(node *Node){
 		obj.onClickStr = node.obj.(*tEdit).text
 	case *tListFileBox:
 		obj.onClickStr = node.obj.(*tEdit).text
+	case *tImage:
+		obj.onClickStr = node.obj.(*tEdit).text
 	}
 }
 
@@ -775,7 +786,7 @@ func btnAddPanelClick(node *Node){
 }
 
 func btnAddFormClick(node *Node){
-	obj := CreateForm(&layout, "frmForm", 190, 70, 500, 300, 0xD8DCC0, WIN, "Form", true, nil)
+	obj := CreateForm(&layout, "frmForm", nil, 190, 70, 500, 300, 0xD8DCC0, WIN, "Form", true, nil)
 	i := findNode(obj)
 	fmt.Println(i)
 	if i > 0 {

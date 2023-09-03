@@ -38,6 +38,7 @@ const (
     MENU
     LISTFILEBOX
     TABLE
+    IMAGE
 )
 
 type tWinComponents interface {
@@ -56,7 +57,7 @@ type Node struct {
     previous *Node
     children []*Node
     obj tWinComponents 
-}
+}   
          
 
 //export eventDraw
@@ -71,8 +72,6 @@ func eventDraw() {
 	//FillCircle(nil, 0, 100, 30)
 	//Circle(nil, 0, 200, 30)
 	onTimer()
-	
-	showBMP(bmp, 100, 100, 256, 10)
 	
 	t := time.Now()
 	lblFPS.obj.(*tLabel).caption = t.Sub(start).String()
@@ -113,6 +112,8 @@ func DrawNode(node *Node, x int, y int){
 		case *tListFileBox:
 			visible = obj.visible
 		case *tTable:
+			visible = obj.visible
+		case *tImage:
 			visible = obj.visible
 		}
 	}
@@ -198,6 +199,11 @@ func DrawNode(node *Node, x int, y int){
 			parY = obj.y + y 
 			parSizeX = obj.sizeX
 			parSizeY = obj.sizeY
+		case *tImage:
+			parX = obj.x + x 
+			parY = obj.y + y 
+			parSizeX = obj.sizeX
+			parSizeY = obj.sizeY
 		}
 	}
 	
@@ -242,6 +248,8 @@ func eventClick(x int, y int)  {
 			obj.Click(x-X, y-Y)
 		case *tTable:
 			obj.Click(x-X, y-Y)
+		case *tImage:
+			obj.Click(x-X, y-Y)
 		}
 	}
 }
@@ -282,6 +290,8 @@ func ClickRecurs(node *Node, x int, y int, parX int, parY int) {
 		case *tListFileBox:
 			visible = obj.visible
 		case *tTable:
+			visible = obj.visible
+		case *tImage:
 			visible = obj.visible
 		}
 	}
@@ -331,6 +341,9 @@ func ClickRecurs(node *Node, x int, y int, parX int, parY int) {
 			parX += obj.x
 			parY += obj.y
 		case *tTable:
+			parX += obj.x
+			parY += obj.y
+		case *tImage:
 			parX += obj.x
 			parY += obj.y
 		}
@@ -472,6 +485,15 @@ func ClickRecurs(node *Node, x int, y int, parX int, parY int) {
 				list = append(list, node)
 				X = parX+node.obj.(*tTable).x
 				Y = parY+node.obj.(*tTable).y
+			}
+		case *tImage:
+			if (parX+node.obj.(*tImage).x) < x && 
+			(parX+node.obj.(*tImage).x + node.obj.(*tImage).sizeX) > x && 
+			(parY+node.obj.(*tImage).y) < y && 
+			(parY+node.obj.(*tImage).y + node.obj.(*tImage).sizeY) > y {
+				list = append(list, node)
+				X = parX+node.obj.(*tImage).x
+				Y = parY+node.obj.(*tImage).y
 			}
 		}
 	}
@@ -625,6 +647,8 @@ func eventMouseDown(x int, y int) {
 		obj.MouseDown(x, y)
 	case *tTable:
 		obj.MouseDown(x, y)
+	case *tImage:
+		obj.MouseDown(x, y)
 	}
 }
 
@@ -687,6 +711,8 @@ func eventMouseMove(x int, y int)  {
 	case *tListFileBox:
 		obj.MouseMove(x, y, x-X, y-Y)
 	case *tTable:
+		obj.MouseMove(x, y, x-X, y-Y)
+	case *tImage:
 		obj.MouseMove(x, y, x-X, y-Y)
 	}
 	}
