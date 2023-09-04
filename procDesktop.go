@@ -40,8 +40,8 @@ func startDesktop(){
 	
 	listMenuStart := []tMenuList{{"Programs", bmpPrograms}, {"Settings", bmpSettings}}
 	
-	frmMenuStart = CreateForm(&layout, "frmMenuStart", nil, 0, BITMAP_HEIGHT-len(listMenuStart)*20-20-37-40, 127, len(listMenuStart)*20+26+40, 0xD8DCC0, NONE, "", false, nil)
-	cnvMenuStart = CreateCanvas(frmMenuStart, "cnvMenuStart", 2, 2, 20, len(listMenuStart)*20+20+40, nil)
+	frmMenuStart = CreateForm(&layout, "frmMenuStart", nil, 2, BITMAP_HEIGHT-len(listMenuStart)*20-20-37-50+2, 147, len(listMenuStart)*20+26+50, 0xD8DCC0, NONE, "", false, nil)
+	cnvMenuStart = CreateCanvas(frmMenuStart, "cnvMenuStart", 2, 2, 20, len(listMenuStart)*20+20+50, nil)
 	for y := 0; y < cnvMenuStart.obj.(*tCanvas).sizeY; y++ {
     	for x := 0; x < cnvMenuStart.obj.(*tCanvas).sizeX; x++ {
     			squareNumber := (y * cnvMenuStart.obj.(*tCanvas).sizeX) + x;
@@ -53,9 +53,10 @@ func startDesktop(){
       			cnvMenuStart.obj.(*tCanvas).buffer[squareRgbaIndex + 3] = 255; 	// Alpha
     	}
     }
-    imgLogoMenu = CreateImage(frmMenuStart, "imgLogoMenu", bmpLogo_menu, 6, 2+35, 12, 60, nil)
+    imgLogoMenu = CreateImage(frmMenuStart, "imgLogoMenu", bmpLogo_menu, 6, 2+45, 12, 60, nil)
     
-	menuStart = CreateMenu(frmMenuStart, "menuStart", 24, 3, 100, len(listMenuStart)*20, 0xd8dcc0, 0x0, FLAT, listMenuStart, menuStartClick, nil)
+	menuStart = CreateMenu(frmMenuStart, "menuStart", 24, 3, 120, len(listMenuStart)*40, 0xd8dcc0, 0x0, FLAT, listMenuStart, menuStartClick, nil)
+	menuStart.obj.(*tMenu).cellY = 40
 	
 	var listStartPrograms []tMenuList = make([]tMenuList, 0)
 	for i := 0; i < len(programs); i++ {
@@ -66,10 +67,10 @@ func startDesktop(){
 		listItem := tMenuList{programs[i].name, pic}
 		listStartPrograms = append(listStartPrograms, listItem)
 	}
-	menuStartPrograms = CreateMenu(frmMenuStart, "menuStartPrograms", 127, -143, 120, len(listStartPrograms)*20, 0xd8dcc0, 0x0, NONE, listStartPrograms, menuStartProgramsClick, nil)
+	menuStartPrograms = CreateMenu(frmMenuStart, "menuStartPrograms", 147, -143, 120, len(listStartPrograms)*20, 0xd8dcc0, 0x0, NONE, listStartPrograms, menuStartProgramsClick, nil)
 	menuStartPrograms.obj.(*tMenu).visible = false
 	
-	cbxRAD = CreateCheckBox(frmMenuStart, "cbxRAD", 24, frmMenuStart.obj.(*tForm).sizeY - 20, 100, 16, 0xD8DCC0, 0x000000, "RAD", false, cbxRADClick)
+	cbxRAD = CreateCheckBox(frmMenuStart, "cbxRAD", 27, frmMenuStart.obj.(*tForm).sizeY - 25, 100, 16, 0xD8DCC0, 0x000000, "RAD", false, cbxRADClick)
 }
 
 

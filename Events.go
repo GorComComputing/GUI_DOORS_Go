@@ -63,7 +63,7 @@ type Node struct {
 //export eventDraw
 func eventDraw() {	
 	start := time.Now()
-
+	
 	SetBackColor(0x000000) //0x111111 0xFFFFFF
 	SetColor(0x000000)
 	SetViewPort(0, 0, GETMAX_X, GETMAX_Y)

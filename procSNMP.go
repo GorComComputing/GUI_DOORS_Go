@@ -70,7 +70,7 @@ func startSNMP(frmMain *Node){
 	editValue = CreateEdit(frmMain, "editValue", 200, 200, 200, 20, 0xF8FCF8, 0x000000, "", nil, nil)
 
 	
-	btnSendHelp = CreateBitBtn(frmMain, "btnSendHelp", nil, 470, 200, 70, 24, 0xD8DCC0, 0x000000, "Help", btnSendHelpClick)
+	btnSendHelp = CreateBitBtn(frmMain, "btnSendHelp", nil, 470, 200, 70, 24, 0xD8DCC0, 0x000000, "Help", BORDER, btnSendHelpClick)
 	
 	cbxVersion1 = CreateCheckBox(frmMain, "cbxVersion1", 430, 30, 140, 16, 0xD8DCC0, 0x000000, "Version 1", false, cbxVersion1Click)
 	cbxVersion2 = CreateCheckBox(frmMain, "cbxVersion2", 430, 60, 140, 16, 0xD8DCC0, 0x000000, "Version 2", true, cbxVersion2Click)

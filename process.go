@@ -60,6 +60,7 @@ func initDOORS(programs []*tProgram) {
   	//bmpBrowser, _ = base64.StdEncoding.DecodeString(b64Browser)
   	bmpPrograms, _ = base64.StdEncoding.DecodeString(b64Programs)
   	bmpSettings, _ = base64.StdEncoding.DecodeString(b64Settings)
+  	//bmpBack, _ = base64.StdEncoding.DecodeString(b64Back)
   	
 	startDesktop()
 	startRAD()
@@ -147,7 +148,7 @@ func execProcess(num int) {
 		process[num].isRun = true
 		process[num].form.obj.(*tForm).visible = true
 	
-		obj := tBitBtn{name: "btnTask"+process[num].name, x: xTask, y: 2, sizeX: 100, sizeY: 28 - 4, BC: 0xD8DCC0, TC: 0x000000, caption: process[num].name, visible: true, pressed: false, enabled: true, picture: process[num].picture, onClick: btnTaskClick}
+		obj := tBitBtn{name: "btnTask"+process[num].name, x: xTask, y: 2, sizeX: 100, sizeY: 28 - 4, BC: 0xD8DCC0, TC: 0x000000, caption: process[num].name, visible: true, pressed: false, enabled: true, picture: process[num].picture, mode: BORDER, onClick: btnTaskClick}
 		node_new := Node{typ: BUTTON, parent: pnlTask, previous: nil, children: nil, obj: &obj}
 		pnlTask.children = append(pnlTask.children, &node_new)
 		//obj.pressed = true

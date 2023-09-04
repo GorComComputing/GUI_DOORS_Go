@@ -21,10 +21,13 @@ type tTable struct{
     focused bool
     enabled bool
 	cols []string
+	sizeCols []int
 	rows []string
     list [][]string
     selectedX int
     selectedY int
+    cellX int
+    cellY int
     onClick func(*Node, int, int)
     onClickStr string
     onEnter func(*Node)
@@ -32,8 +35,8 @@ type tTable struct{
 }
 
 
-func CreateTable(parent *Node, name string, x int, y int, sizeX int, sizeY int, BC int, TC int, cols []string, rows []string, list [][]string, onClick func(*Node, int, int), onEnter func(*Node)) *Node {
-	obj := tTable{name: name, x: x, y: y, sizeX: sizeX, sizeY: sizeY, BC: BC, TC: TC, visible: true, enabled: true, cols: cols, rows: rows, list: list, selectedX: 0, selectedY: 0, onClick: onClick, onEnter: onEnter}
+func CreateTable(parent *Node, name string, x int, y int, sizeX int, sizeY int, BC int, TC int, cols []string, sizeCols []int, rows []string, list [][]string, cellX int, cellY int, onClick func(*Node, int, int), onEnter func(*Node)) *Node {
+	obj := tTable{name: name, x: x, y: y, sizeX: sizeX, sizeY: sizeY, BC: BC, TC: TC, visible: true, enabled: true, cols: cols, sizeCols: sizeCols, rows: rows, list: list, selectedX: 0, selectedY: 0, cellX: cellX, cellY: cellY, onClick: onClick, onEnter: onEnter}
 	node := Node{typ: TABLE, parent: parent, previous: nil, children: nil, obj: &obj}
 	parent.children = append(parent.children, &node)
 	return &node
@@ -70,11 +73,11 @@ func (obj *tTable) Draw(parX int, parY int, parSizeX int, parSizeY int){
     
     var col int = 0
 	if obj.cols != nil {
-		col = 20
+		col = obj.cellY
 	}
 	var row int = 0
 	if obj.rows != nil {
-		row = 60
+		row = obj.cellX
 	}
     if obj.rows != nil && obj.cols != nil {
     	SetColor(0xd8dcc0);
@@ -83,66 +86,69 @@ func (obj *tTable) Draw(parX int, parY int, parSizeX int, parSizeY int){
    			p1 := tPoint{x: parX+obj.x +1+1, y: parY+obj.y+1}
 			p = append(p, p1)
 	
-			p2 := tPoint{x: parX+obj.x + 59+1, y: parY+obj.y+1}
+			p2 := tPoint{x: parX+obj.x + obj.cellX, y: parY+obj.y+1}
 			p = append(p, p2)
 	
-			p3 := tPoint{x: parX+obj.x + 59+1, y: parY+obj.y + 20+1}
+			p3 := tPoint{x: parX+obj.x + obj.cellX, y: parY+obj.y + obj.cellY+1}
 			p = append(p, p3)
 	
-			p4 := tPoint{x: parX+obj.x+1, y: parY+obj.y + 20+1}
+			p4 := tPoint{x: parX+obj.x+1, y: parY+obj.y + obj.cellY+1}
 			p = append(p, p4)
 
     		FillPoly(nil, 4, p);
     		SetColor(0x000000);
     	
     	SetColor(0xF8FCF8);
-    	LinePP(nil, parX + obj.x+1, parY + obj.y+1, parX + obj.x + 59+1, parY + obj.y+1);
-    	LinePP(nil, parX + obj.x+1, parY + obj.y+1, parX + obj.x+1, parY + obj.y + 20+1);
+    	LinePP(nil, parX + obj.x+1, parY + obj.y+1, parX + obj.x + obj.cellX, parY + obj.y+1);
+    	LinePP(nil, parX + obj.x+1, parY + obj.y+1, parX + obj.x+1, parY + obj.y + obj.cellY+1);
     	SetColor(0xE0E0E0);
-    	LinePP(nil, parX + obj.x+1+1, parY + obj.y+1+1, parX + obj.x + 59 - 2+1+1, parY + obj.y+1+1);
-    	LinePP(nil, parX + obj.x+1+1, parY + obj.y+1+1, parX + obj.x+1+1, parY + obj.y + 20 - 1+1);
+    	LinePP(nil, parX + obj.x+1+1, parY + obj.y+1+1, parX + obj.x + obj.cellX - 2+1, parY + obj.y+1+1);
+    	LinePP(nil, parX + obj.x+1+1, parY + obj.y+1+1, parX + obj.x+1+1, parY + obj.y + obj.cellY - 1+1);
     	SetColor(0x787C78);
-    	LinePP(nil, parX + obj.x+2+1, parY + obj.y + 20 - 1+1, parX + obj.x + 59 - 1+1+1, parY + obj.y + 20 - 1+1);
-    	LinePP(nil, parX + obj.x + 59 - 1+1+1, parY + obj.y + 1+1, parX + obj.x + 59 - 1+1+1, parY + obj.y + 20 - 1+1);
+    	LinePP(nil, parX + obj.x+2+1, parY + obj.y + obj.cellY - 1+1, parX + obj.x + obj.cellX - 1+1, parY + obj.y + obj.cellY - 1+1);
+    	LinePP(nil, parX + obj.x + obj.cellX - 1+1, parY + obj.y + 1+1, parX + obj.x + obj.cellX - 1+1, parY + obj.y + obj.cellY - 1+1);
     	SetColor(0x000000);
-    	LinePP(nil, parX + obj.x+1+1, parY + obj.y + 20+1, parX + obj.x + 59+1, parY + obj.y + 20+1);
-    	LinePP(nil, parX + obj.x + 59+1, parY + obj.y+1+1, parX + obj.x + 59+1, parY + obj.y + 20+1);
+    	LinePP(nil, parX + obj.x+1+1, parY + obj.y + obj.cellY+1, parX + obj.x + obj.cellX, parY + obj.y + obj.cellY+1);
+    	LinePP(nil, parX + obj.x + obj.cellX, parY + obj.y+1+1, parX + obj.x + obj.cellX, parY + obj.y + obj.cellY+1);
     }
 	
 	if obj.cols != nil {
+	var x int = 0
 	for j := 0; j < len(obj.cols); j++ {
     		SetColor(0xd8dcc0);
     		var p []tPoint
 
-   			p1 := tPoint{x: parX+obj.x + j*60+1+row, y: parY+obj.y+1}
+   			p1 := tPoint{x: parX+obj.x + x+1+row, y: parY+obj.y+1}
 			p = append(p, p1)
 	
-			p2 := tPoint{x: parX+obj.x + 60 + j*60+1+row, y: parY+obj.y+1}
+			p2 := tPoint{x: parX+obj.x + x + obj.sizeCols[j]+1+row, y: parY+obj.y+1}
 			p = append(p, p2)
 	
-			p3 := tPoint{x: parX+obj.x + 60 + j*60+1+row, y: parY+obj.y + 20+1}
+			p3 := tPoint{x: parX+obj.x + x + obj.sizeCols[j]+1+row, y: parY+obj.y + obj.cellY+1}
 			p = append(p, p3)
 	
-			p4 := tPoint{x: parX+obj.x + j*60+1+row, y: parY+obj.y + 20+1}
+			p4 := tPoint{x: parX+obj.x + x+1+row, y: parY+obj.y + obj.cellY+1}
 			p = append(p, p4)
 
     		FillPoly(nil, 4, p);
     		SetColor(0x000000);
 
-    	TextOutgl(nil, obj.cols[j], parX+obj.x + 4 + j*60+1+row, parY+obj.y + 4+1, 1);
+    	TextOutgl(nil, obj.cols[j], parX+obj.x + 4 + x+1+row, parY+obj.y + 4+1, 1);
     	
     	SetColor(0xF8FCF8);
-    	LinePP(nil, parX + obj.x + j*60+1+row, parY + obj.y+1, parX + obj.x + 60 + j*60+1+row, parY + obj.y+1);
-    	LinePP(nil, parX + obj.x + j*60+1+row, parY + obj.y+1, parX + obj.x + j*60+1+row, parY + obj.y + 20+1);
+    	LinePP(nil, parX + obj.x + x+1+row, parY + obj.y+1, parX + obj.x + obj.sizeCols[j] + x+1+row, parY + obj.y+1);
+    	LinePP(nil, parX + obj.x + x+1+row, parY + obj.y+1, parX + obj.x + x+1+row, parY + obj.y + obj.cellY+1);
     	SetColor(0xE0E0E0);
-    	LinePP(nil, parX + obj.x+1 + j*60+1+row, parY + obj.y+1+1, parX + obj.x + 60 + j*60 - 2+1+row, parY + obj.y+1+1);
-    	LinePP(nil, parX + obj.x+1 + j*60+1+row, parY + obj.y+1+1, parX + obj.x+1 + j*60+1+row, parY + obj.y + 20 - 1+1);
+    	LinePP(nil, parX + obj.x+1 + x+1+row, parY + obj.y+1+1, parX + obj.x + obj.sizeCols[j] + x - 2+1+row, parY + obj.y+1+1);
+    	LinePP(nil, parX + obj.x+1 + x+1+row, parY + obj.y+1+1, parX + obj.x+1 + x+1+row, parY + obj.y + obj.cellY - 1+1);
     	SetColor(0x787C78);
-    	LinePP(nil, parX + obj.x+2 + j*60+1+row, parY + obj.y + 20 - 1+1, parX + obj.x + 60 + j*60 - 1+1+row, parY + obj.y + 20 - 1+1);
-    	LinePP(nil, parX + obj.x + 60 + j*60 - 1+1+row, parY + obj.y + 1+1, parX + obj.x + 60 + j*60 - 1+1+row, parY + obj.y + 20 - 1+1);
+    	LinePP(nil, parX + obj.x+2 + x+1+row, parY + obj.y + obj.cellY - 1+1, parX + obj.x + obj.sizeCols[j] + x - 1+1+row, parY + obj.y + obj.cellY - 1+1);
+    	LinePP(nil, parX + obj.x + obj.sizeCols[j] + x - 1+1+row, parY + obj.y + 1+1, parX + obj.x + obj.sizeCols[j] + x - 1+1+row, parY + obj.y + obj.cellY - 1+1);
     	SetColor(0x000000);
-    	LinePP(nil, parX + obj.x+1 + j*60+1+row, parY + obj.y + 20+1, parX + obj.x + 60 + j*60+1+row, parY + obj.y + 20+1);
-    	LinePP(nil, parX + obj.x + 60 + j*60+1+row, parY + obj.y+1+1, parX + obj.x + 60 + j*60+1+row, parY + obj.y + 20+1);
+    	LinePP(nil, parX + obj.x+1 + x+1+row, parY + obj.y + obj.cellY+1, parX + obj.x + obj.sizeCols[j] + x+1+row, parY + obj.y + obj.cellY+1);
+    	LinePP(nil, parX + obj.x + obj.sizeCols[j] + x+1+row, parY + obj.y+1+1, parX + obj.x + obj.sizeCols[j] + x+1+row, parY + obj.y + obj.cellY+1);
+    	
+    	x += obj.sizeCols[j]
     }
     }
     
@@ -152,35 +158,35 @@ func (obj *tTable) Draw(parX int, parY int, parSizeX int, parSizeY int){
     		SetColor(0xd8dcc0);
     		var p []tPoint
 
-   			p1 := tPoint{x: parX+obj.x +1+1, y: parY+obj.y+1 + j*20+col}
+   			p1 := tPoint{x: parX+obj.x +1+1, y: parY+obj.y+1 + j*obj.cellY+col}
 			p = append(p, p1)
 	
-			p2 := tPoint{x: parX+obj.x + 60+1, y: parY+obj.y+1 + j*20+col}
+			p2 := tPoint{x: parX+obj.x + obj.cellX+1, y: parY+obj.y+1 + j*obj.cellY+col}
 			p = append(p, p2)
 	
-			p3 := tPoint{x: parX+obj.x + 60+1, y: parY+obj.y + 20+1 + j*20+col}
+			p3 := tPoint{x: parX+obj.x + obj.cellX+1, y: parY+obj.y + obj.cellY+1 + j*obj.cellY+col}
 			p = append(p, p3)
 	
-			p4 := tPoint{x: parX+obj.x+1, y: parY+obj.y + 20+1 + j*20+col}
+			p4 := tPoint{x: parX+obj.x+1, y: parY+obj.y + obj.cellY+1 + j*obj.cellY+col}
 			p = append(p, p4)
 
     		FillPoly(nil, 4, p);
     		SetColor(0x000000);
 
-    	TextOutgl(nil, obj.rows[j], parX+obj.x + 4+1, parY+obj.y + 4+1 + j*20+col, 1);
+    	TextOutgl(nil, obj.rows[j], parX+obj.x + 4+1, parY+obj.y + 4+1 + j*obj.cellY+col, 1);
     	
     	SetColor(0xF8FCF8);
-    	LinePP(nil, parX + obj.x+1, parY + obj.y+1 + j*20+col, parX + obj.x + 60+1, parY + obj.y+1 + j*20+col);
-    	LinePP(nil, parX + obj.x+1, parY + obj.y+1 + j*20+col, parX + obj.x+1, parY + obj.y + 20+1 + j*20+col);
+    	LinePP(nil, parX + obj.x+1, parY + obj.y+1 + j*obj.cellY+col, parX + obj.x + obj.cellX+1, parY + obj.y+1 + j*obj.cellY+col);
+    	LinePP(nil, parX + obj.x+1, parY + obj.y+1 + j*obj.cellY+col, parX + obj.x+1, parY + obj.y + obj.cellY+1 + j*obj.cellY+col);
     	SetColor(0xE0E0E0);
-    	LinePP(nil, parX + obj.x+1+1, parY + obj.y+1+1 + j*20+col, parX + obj.x + 60 - 2+1+1, parY + obj.y+1+1 + j*20+col);
-    	LinePP(nil, parX + obj.x+1+1, parY + obj.y+1+1 + j*20+col, parX + obj.x+1+1, parY + obj.y + 20 - 1+1 + j*20+col);
+    	LinePP(nil, parX + obj.x+1+1, parY + obj.y+1+1 + j*obj.cellY+col, parX + obj.x + obj.cellX - 2+1+1, parY + obj.y+1+1 + j*obj.cellY+col);
+    	LinePP(nil, parX + obj.x+1+1, parY + obj.y+1+1 + j*obj.cellY+col, parX + obj.x+1+1, parY + obj.y + obj.cellY - 1+1 + j*obj.cellY+col);
     	SetColor(0x787C78);
-    	LinePP(nil, parX + obj.x+2+1, parY + obj.y + 20 - 1+1 + j*20+col, parX + obj.x + 60 - 1+1+1, parY + obj.y + 20 - 1+1 + j*20+col);
-    	LinePP(nil, parX + obj.x + 60 - 1+1+1, parY + obj.y + 1+1 + j*20+col, parX + obj.x + 60 - 1+1+1, parY + obj.y + 20 - 1+1 + j*20+col);
+    	LinePP(nil, parX + obj.x+2+1, parY + obj.y + obj.cellY - 1+1 + j*obj.cellY+col, parX + obj.x + obj.cellX - 1+1+1, parY + obj.y + obj.cellY - 1+1 + j*obj.cellY+col);
+    	LinePP(nil, parX + obj.x + obj.cellX - 1+1+1, parY + obj.y + 1+1 + j*obj.cellY+col, parX + obj.x + obj.cellX - 1+1+1, parY + obj.y + obj.cellY - 1+1 + j*obj.cellY+col);
     	SetColor(0x000000);
-    	LinePP(nil, parX + obj.x+1+1, parY + obj.y + 20+1 + j*20+col, parX + obj.x + 60+1, parY + obj.y + 20+1 + j*20+col);
-    	LinePP(nil, parX + obj.x + 60+1, parY + obj.y+1+1 + j*20+col, parX + obj.x + 60+1, parY + obj.y + 20+1 + j*20+col);
+    	LinePP(nil, parX + obj.x+1+1, parY + obj.y + obj.cellY+1 + j*obj.cellY+col, parX + obj.x + obj.cellX+1, parY + obj.y + obj.cellY+1 + j*obj.cellY+col);
+    	LinePP(nil, parX + obj.x + obj.cellX+1, parY + obj.y+1+1 + j*obj.cellY+col, parX + obj.x + obj.cellX+1, parY + obj.y + obj.cellY+1 + j*obj.cellY+col);
     }
     }
     
@@ -189,22 +195,25 @@ func (obj *tTable) Draw(parX int, parY int, parSizeX int, parSizeY int){
     SetColor(obj.TC);
     SetBackColor(obj.BC);
     for i := 0; i < len(obj.list); i++ {
+    	var x int = 0
     	for j := 0; j < len(obj.list[i]); j++ {
     	
-    	if i == obj.selectedY && j == obj.selectedX && obj.enabled {
+    	SetLocalViewPort(parX + obj.x, parY + obj.y, parX + obj.x + obj.sizeX, parY + obj.y + obj.sizeY)
+    	
+    	if i == obj.selectedY && obj.enabled {  // && j == obj.selectedX
     		SetColor(0x0054E0);
     		var p []tPoint
 
-   			p1 := tPoint{x: parX+obj.x + j*60+1 + row, y: parY+obj.y + i*20 + col+1}
+   			p1 := tPoint{x: parX+obj.x + x+1 + row, y: parY+obj.y + i*obj.cellY + col+1}
 			p = append(p, p1)
 	
-			p2 := tPoint{x: parX+obj.x + 60 + j*60+1 + row, y: parY+obj.y + i*20 + col+1}
+			p2 := tPoint{x: parX+obj.x + obj.sizeCols[j] + x+1 + row, y: parY+obj.y + i*obj.cellY + col+1}
 			p = append(p, p2)
 	
-			p3 := tPoint{x: parX+obj.x + 60 + j*60+1 + row, y: parY+obj.y + 20 + i*20 + col+1}
+			p3 := tPoint{x: parX+obj.x + obj.sizeCols[j] + x+1 + row, y: parY+obj.y + obj.cellY + i*obj.cellY + col+1}
 			p = append(p, p3)
 	
-			p4 := tPoint{x: parX+obj.x + j*60+1 + row, y: parY+obj.y + 20 + i*20 + col+1}
+			p4 := tPoint{x: parX+obj.x + x+1 + row, y: parY+obj.y + obj.cellY + i*obj.cellY + col+1}
 			p = append(p, p4)
 
     		FillPoly(nil, 4, p);
@@ -212,12 +221,17 @@ func (obj *tTable) Draw(parX int, parY int, parSizeX int, parSizeY int){
     	} else {
     		SetColor(obj.TC);
     	}
-    	TextOutgl(nil, obj.list[i][j], parX+obj.x + 4 + j*60+1 + row, parY+obj.y + 4 + i*20 + col+1, 1);
+    	
+    	SetLocalViewPort(parX+obj.x + x+1 + row, parY+obj.y + i*obj.cellY + col+1, parX+obj.x + x+1 + row + obj.sizeCols[j], parY+obj.y + i*obj.cellY + col+1 + obj.cellY)
+    	TextOutgl(nil, obj.list[i][j], parX+obj.x + 4 + x+1 + row, parY+obj.y + 4 + i*obj.cellY + col+1, 1)
     	
     	SetColor(0x000000);
-   		LinePP(nil, parX+obj.x + j*60 + row, parY+obj.y + i*20 + col+1, parX+obj.x + 60 + j*60 + row, parY+obj.y + i*20 + col+1);
-    	LinePP(nil, parX+obj.x + j*60 + row, parY+obj.y + i*20 + col+1, parX+obj.x + j*60 + row, parY+obj.y + 20 + i*20 + col+1);
+   		LinePP(nil, parX+obj.x + x + row, parY+obj.y + i*obj.cellY + col+1, parX+obj.x + obj.sizeCols[j] + x + row, parY+obj.y + i*obj.cellY + col+1)
+    	LinePP(nil, parX+obj.x + x + row, parY+obj.y + i*obj.cellY + col+1, parX+obj.x + x + row, parY+obj.y + obj.cellY + i*obj.cellY + col+1)
+    	
+    	x += obj.sizeCols[j]
     	}
+    	
     }
     
    /* if obj.focused && cursor {
@@ -311,15 +325,15 @@ func (obj *tTable) Click(x int, y int){
 	fmt.Println("CLICKED: ", strconv.Itoa(x), strconv.Itoa(y))
 	var col int = 0
 	if obj.cols != nil {
-		col = 20
+		col = obj.cellY
 	}
 	var row int = 0
 	if obj.rows != nil {
-		row = 60
+		row = obj.cellX
 	}
 	if obj.enabled && len(list) > 0 && y > col && x > row {
-		obj.selectedY = int((y-col)/20)
-		obj.selectedX = int((x-row)/60)
+		obj.selectedY = int((y-col)/obj.cellY)
+		obj.selectedX = int((x-row)/obj.cellX)
 	}
 	
 	if obj.onClick != nil && obj.enabled {

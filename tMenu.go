@@ -29,6 +29,7 @@ type tMenu struct{
     enabled bool
     list []tMenuList
     selected int
+    cellY int
     onClick func(*Node, int, int)
     onClickStr string
     onEnter func(*Node)
@@ -37,7 +38,7 @@ type tMenu struct{
 
 
 func CreateMenu(parent *Node, name string, x int, y int, sizeX int, sizeY int, BC int, TC int, mode tMode, list []tMenuList, onClick func(*Node, int, int), onEnter func(*Node)) *Node {
-	obj := tMenu{name: name, x: x, y: y, sizeX: sizeX, sizeY: sizeY, BC: BC, TC: TC, mode: mode, visible: true, enabled: true, list: list, selected: 0, onClick: onClick, onEnter: onEnter}
+	obj := tMenu{name: name, x: x, y: y, sizeX: sizeX, sizeY: sizeY, BC: BC, TC: TC, mode: mode, visible: true, enabled: true, list: list, selected: 0, cellY: 20, onClick: onClick, onEnter: onEnter}
 	node := Node{typ: MENU, parent: parent, previous: nil, children: nil, obj: &obj}
 	parent.children = append(parent.children, &node)
 	return &node
@@ -82,16 +83,16 @@ func (obj *tMenu) Draw(parX int, parY int, parSizeX int, parSizeY int){
     		SetColor(0x0054E0);
     		var p []tPoint
 
-   			p1 := tPoint{x: parX+obj.x, y: parY+obj.y + i*20}
+   			p1 := tPoint{x: parX+obj.x, y: parY+obj.y + i*obj.cellY}
 			p = append(p, p1)
 	
-			p2 := tPoint{x: parX+obj.x + obj.sizeX, y: parY+obj.y + i*20}
+			p2 := tPoint{x: parX+obj.x + obj.sizeX, y: parY+obj.y + i*obj.cellY}
 			p = append(p, p2)
 	
-			p3 := tPoint{x: parX+obj.x + obj.sizeX, y: parY+obj.y + 20 + i*20}
+			p3 := tPoint{x: parX+obj.x + obj.sizeX, y: parY+obj.y + obj.cellY + i*obj.cellY}
 			p = append(p, p3)
 	
-			p4 := tPoint{x: parX+obj.x, y: parY+obj.y + 20 + i*20}
+			p4 := tPoint{x: parX+obj.x, y: parY+obj.y + obj.cellY + i*obj.cellY}
 			p = append(p, p4)
 
     		FillPoly(nil, 4, p);
@@ -100,9 +101,9 @@ func (obj *tMenu) Draw(parX int, parY int, parSizeX int, parSizeY int){
     		SetColor(obj.TC);
     	}
     	if obj.list[i].picture != nil {
-    		showBMP(nil, obj.list[i].picture, parX+obj.x + 4 + xd, parY+obj.y + 2 + i*20)
+    		showBMP(nil, obj.list[i].picture, parX+obj.x + 4 + xd, parY+obj.y + 2 + obj.cellY/2-8 + i*obj.cellY)
     	}
-    	TextOutgl(nil, obj.list[i].name, parX+obj.x + 4 + 20 + xd, parY+obj.y + 4 + i*20, 1);
+    	TextOutgl(nil, obj.list[i].name, parX+obj.x + 4 + 30 + xd, parY+obj.y + 4 + obj.cellY/2-8 + i*obj.cellY, 1);
     	
     }
     
@@ -243,7 +244,7 @@ func (obj *tMenu) KeyDown(key int){
 func (obj *tMenu) Click(x int, y int){
 	fmt.Println("CLICKED: ", strconv.Itoa(x), strconv.Itoa(y))
 	if obj.enabled && len(list) > 0 && obj.mode != LINE {
-		obj.selected = int(y/20)
+		obj.selected = int(y/obj.cellY)
 	} else if obj.enabled && len(list) > 0 && obj.mode == LINE {
 		obj.selected = int(x/60)
 	}
@@ -263,10 +264,10 @@ func (obj *tMenu) MouseMove(x int, y int, Xl int, Yl int){
     } else if obj.enabled && len(list) > 0 && 
     		  Xl > 0 &&
     		  Xl < obj.sizeX &&
-    		  int(Yl/20) >= 0 && 
-    		  int(Yl/20) < len(obj.list) && 
+    		  int(Yl/obj.cellY) >= 0 && 
+    		  int(Yl/obj.cellY) < len(obj.list) && 
     		  obj.mode != LINE {
-		obj.selected = int(Yl/20)	
+		obj.selected = int(Yl/obj.cellY)	
     } else if obj.enabled && len(list) > 0 && 
     		  Yl > 0 &&
     		  Yl < obj.sizeY &&

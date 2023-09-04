@@ -41,7 +41,7 @@ func startBrowser(frmMain *Node){
     edtUrl2 = CreateEdit(pnlBrowser2, "edtUrl2", 43, 2, 522, 24, 0xf8fcf8, 0x0, "http://info.cern.ch/hypertext/WWW/TheProject.html", nil, nil)
     memWebPage2 = CreateMemo(pnlBrowser2, "memWebPage2", 2, 27, 563, 480, 0xf8fcf8, 0x0, "", nil)
     
-    btnGo2Click(btnGo2)
+    //btnGo2Click(btnGo2)
 }
 
 
@@ -70,3 +70,12 @@ func btnGo2Click(node *Node){
 }
 
 
+func newPageBrowser(name string, url string){
+	pnlBrowser1.obj.(*tPanel).visible = true
+	pnlBrowser2.obj.(*tPanel).visible = false
+	edtUrl.obj.(*tEdit).text = url
+	tabBrowser.obj.(*tTab).list[0] = name
+	result := Get(edtUrl.obj.(*tEdit).text, "", "")	
+	result = strings.Replace(result, "\n", string(13), -1)
+	memWebPage.obj.(*tMemo).text = result
+}

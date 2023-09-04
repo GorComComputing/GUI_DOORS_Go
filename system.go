@@ -41,7 +41,9 @@ func GetCatalogList(name string) []Catalog {
 
 		if row[0][0] == byte('d') {
 			typCat = "D"
-		} else if row[0][0] == byte('-') {
+		} else if row[0][0] == byte('-') && row[0][9] == byte('x') {
+			typCat = "X"
+		} else if row[0][0] == byte('-') && row[0][9] == byte('-') {
 			typCat = "F"
 		} 
 		cat := Catalog{row[8], typCat}

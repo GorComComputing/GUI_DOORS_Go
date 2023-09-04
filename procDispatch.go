@@ -7,12 +7,40 @@ import (
     //"syscall/js"
     //"time"
     "strconv"
+    "strings"
     //"net/http"
     //"io"
     //"bytes"
     //"io/ioutil"
     "encoding/json"
 )
+
+
+var btnAddDevice *Node
+var btnRefreshDevices *Node 
+
+var btnPrevDevices *Node
+var lblCurDevicesPage *Node
+var btnNextDevices *Node
+
+type DevicesFromDB struct {
+	Id int
+	Name string
+	IPaddr string
+	Version string
+	GNSS string
+	PTP string
+	PZG_VZG string
+}
+
+var CurDevicesPage = 1
+
+var btnMenuDevice *Node
+var btnSyncDevice *Node
+var btnPTPDevice *Node
+var btnGNSSDevice *Node
+var btnDebugDevice *Node
+
 
 
 var btnAddEvent *Node
@@ -24,6 +52,7 @@ var btnNextEvents *Node
 
 var memTest *Node
 
+var pnlDevicesDisp *Node
 var pnlEventsDisp *Node
 var pnlUsersDisp *Node
 var tabDispatch *Node
@@ -39,7 +68,7 @@ type EventsFromDB struct {
 	Time string
 }
 
-var CurEventsPage = 20
+var CurEventsPage = 1 //10
 
 
 var btnAddUser *Node
@@ -50,6 +79,7 @@ var lblCurPage *Node
 var btnNext *Node
 var tblUsers *Node
 var tblEvents *Node
+var tblDevices *Node
 
 
 type UsersFromDB struct {
@@ -66,71 +96,197 @@ var CurUsersPage = 1
 func startDispatch(frmMain *Node){
 	frmMain.obj.(*tForm).x = 100
 	frmMain.obj.(*tForm).y = 100
-	frmMain.obj.(*tForm).sizeX = 524
-	frmMain.obj.(*tForm).sizeY = 252
+	frmMain.obj.(*tForm).sizeX = 904
+	frmMain.obj.(*tForm).sizeY = 353
 	frmMain.children[0].obj.(*tBitBtn).x = frmMain.obj.(*tForm).sizeX - 17
 	frmMain.obj.(*tForm).visible = false
 	
 	
-	listTabDispath := []string{"Events", "Users"} 
-    pnlEventsDisp = CreatePanel(frmMain, "pnlEventsDisp", 2, 41, 520, 210, 0xd8dcc0, NONE, nil)
-    pnlUsersDisp = CreatePanel(frmMain, "pnlUsersDisp", 2, 41, 520, 210, 0xd8dcc0, NONE, nil)
+	listTabDispath := []string{"Devices", "Events", "Users"} 
+	pnlDevicesDisp = CreatePanel(frmMain, "pnlDevicesDisp", 2, 41, 900, 310, 0xd8dcc0, NONE, nil)
+    pnlEventsDisp = CreatePanel(frmMain, "pnlEventsDisp", 2, 41, 900, 310, 0xd8dcc0, NONE, nil)
+    pnlEventsDisp.obj.(*tPanel).visible = false
+    pnlUsersDisp = CreatePanel(frmMain, "pnlUsersDisp", 2, 41, 900, 310, 0xd8dcc0, NONE, nil)
     pnlUsersDisp.obj.(*tPanel).visible = false
 	tabDispatch = CreateTab(frmMain, "tabDispatch", 2, 20, 90, 20, 0xd8dcc0, 0x0, listTabDispath, tabDispathClick, nil)
 	
+	// Panel Devices
+	btnAddDevice = CreateBtn(pnlDevicesDisp, "btnAddDevice", 12, 12, 70, 20, 0xD8DCC0, 0x000000, "Add", nil)
+	btnRefreshDevices = CreateBtn(pnlDevicesDisp, "btnRefreshDevices", 12 + 80, 12, 70, 20, 0xD8DCC0, 0x000000, "Refresh", btnRefreshDevicesClick)
 	
+	listDevices := make([][]string, 10)
+	for i := range listDevices {
+    	listDevices[i] = make([]string, 6)
+	}
+    listDevicesCols := []string{"Mode", "Name", "gnss_ref", "ptp_ref", "IP addr", "Version"}
+    listDevicesSizeCols := []int{50, 170, 100, 100, 120, 80}
+    tblDevices = CreateTable(pnlDevicesDisp, "tblDevices", 12, 22 + 22, 622, 222, 0xf8fcf8, 0x0, listDevicesCols, listDevicesSizeCols, nil, listDevices, 120, 20, nil, nil)
+	
+	btnPrevDevices = CreateBtn(pnlDevicesDisp, "btnPrevDevices", 255, 277, 60, 20, 0xD8DCC0, 0x000000, "Prev", btnPrevDevicesClick)
+	//btnPrevDevices.obj.(*tBtn).enabled = false
+	lblCurDevicesPage = CreateLabel(pnlDevicesDisp, "lblCurDevicesPage", 364, 278, 20, 20, 0xD8DCC0, 0x0000FF, strconv.Itoa(CurDevicesPage), nil)
+	btnNextDevices = CreateBtn(pnlDevicesDisp, "btnNextDevices", 430, 277, 60, 20, 0xD8DCC0, 0x000000, "Next", btnNextDevicesClick)
+	
+	btnMenuDevice = CreateBtn(pnlDevicesDisp, "btnMenuDevice", 648, 44, 70, 20, 0xD8DCC0, 0x000000, "Menu", btnMenuDeviceClick)
+	btnSyncDevice = CreateBtn(pnlDevicesDisp, "btnSyncDevice", 648, 44+30, 70, 20, 0xD8DCC0, 0x000000, "Sync", btnSyncDeviceClick)
+	btnPTPDevice = CreateBtn(pnlDevicesDisp, "btnPTPDevice", 648, 44+30+30, 70, 20, 0xD8DCC0, 0x000000, "PTP", btnPTPDeviceClick)
+	btnGNSSDevice = CreateBtn(pnlDevicesDisp, "btnGNSSDevice", 648, 44+30+30+30, 70, 20, 0xD8DCC0, 0x000000, "GNSS", btnGNSSDeviceClick)
+	btnDebugDevice = CreateBtn(pnlDevicesDisp, "btnDebugDevice", 648, 44+30+30+30+30, 70, 20, 0xD8DCC0, 0x000000, "Debug", btnDebugDeviceClick)
+	
+	
+	
+	// Panel Events
 	btnAddEvent = CreateBtn(pnlEventsDisp, "btnAddEvent", 12, 12, 70, 20, 0xD8DCC0, 0x000000, "Add", nil)
 	btnRefreshEvents = CreateBtn(pnlEventsDisp, "btnRefreshEvents", 12 + 80, 12, 70, 20, 0xD8DCC0, 0x000000, "Refresh", btnRefreshEventsClick)
 	
 
-	listEvents := make([][]string, 5)
+	listEvents := make([][]string, 10)
 	for i := range listEvents {
     	listEvents[i] = make([]string, 6)
 	}
     listEventsCols := []string{"Id", "Level", "Object", "Source", "Event", "Body"}
-    tblEvents = CreateTable(pnlEventsDisp, " tblEvents", 12, 22 + 22, 362, 122, 0xf8fcf8, 0x0, listEventsCols, nil, listEvents, nil, nil)
+    listEventsSizeCols := []int{30, 100, 80, 80, 100, 80}
+    tblEvents = CreateTable(pnlEventsDisp, " tblEvents", 12, 22 + 22, 472, 222, 0xf8fcf8, 0x0, listEventsCols, listEventsSizeCols, nil, listEvents, 120, 20, nil, nil)
 	
-	btnPrevEvents = CreateBtn(pnlEventsDisp, "btnPrevEvents", 90, 175, 60, 20, 0xD8DCC0, 0x000000, "Prev", btnPrevEventsClick)
+	btnPrevEvents = CreateBtn(pnlEventsDisp, "btnPrevEvents", 255, 277, 60, 20, 0xD8DCC0, 0x000000, "Prev", btnPrevEventsClick)
 	//btnPrevEvents.obj.(*tBtn).enabled = false
-	lblCurEventsPage = CreateLabel(pnlEventsDisp, "lblCurEventsPage", 170, 175, 20, 20, 0xD8DCC0, 0x0000FF, strconv.Itoa(CurEventsPage), nil)
-	btnNextEvents = CreateBtn(pnlEventsDisp, "btnNextEvents", 200, 175, 60, 20, 0xD8DCC0, 0x000000, "Next", btnNextEventsClick)
+	lblCurEventsPage = CreateLabel(pnlEventsDisp, "lblCurEventsPage", 364, 278, 20, 20, 0xD8DCC0, 0x0000FF, strconv.Itoa(CurEventsPage), nil)
+	btnNextEvents = CreateBtn(pnlEventsDisp, "btnNextEvents", 430, 277, 60, 20, 0xD8DCC0, 0x000000, "Next", btnNextEventsClick)
 	
-	memTest = CreateMemo(pnlEventsDisp, "memTest", 400, 44, 100, 100, 0x000000, 0xF8FCF8, "", nil)
+	memTest = CreateMemo(pnlEventsDisp, "memTest", 760, 44, 100, 100, 0x000000, 0xF8FCF8, "", nil)
 	
-	refreshEventsTable()
+
 	
-	
+	// Panel Users
 	btnAddUser = CreateBtn(pnlUsersDisp, "btnAddUser", 12, 12, 70, 20, 0xD8DCC0, 0x000000, "Add", nil)
 	btnRefreshUser = CreateBtn(pnlUsersDisp, "btnRefreshUser", 12 + 80, 12, 70, 20, 0xD8DCC0, 0x000000, "Refresh", btnRefreshClick)
 	
 
-    listUsers := make([][]string, 5)
+    listUsers := make([][]string, 10)
 	for i := range listUsers {
     	listUsers[i] = make([]string, 5)
 	}
     listUsersCols := []string{"Id", "Name", "Login", "Pswd", "Role"}
-    tblUsers = CreateTable(pnlUsersDisp, "tblUsers", 12, 22 + 22, 302, 122, 0xf8fcf8, 0x0, listUsersCols, nil, listUsers, nil, nil)
+    listUsersSizeCols := []int{30, 140, 100, 100, 40}
+    tblUsers = CreateTable(pnlUsersDisp, "tblUsers", 12, 22 + 22, 412, 222, 0xf8fcf8, 0x0, listUsersCols, listUsersSizeCols, nil, listUsers, 120, 20, nil, nil)
 
-	btnPrev = CreateBtn(pnlUsersDisp, "btnPrev", 90, 175, 60, 20, 0xD8DCC0, 0x000000, "Prev", btnPrevClick)
+	btnPrev = CreateBtn(pnlUsersDisp, "btnPrev", 192, 277, 60, 20, 0xD8DCC0, 0x000000, "Prev", btnPrevClick)
 	btnPrev.obj.(*tBtn).enabled = false
-	lblCurPage = CreateLabel(pnlUsersDisp, "lblCurPage", 170, 175, 20, 20, 0xD8DCC0, 0x0000FF, strconv.Itoa(CurUsersPage), nil)
-	btnNext = CreateBtn(pnlUsersDisp, "btnNext", 200, 175, 60, 20, 0xD8DCC0, 0x000000, "Next", btnNextClick)
+	lblCurPage = CreateLabel(pnlUsersDisp, "lblCurPage", 310, 278, 20, 20, 0xD8DCC0, 0x0000FF, strconv.Itoa(CurUsersPage), nil)
+	btnNext = CreateBtn(pnlUsersDisp, "btnNext", 374, 277, 60, 20, 0xD8DCC0, 0x000000, "Next", btnNextClick)
 	
+	refreshDevicesTable()
+	refreshEventsTable()
 	refreshUsersTable()
 }
 
 
 func tabDispathClick(node *Node, x int, y int) {
 	if node.obj.(*tTab).selected == 0 {
+		pnlDevicesDisp.obj.(*tPanel).visible = true
+		pnlEventsDisp.obj.(*tPanel).visible = false
+		pnlUsersDisp.obj.(*tPanel).visible = false
+	} else if node.obj.(*tTab).selected == 1 {
+		pnlDevicesDisp.obj.(*tPanel).visible = false
 		pnlEventsDisp.obj.(*tPanel).visible = true
 		pnlUsersDisp.obj.(*tPanel).visible = false
-	} else {
-		pnlUsersDisp.obj.(*tPanel).visible = true
+	} else if node.obj.(*tTab).selected == 2 {
+		pnlDevicesDisp.obj.(*tPanel).visible = false
 		pnlEventsDisp.obj.(*tPanel).visible = false
+		pnlUsersDisp.obj.(*tPanel).visible = true
 	}
 }
 
 
+func btnMenuDeviceClick(node *Node){
+	execProcess(2)  // Run Browser
+	newPageBrowser(tblDevices.obj.(*tTable).list[tblDevices.obj.(*tTable).selectedY][4], "http://" + tblDevices.obj.(*tTable).list[tblDevices.obj.(*tTable).selectedY][4] + "/index.html")
+}
+
+
+func btnSyncDeviceClick(node *Node){
+	execProcess(2)  // Run Browser
+	newPageBrowser(tblDevices.obj.(*tTable).list[tblDevices.obj.(*tTable).selectedY][4], "http://" + tblDevices.obj.(*tTable).list[tblDevices.obj.(*tTable).selectedY][4] + "/sync.html")
+}
+
+
+func btnPTPDeviceClick(node *Node){
+	execProcess(2)  // Run Browser
+	newPageBrowser(tblDevices.obj.(*tTable).list[tblDevices.obj.(*tTable).selectedY][4], "http://" + tblDevices.obj.(*tTable).list[tblDevices.obj.(*tTable).selectedY][4] + "/ptp" + strings.ToLower(strings.TrimRight(tblDevices.obj.(*tTable).list[tblDevices.obj.(*tTable).selectedY][0], " ")) + ".html")
+}
+
+
+func btnGNSSDeviceClick(node *Node){
+	execProcess(2)  // Run Browser
+	newPageBrowser(tblDevices.obj.(*tTable).list[tblDevices.obj.(*tTable).selectedY][4], "http://" + tblDevices.obj.(*tTable).list[tblDevices.obj.(*tTable).selectedY][4] + "/gnss.html")
+}
+
+
+func btnDebugDeviceClick(node *Node){
+
+}
+
+
+// Panel Devices
+func btnRefreshDevicesClick(node *Node){
+	refreshDevicesTable()	
+}
+
+
+func btnPrevDevicesClick(node *Node){
+	if CurDevicesPage > 1 {
+		CurDevicesPage--
+		if CurDevicesPage == 1 {
+			node.obj.(*tBtn).enabled = false
+		}
+	} 
+	lblCurDevicesPage.obj.(*tLabel).caption = strconv.Itoa(CurDevicesPage)
+	refreshDevicesTable()
+}
+
+
+func btnNextDevicesClick(node *Node){
+	CurDevicesPage++
+	btnPrevDevices.obj.(*tBtn).enabled = true
+	lblCurDevicesPage.obj.(*tLabel).caption = strconv.Itoa(CurDevicesPage)
+	refreshDevicesTable()
+}
+
+
+func refreshDevicesTable(){
+	for i:=0; i < 10; i++ {
+		tblDevices.obj.(*tTable).list[i][0] = ""
+		tblDevices.obj.(*tTable).list[i][1] = ""
+		tblDevices.obj.(*tTable).list[i][2] = ""
+		tblDevices.obj.(*tTable).list[i][3] = ""
+		tblDevices.obj.(*tTable).list[i][4] = ""
+		tblDevices.obj.(*tTable).list[i][5] = ""
+		//eventsTable[i][6].obj.(*tBtn).visible = false
+		//eventsTable[i][7].obj.(*tBtn).visible = false
+	}
+	
+	result := Get("http://localhost:8085/api", "cmd=get_dev " + strconv.Itoa(CurDevicesPage) + " 10", "")
+	
+	var devices []DevicesFromDB 
+	err := json.Unmarshal([]byte(result), &devices)
+	if err != nil {
+		fmt.Println(err)
+	}
+	
+	for i, _ := range devices {
+		tblDevices.obj.(*tTable).list[i][0] = devices[i].PZG_VZG
+		tblDevices.obj.(*tTable).list[i][1] = devices[i].Name
+		tblDevices.obj.(*tTable).list[i][2] = ""
+		tblDevices.obj.(*tTable).list[i][3] = ""
+		tblDevices.obj.(*tTable).list[i][4] = devices[i].IPaddr
+		tblDevices.obj.(*tTable).list[i][5] = devices[i].Version
+		//eventsTable[i][6].obj.(*tBtn).visible = true
+		//eventsTable[i][7].obj.(*tBtn).visible = true
+	}
+}
+
+
+// Panel Events
 func btnRefreshEventsClick(node *Node){
 	refreshEventsTable()	
 }
@@ -157,7 +313,7 @@ func btnNextEventsClick(node *Node){
 
 
 func refreshEventsTable(){
-	for i:=0; i < 5; i++ {
+	for i:=0; i < 10; i++ {
 		tblEvents.obj.(*tTable).list[i][0] = ""
 		tblEvents.obj.(*tTable).list[i][1] = ""
 		tblEvents.obj.(*tTable).list[i][2] = ""
@@ -168,7 +324,7 @@ func refreshEventsTable(){
 		//eventsTable[i][7].obj.(*tBtn).visible = false
 	}
 	
-	result := Get("http://localhost:8085/api", "cmd=get_evnt " + strconv.Itoa(CurEventsPage) + " 5", "")
+	result := Get("http://localhost:8085/api", "cmd=get_evnt " + strconv.Itoa(CurEventsPage) + " 10", "")
 	
 	var events []EventsFromDB 
 	err := json.Unmarshal([]byte(result), &events)
@@ -189,6 +345,7 @@ func refreshEventsTable(){
 }
 
 
+// Panel Users
 func btnRefreshClick(node *Node){
 	refreshUsersTable()
 }
@@ -216,7 +373,7 @@ func btnNextClick(node *Node){
 
 func refreshUsersTable(){
 
-	for i:=0; i < 5; i++ {
+	for i:=0; i < 10; i++ {
 		tblUsers.obj.(*tTable).list[i][0] = ""
 		tblUsers.obj.(*tTable).list[i][1] = ""
 		tblUsers.obj.(*tTable).list[i][2] = ""
@@ -226,7 +383,7 @@ func refreshUsersTable(){
 		//usersTable[i][6].obj.(*tBtn).visible = false
 	}
 	
-	result := Get("http://localhost:8085/api", "cmd=get_usr " + strconv.Itoa(CurUsersPage) + " 5", "")
+	result := Get("http://localhost:8085/api", "cmd=get_usr " + strconv.Itoa(CurUsersPage) + " 10", "")
 	
 	var users []UsersFromDB 
 	err := json.Unmarshal([]byte(result), &users)

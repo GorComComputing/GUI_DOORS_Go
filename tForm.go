@@ -30,14 +30,15 @@ type tForm struct{
 type tMode int
 
 const (
-    NONE tMode = iota
-    WIN
-    DIALOG
-    FLAT
-    TASK
-    LINE
-    LISTICON
-    BIGICON
+    NONE tMode = iota	//tForm, tPanel
+    WIN			//tForm
+    DIALOG		//tForm
+    FLAT		//tBitBtn, tMenu, tForm, tPanel
+    BORDER		//tBitBtn
+    TASK		//tPanel
+    LINE		//tMenu
+    LISTICON	//tListFileBox
+    BIGICON		//tListFileBox
 )
 
 
@@ -47,7 +48,7 @@ func CreateForm(parent *Node, name string, picture []byte, x int, y int, sizeX i
 	parent.children = append(parent.children, &node)
 	
 	if obj.mode == WIN || obj.mode == DIALOG {
-		CreateBitBtn(&node, "bitbtnClose"+name, nil, obj.sizeX - 17, 2, 15, 15, 0xD8DCC0, 0x000000, "X", formClose)
+		CreateBitBtn(&node, "bitbtnClose"+name, nil, obj.sizeX - 17, 2, 15, 15, 0xD8DCC0, 0x000000, "X", BORDER, formClose)
 	}
 	return &node
 }

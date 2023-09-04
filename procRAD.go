@@ -211,6 +211,8 @@ func editPropNameEnter(node *Node){
 		obj.name  = node.obj.(*tEdit).text
 	case *tTab:
 		obj.name  = node.obj.(*tEdit).text
+	case *tTable:
+		obj.name  = node.obj.(*tEdit).text
 	case *tMenu:
 		obj.name  = node.obj.(*tEdit).text
 	case *tListFileBox:
@@ -247,6 +249,8 @@ func editPropLeftEnter(node *Node){
 		obj.x, _ = strconv.Atoi(node.obj.(*tEdit).text)
 	case *tTab:
 		obj.x, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tTable:
+		obj.x, _ = strconv.Atoi(node.obj.(*tEdit).text)
 	case *tMenu:
 		obj.x, _ = strconv.Atoi(node.obj.(*tEdit).text)
 	case *tListFileBox:
@@ -282,6 +286,8 @@ func editPropTopEnter(node *Node){
 	case *tListBox:
 		obj.y, _ = strconv.Atoi(node.obj.(*tEdit).text)
 	case *tTab:
+		obj.y, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tTable:
 		obj.y, _ = strconv.Atoi(node.obj.(*tEdit).text)
 	case *tMenu:
 		obj.y, _ = strconv.Atoi(node.obj.(*tEdit).text)
@@ -347,6 +353,8 @@ func editPropWidthEnter(node *Node){
 		obj.sizeX, _ = strconv.Atoi(node.obj.(*tEdit).text)
 	case *tTab:
 		obj.sizeX, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tTable:
+		obj.sizeX, _ = strconv.Atoi(node.obj.(*tEdit).text)
 	case *tMenu:
 		obj.sizeX, _ = strconv.Atoi(node.obj.(*tEdit).text)
 	case *tListFileBox:
@@ -383,6 +391,8 @@ func editPropHeightEnter(node *Node){
 		obj.sizeY, _ = strconv.Atoi(node.obj.(*tEdit).text)
 	case *tTab:
 		obj.sizeY, _ = strconv.Atoi(node.obj.(*tEdit).text)
+	case *tTable:
+		obj.sizeY, _ = strconv.Atoi(node.obj.(*tEdit).text)
 	case *tMenu:
 		obj.sizeY, _ = strconv.Atoi(node.obj.(*tEdit).text)
 	case *tListFileBox:
@@ -418,6 +428,8 @@ func editPropBCEnter(node *Node){
 		obj.BC = int(val)
 	case *tTab:
 		obj.BC = int(val)
+	case *tTable:
+		obj.BC = int(val)
 	case *tMenu:
 		obj.BC = int(val)
 	case *tListFileBox:
@@ -446,6 +458,8 @@ func editPropTCEnter(node *Node){
 	case *tListBox:
 		obj.TC = int(val)
 	case *tTab:
+		obj.TC = int(val)
+	case *tTable:
 		obj.TC = int(val)
 	case *tMenu:
 		obj.TC = int(val)
@@ -571,6 +585,12 @@ func cmbPropVisibleEnter(node *Node){
 		} else if node.obj.(*tComboBox).text == "false" {
 			obj.visible = false
 		}
+	case *tTable:
+		if node.obj.(*tComboBox).text == "true" {
+			obj.visible = true	
+		} else if node.obj.(*tComboBox).text == "false" {
+			obj.visible = false
+		}
 	case *tMenu:
 		if node.obj.(*tComboBox).text == "true" {
 			obj.visible = true	
@@ -638,6 +658,12 @@ func cmbPropEnabledEnter(node *Node){
 			obj.enabled = false
 		}
 	case *tTab:
+		if node.obj.(*tComboBox).text == "true" {
+			obj.enabled = true	
+		} else if node.obj.(*tComboBox).text == "false" {
+			obj.enabled = false
+		}
+	case *tTable:
 		if node.obj.(*tComboBox).text == "true" {
 			obj.enabled = true	
 		} else if node.obj.(*tComboBox).text == "false" {
@@ -731,6 +757,8 @@ func editEvntClickEnter(node *Node){
 		obj.onClickStr = node.obj.(*tEdit).text
 	case *tTab:
 		obj.onClickStr = node.obj.(*tEdit).text
+	case *tTable:
+		obj.onClickStr = node.obj.(*tEdit).text
 	case *tMenu:
 		obj.onClickStr = node.obj.(*tEdit).text
 	case *tListFileBox:
@@ -751,6 +779,8 @@ func editEvntEnterEnter(node *Node){
 	case *tListBox:
 		obj.onEnterStr = node.obj.(*tEdit).text
 	case *tTab:
+		obj.onEnterStr = node.obj.(*tEdit).text
+	case *tTable:
 		obj.onEnterStr = node.obj.(*tEdit).text
 	case *tMenu:
 		obj.onEnterStr = node.obj.(*tEdit).text

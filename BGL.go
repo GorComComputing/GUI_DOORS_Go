@@ -1926,9 +1926,10 @@ var char60 string =
         } else if str[j] == '`' { DrawBitmapTransparent(buffer, char60, x, y, 4, 11, scale); x += 5;
         } else if str[j] == 13 { x = x_start; y += 12 + interval; continue;
         } else { DrawBitmapTransparent(buffer, charUndefined, x, y, 7, 7, scale); x += 7;}
-        if x + 8 > xright_loc {
+        // Перенос
+        /*if x + 8 > xright_loc {
         x = x_start; y += 12 + interval; continue;
-        }
+        }*/
     //}
     }
 }

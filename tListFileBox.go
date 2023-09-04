@@ -94,6 +94,8 @@ func (obj *tListFileBox) Draw(parX int, parY int, parSizeX int, parSizeY int){
     		showBMP(nil, bmpFolder_small, parX+obj.x + 4, parY+obj.y + 4 + i*20)
     	} else if obj.list[i].typ == "F" {
     		showBMP(nil, bmpFile_small, parX+obj.x + 4, parY+obj.y + 4 + i*20)
+    	} else if obj.list[i].typ == "X" {
+    		showBMP(nil, bmpProgram, parX+obj.x + 4, parY+obj.y + 4 + i*20)
     	}   	
     }
     } else if obj.mode == BIGICON {
@@ -135,6 +137,8 @@ func (obj *tListFileBox) Draw(parX int, parY int, parSizeX int, parSizeY int){
     			showBMP(nil, bmpFolder, parX+obj.x + 4 + 30 + (col)*100, parY+obj.y + 4 + row*70)
     		} else if obj.list[i].typ == "F" {
     			showBMP(nil, bmpFile, parX+obj.x + 4 + 30 + (col)*100, parY+obj.y + 4 + row*70)
+    		} else if obj.list[i].typ == "X" {
+    			showBMP(nil, bmpProgram, parX+obj.x + 4 + 30 + (col)*100, parY+obj.y + 4 + row*70)
     		}
     		col++
     	}

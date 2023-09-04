@@ -21,7 +21,7 @@ func SaveDialog(path string, from *string){
     edtSaveDialogPath = CreateEdit(frmSaveDialog, "edtSaveDialogPath", 60, 22, 400, 20, 0xf8fcf8, 0x0, path, nil, nil)
     edtSaveDialogFile = CreateEdit(frmSaveDialog, "edtSaveDialogFile", 5, 252, 375, 20, 0xf8fcf8, 0x0, "", nil, nil)
     btnSaveDialogCancel = CreateBtn(frmSaveDialog, "btnSaveDialogCancel", 389, 281, 70, 24, 0xd8dcc0, 0x0, "Cancel", btnSaveDialogCancelClick)
-    btnSaveDialogUp = CreateBtn(frmSaveDialog, "btnSaveDialogUp", 9, 20, 40, 24, 0xd8dcc0, 0x0, "Up", btnSaveDialogUpClick)
+    btnSaveDialogUp = CreateBitBtn(frmSaveDialog, "btnSaveDialogUp", bmpUp, 9, 20, 40, 24, 0xd8dcc0, 0x0, "", FLAT, btnSaveDialogUpClick)
     listSaveDialog := GetCatalogList(path)
     lsfSaveDialog = CreateListFileBox(frmSaveDialog, "lsfSaveDialog", 5, 48, 455, 200, 0xF8FCF8, 0x0, listSaveDialog, LISTICON, lsfSaveDialogClick, nil)
     FROM = from

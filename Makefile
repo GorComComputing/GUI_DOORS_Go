@@ -3,6 +3,7 @@ main: *.go deps
 	#GOOS=js GOARCH=wasm go build -o GUI.wasm . 
 	tinygo build -o DOORS.wasm -target wasm .
 	cp DOORS.wasm ./Server/www
+	#scp DOORS.wasm user@172.18.0.1:~/WORK/DOORS/www
 	rm ./DOORS.wasm
 
 

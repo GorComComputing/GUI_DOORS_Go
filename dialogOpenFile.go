@@ -22,7 +22,7 @@ func OpenDialog(path string, to *string){
     edtOpenDialogPath = CreateEdit(frmOpenDialog, "edtOpenDialogPath", 60, 22, 400, 20, 0xf8fcf8, 0x0, path, nil, nil)
     edtOpenDialogFile = CreateEdit(frmOpenDialog, "edtOpenDialogFile", 5, 252, 375, 20, 0xf8fcf8, 0x0, "", nil, nil)
     btnOpenDialogCancel = CreateBtn(frmOpenDialog, "btnOpenDialogCancel", 389, 281, 70, 24, 0xd8dcc0, 0x0, "Cancel", btnOpenDialogCancelClick)
-    btnOpenDialogUp = CreateBtn(frmOpenDialog, "btnOpenDialogUp", 9, 20, 40, 24, 0xd8dcc0, 0x0, "Up", btnOpenDialogUpClick)
+    btnOpenDialogUp = CreateBitBtn(frmOpenDialog, "btnOpenDialogUp", bmpUp, 9, 20, 40, 24, 0xd8dcc0, 0x0, "", FLAT, btnOpenDialogUpClick)
     listOpenDialog := GetCatalogList(path)
     lsfOpenDialog = CreateListFileBox(frmOpenDialog, "lsfOpenDialog", 5, 48, 455, 200, 0xF8FCF8, 0x0, listOpenDialog, LISTICON, lsfOpenDialogClick, nil)
     TO = to
