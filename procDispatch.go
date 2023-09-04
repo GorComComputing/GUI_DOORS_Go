@@ -111,8 +111,8 @@ func startDispatch(frmMain *Node){
 	tabDispatch = CreateTab(frmMain, "tabDispatch", 2, 20, 90, 20, 0xd8dcc0, 0x0, listTabDispath, tabDispathClick, nil)
 	
 	// Panel Devices
-	btnAddDevice = CreateBtn(pnlDevicesDisp, "btnAddDevice", 12, 12, 70, 20, 0xD8DCC0, 0x000000, "Add", nil)
-	btnRefreshDevices = CreateBtn(pnlDevicesDisp, "btnRefreshDevices", 12 + 80, 12, 70, 20, 0xD8DCC0, 0x000000, "Refresh", btnRefreshDevicesClick)
+	btnAddDevice = CreateBitBtn(pnlDevicesDisp, "btnAddDevice", bmpAdd, 20, 7, 30, 30, 0xD8DCC0, 0x000000, "", FLAT, nil)
+	btnRefreshDevices = CreateBitBtn(pnlDevicesDisp, "btnRefreshDevices", bmpRefresh, 60, 7, 30, 30, 0xD8DCC0, 0x000000, "", FLAT, btnRefreshDevicesClick)
 	
 	listDevices := make([][]string, 10)
 	for i := range listDevices {
@@ -122,10 +122,10 @@ func startDispatch(frmMain *Node){
     listDevicesSizeCols := []int{50, 170, 100, 100, 120, 80}
     tblDevices = CreateTable(pnlDevicesDisp, "tblDevices", 12, 22 + 22, 622, 222, 0xf8fcf8, 0x0, listDevicesCols, listDevicesSizeCols, nil, listDevices, 120, 20, nil, nil)
 	
-	btnPrevDevices = CreateBtn(pnlDevicesDisp, "btnPrevDevices", 255, 277, 60, 20, 0xD8DCC0, 0x000000, "Prev", btnPrevDevicesClick)
-	//btnPrevDevices.obj.(*tBtn).enabled = false
-	lblCurDevicesPage = CreateLabel(pnlDevicesDisp, "lblCurDevicesPage", 364, 278, 20, 20, 0xD8DCC0, 0x0000FF, strconv.Itoa(CurDevicesPage), nil)
-	btnNextDevices = CreateBtn(pnlDevicesDisp, "btnNextDevices", 430, 277, 60, 20, 0xD8DCC0, 0x000000, "Next", btnNextDevicesClick)
+	btnPrevDevices = CreateBitBtn(pnlDevicesDisp, "btnPrevDevices", bmpBack, tblDevices.obj.(*tTable).x + tblDevices.obj.(*tTable).sizeX/2 - 50, 269, 30, 30, 0xD8DCC0, 0x000000, "", FLAT, btnPrevDevicesClick)
+	//btnPrevDevices.obj.(*tBitBtn).enabled = false
+	lblCurDevicesPage = CreateLabel(pnlDevicesDisp, "lblCurDevicesPage", tblDevices.obj.(*tTable).x + tblDevices.obj.(*tTable).sizeX/2, 278, 20, 20, 0xD8DCC0, 0x0000FF, strconv.Itoa(CurDevicesPage), nil)
+	btnNextDevices = CreateBitBtn(pnlDevicesDisp, "btnNextDevices", bmpNext, tblDevices.obj.(*tTable).x + tblDevices.obj.(*tTable).sizeX/2 + 30, 269, 30, 30, 0xD8DCC0, 0x000000, "", FLAT, btnNextDevicesClick)
 	
 	btnMenuDevice = CreateBtn(pnlDevicesDisp, "btnMenuDevice", 648, 44, 70, 20, 0xD8DCC0, 0x000000, "Menu", btnMenuDeviceClick)
 	btnSyncDevice = CreateBtn(pnlDevicesDisp, "btnSyncDevice", 648, 44+30, 70, 20, 0xD8DCC0, 0x000000, "Sync", btnSyncDeviceClick)
@@ -136,8 +136,8 @@ func startDispatch(frmMain *Node){
 	
 	
 	// Panel Events
-	btnAddEvent = CreateBtn(pnlEventsDisp, "btnAddEvent", 12, 12, 70, 20, 0xD8DCC0, 0x000000, "Add", nil)
-	btnRefreshEvents = CreateBtn(pnlEventsDisp, "btnRefreshEvents", 12 + 80, 12, 70, 20, 0xD8DCC0, 0x000000, "Refresh", btnRefreshEventsClick)
+	btnAddEvent = CreateBitBtn(pnlEventsDisp, "btnAddEvent", bmpAdd, 20, 7, 30, 30, 0xD8DCC0, 0x000000, "", FLAT, nil)
+	btnRefreshEvents = CreateBitBtn(pnlEventsDisp, "btnRefreshEvents", bmpRefresh, 60, 7, 30, 30, 0xD8DCC0, 0x000000, "", FLAT, btnRefreshEventsClick)
 	
 
 	listEvents := make([][]string, 10)
@@ -148,18 +148,18 @@ func startDispatch(frmMain *Node){
     listEventsSizeCols := []int{30, 100, 80, 80, 100, 80}
     tblEvents = CreateTable(pnlEventsDisp, " tblEvents", 12, 22 + 22, 472, 222, 0xf8fcf8, 0x0, listEventsCols, listEventsSizeCols, nil, listEvents, 120, 20, nil, nil)
 	
-	btnPrevEvents = CreateBtn(pnlEventsDisp, "btnPrevEvents", 255, 277, 60, 20, 0xD8DCC0, 0x000000, "Prev", btnPrevEventsClick)
-	//btnPrevEvents.obj.(*tBtn).enabled = false
-	lblCurEventsPage = CreateLabel(pnlEventsDisp, "lblCurEventsPage", 364, 278, 20, 20, 0xD8DCC0, 0x0000FF, strconv.Itoa(CurEventsPage), nil)
-	btnNextEvents = CreateBtn(pnlEventsDisp, "btnNextEvents", 430, 277, 60, 20, 0xD8DCC0, 0x000000, "Next", btnNextEventsClick)
+	btnPrevEvents = CreateBitBtn(pnlEventsDisp, "btnPrevEvents", bmpBack, tblEvents.obj.(*tTable).x + tblEvents.obj.(*tTable).sizeX/2 - 50, 269, 30, 30, 0xD8DCC0, 0x000000, "", FLAT, btnPrevEventsClick)
+	//btnPrevEvents.obj.(*tBitBtn).enabled = false
+	lblCurEventsPage = CreateLabel(pnlEventsDisp, "lblCurEventsPage", tblEvents.obj.(*tTable).x + tblEvents.obj.(*tTable).sizeX/2, 278, 20, 20, 0xD8DCC0, 0x0000FF, strconv.Itoa(CurEventsPage), nil)
+	btnNextEvents = CreateBitBtn(pnlEventsDisp, "btnNextEvents", bmpNext, tblEvents.obj.(*tTable).x + tblEvents.obj.(*tTable).sizeX/2 + 30, 269, 30, 30, 0xD8DCC0, 0x000000, "", FLAT, btnNextEventsClick)
 	
 	memTest = CreateMemo(pnlEventsDisp, "memTest", 760, 44, 100, 100, 0x000000, 0xF8FCF8, "", nil)
 	
 
 	
 	// Panel Users
-	btnAddUser = CreateBtn(pnlUsersDisp, "btnAddUser", 12, 12, 70, 20, 0xD8DCC0, 0x000000, "Add", nil)
-	btnRefreshUser = CreateBtn(pnlUsersDisp, "btnRefreshUser", 12 + 80, 12, 70, 20, 0xD8DCC0, 0x000000, "Refresh", btnRefreshClick)
+	btnAddUser = CreateBitBtn(pnlUsersDisp, "btnAddUser", bmpAdd, 20, 7, 30, 30, 0xD8DCC0, 0x000000, "", FLAT, nil)
+	btnRefreshUser = CreateBitBtn(pnlUsersDisp, "btnRefreshUser", bmpRefresh, 60, 7, 30, 30, 0xD8DCC0, 0x000000, "", FLAT, btnRefreshClick)
 	
 
     listUsers := make([][]string, 10)
@@ -170,10 +170,10 @@ func startDispatch(frmMain *Node){
     listUsersSizeCols := []int{30, 140, 100, 100, 40}
     tblUsers = CreateTable(pnlUsersDisp, "tblUsers", 12, 22 + 22, 412, 222, 0xf8fcf8, 0x0, listUsersCols, listUsersSizeCols, nil, listUsers, 120, 20, nil, nil)
 
-	btnPrev = CreateBtn(pnlUsersDisp, "btnPrev", 192, 277, 60, 20, 0xD8DCC0, 0x000000, "Prev", btnPrevClick)
-	btnPrev.obj.(*tBtn).enabled = false
-	lblCurPage = CreateLabel(pnlUsersDisp, "lblCurPage", 310, 278, 20, 20, 0xD8DCC0, 0x0000FF, strconv.Itoa(CurUsersPage), nil)
-	btnNext = CreateBtn(pnlUsersDisp, "btnNext", 374, 277, 60, 20, 0xD8DCC0, 0x000000, "Next", btnNextClick)
+	btnPrev = CreateBitBtn(pnlUsersDisp, "btnPrev", bmpBack, tblUsers.obj.(*tTable).x + tblUsers.obj.(*tTable).sizeX/2 - 50, 269, 30, 30, 0xD8DCC0, 0x000000, "", FLAT, btnPrevClick)
+	btnPrev.obj.(*tBitBtn).enabled = false
+	lblCurPage = CreateLabel(pnlUsersDisp, "lblCurPage", tblUsers.obj.(*tTable).x + tblUsers.obj.(*tTable).sizeX/2, 278, 20, 20, 0xD8DCC0, 0x0000FF, strconv.Itoa(CurUsersPage), nil)
+	btnNext = CreateBitBtn(pnlUsersDisp, "btnNext", bmpNext, tblUsers.obj.(*tTable).x + tblUsers.obj.(*tTable).sizeX/2 + 30, 269, 30, 30, 0xD8DCC0, 0x000000, "", FLAT, btnNextClick)
 	
 	refreshDevicesTable()
 	refreshEventsTable()
@@ -237,7 +237,7 @@ func btnPrevDevicesClick(node *Node){
 	if CurDevicesPage > 1 {
 		CurDevicesPage--
 		if CurDevicesPage == 1 {
-			node.obj.(*tBtn).enabled = false
+			node.obj.(*tBitBtn).enabled = false
 		}
 	} 
 	lblCurDevicesPage.obj.(*tLabel).caption = strconv.Itoa(CurDevicesPage)
@@ -247,7 +247,7 @@ func btnPrevDevicesClick(node *Node){
 
 func btnNextDevicesClick(node *Node){
 	CurDevicesPage++
-	btnPrevDevices.obj.(*tBtn).enabled = true
+	btnPrevDevices.obj.(*tBitBtn).enabled = true
 	lblCurDevicesPage.obj.(*tLabel).caption = strconv.Itoa(CurDevicesPage)
 	refreshDevicesTable()
 }
@@ -296,7 +296,7 @@ func btnPrevEventsClick(node *Node){
 	if CurEventsPage > 1 {
 		CurEventsPage--
 		if CurEventsPage == 1 {
-			node.obj.(*tBtn).enabled = false
+			node.obj.(*tBitBtn).enabled = false
 		}
 	} 
 	lblCurEventsPage.obj.(*tLabel).caption = strconv.Itoa(CurEventsPage)
@@ -306,7 +306,7 @@ func btnPrevEventsClick(node *Node){
 
 func btnNextEventsClick(node *Node){
 	CurEventsPage++
-	btnPrevEvents.obj.(*tBtn).enabled = true
+	btnPrevEvents.obj.(*tBitBtn).enabled = true
 	lblCurEventsPage.obj.(*tLabel).caption = strconv.Itoa(CurEventsPage)
 	refreshEventsTable()
 }
@@ -355,7 +355,7 @@ func btnPrevClick(node *Node){
 	if CurUsersPage > 1 {
 		CurUsersPage--
 		if CurUsersPage == 1 {
-			node.obj.(*tBtn).enabled = false
+			node.obj.(*tBitBtn).enabled = false
 		}
 	} 
 	lblCurPage.obj.(*tLabel).caption = strconv.Itoa(CurUsersPage)
@@ -365,7 +365,7 @@ func btnPrevClick(node *Node){
 
 func btnNextClick(node *Node){
 	CurUsersPage++
-	btnPrev.obj.(*tBtn).enabled = true
+	btnPrev.obj.(*tBitBtn).enabled = true
 	lblCurPage.obj.(*tLabel).caption = strconv.Itoa(CurUsersPage)
 	refreshUsersTable()
 }
