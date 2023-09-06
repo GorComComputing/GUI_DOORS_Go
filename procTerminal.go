@@ -12,6 +12,7 @@ import (
     //"bytes"
     //"io/ioutil"
     //"encoding/json"
+    "strings"
 )
 
 
@@ -25,12 +26,12 @@ func startTerminal(frmMain *Node){
 	frmMain.obj.(*tForm).sizeY = (7+2)*24 + 17 + 7
 	frmMain.children[0].obj.(*tBitBtn).x = frmMain.obj.(*tForm).sizeX - 17
 	
-	memTerminal = CreateMemo(frmMain, "memTerminal", 2, 18, 7*80+4, 24*9+4, 0x000000, 0xF8FCF8, "", nil)
+	memTerminal = CreateMemo(frmMain, "memTerminal", 2, 18, 7*80+4, 24*9+4, 0x000000, 0xF8FCF8, nil)
 }
 
 
 func printTerminal(str string) {
-	memTerminal.obj.(*tMemo).text = str
+	memTerminal.obj.(*tMemo).list = strings.Split(str, string(10))
 }
 
 

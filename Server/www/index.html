@@ -82,6 +82,12 @@
    	console.log(e.key);
    	exports.eventKeyDown(e.keyCode);
    }
+   
+   const eventKeyUp = (e) => {
+   	console.log(e.key);
+
+   	exports.eventKeyUp(e.keyCode);
+   }
 
   //drawCheckerBoard();
   setInterval(() => {
@@ -89,6 +95,7 @@
   }, 5); // 25
   
   addEventListener("keydown",  eventKeyDown);
+  addEventListener("keyup",  eventKeyUp);
 };
 runWasm();
 </script> 

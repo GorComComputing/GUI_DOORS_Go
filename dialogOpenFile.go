@@ -14,9 +14,9 @@ var btnOpenDialogCancel *Node
 var btnOpenDialogUp *Node
 var lsfOpenDialog *Node
 
-var TO *string
+var TO *[]string
 
-func OpenDialog(path string, to *string){ 
+func OpenDialog(path string, to *[]string){ 
     frmOpenDialog := CreateForm(&layout, "frmOpenDialog", nil, BITMAP_WIDTH/2-465/2, BITMAP_HEIGHT/2-310/2, 465, 310, 0xD8DCC0, DIALOG, "Open File", true, nil)
     btnOpenDialogOpen = CreateBtn(frmOpenDialog, "btnOpenDialogOpen", 389, 251, 70, 24, 0xd8dcc0, 0x0, "Open", btnOpenDialogOpenClick)
     edtOpenDialogPath = CreateEdit(frmOpenDialog, "edtOpenDialogPath", 60, 22, 400, 20, 0xf8fcf8, 0x0, path, nil, nil)
@@ -54,10 +54,8 @@ func lsfOpenDialogClick(node *Node, x int, y int){
 
 func btnOpenDialogOpenClick(node *Node){
 	if edtOpenDialogFile.obj.(*tEdit).text != "" {
-		result := ReadFile(edtOpenDialogPath.obj.(*tEdit).text + edtOpenDialogFile.obj.(*tEdit).text)
-		result = strings.Replace(result, "\r\n", string(13), -1)
-		result = strings.Replace(result, "\t", string(0x20) + string(0x20) + string(0x20) + string(0x20), -1)
-		*TO = result
+		result := ReadFile(edtOpenDialogPath.obj.(*tEdit).text + edtOpenDialogFile.obj.(*tEdit).text)		
+		*TO = strings.Split(result, string(10))
 		
 		// Удаляет форму
 		for i := 0; i < len(layout.children); i++ {

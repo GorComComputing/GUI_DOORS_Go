@@ -1924,7 +1924,9 @@ var char60 string =
         } else if str[j] == '^' { DrawBitmapTransparent(buffer, char5E, x, y, 7, 11, scale); x += 8;
         } else if str[j] == '_' { DrawBitmapTransparent(buffer, char5F, x, y, 7, 11, scale); x += 8;
         } else if str[j] == '`' { DrawBitmapTransparent(buffer, char60, x, y, 4, 11, scale); x += 5;
-        } else if str[j] == 13 { x = x_start; y += 12 + interval; continue;
+        } else if str[j] == 0x0A { x = x_start; y += 12 + interval; continue;
+        //} else if str[j] == 0x0D { x = x_start; y += 12 + interval; continue;
+        } else if str[j] == 0x09 { x += 32; continue;
         } else { DrawBitmapTransparent(buffer, charUndefined, x, y, 7, 7, scale); x += 7;}
         // Перенос
         /*if x + 8 > xright_loc {

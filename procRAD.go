@@ -101,7 +101,7 @@ func startRAD(){
 	tabPropEvents = CreateTab(frmProperties, "tabPropEvents", 2, 20, 90, 20, 0xd8dcc0, 0x0, listTab, tabPropEventsClick, nil)
 	
 	frmCode = CreateForm(&layout, "frmCode", nil, 185, 81, 900, 800, 0xD8DCC0, WIN, "Code", false, nil)
-	memCode = CreateMemo(frmCode, "memCode", 2, 18, 900-4, 800-17-4, 0xF8FCF8, 0x000000, "", nil)
+	memCode = CreateMemo(frmCode, "memCode", 2, 18, 900-4, 800-17-4, 0xF8FCF8, 0x000000, nil)
 	
 	listWinRAD := []tMenuList{{"File", nil}, {"Build", nil}}
 	menuWinRAD = CreateMenu(frmRAD, "menuWinRAD", 2, 18, BITMAP_WIDTH-1-1-4, 20, 0xd8dcc0, 0x0, LINE, listWinRAD, menuWinRADClick, nil)
@@ -133,11 +133,11 @@ func menuWinRADClick(node *Node, x int, y int){
 func menuFileRADClick(node *Node, x int, y int){
 	node.obj.(*tMenu).visible = false
 	if node.obj.(*tMenu).selected == 0 {
-		memCode.obj.(*tMemo).text = ""
+		//memCode.obj.(*tMemo).text = ""
 	} else if node.obj.(*tMenu).selected == 1 {
-		OpenDialog(RootDir+"files/", &(memCode.obj.(*tMemo).text))
+		//OpenDialog(RootDir+"files/", &(memCode.obj.(*tMemo).text))
 	} else if node.obj.(*tMenu).selected == 2 {
-		SaveDialog(RootDir+"files/", &(memCode.obj.(*tMemo).text))
+		//SaveDialog(RootDir+"files/", &(memCode.obj.(*tMemo).text))
 	}
 }
 
@@ -145,29 +145,32 @@ func menuFileRADClick(node *Node, x int, y int){
 func menuBuildRADClick(node *Node, x int, y int){
 	node.obj.(*tMenu).visible = false
 	if node.obj.(*tMenu).selected == 0 {
-		memCode.obj.(*tMemo).text = ""	
+		//memCode.obj.(*tMemo).text = ""	
 		//package main
 		//import ()
-		memCode.obj.(*tMemo).text += "package main" + string(13) + string(13) + "import ()" + string(13) + string(13)
+		//memCode.obj.(*tMemo).text += "package main" + string(13) + string(13) + "import ()" + string(13) + string(13)
+		
 		PrintVarNode(RADFormElement)
-		memCode.obj.(*tMemo).text += string(13) + string(13)
+		//memCode.obj.(*tMemo).text += string(13) + string(13)
+		
 		//func startSNMP(frmMain *Node){
-		memCode.obj.(*tMemo).text += "func startProc(frmMain *Node){ " + string(13)
+		//memCode.obj.(*tMemo).text += "func startProc(frmMain *Node){ " + string(13)
 	
 		//frmMain.obj.(*tForm).x = 190
 		//frmMain.obj.(*tForm).y = 70
 		//frmMain.obj.(*tForm).sizeX = 550
 		//frmMain.obj.(*tForm).sizeY = 300
 		//frmMain.children[0].obj.(*tBitBtn).x = frmMain.obj.(*tForm).sizeX - 17
-		memCode.obj.(*tMemo).text += "    frmMain.obj.(*tForm).x = " + strconv.Itoa(RADFormElement.obj.(*tForm).x) + string(13)
-		memCode.obj.(*tMemo).text += "    frmMain.obj.(*tForm).y = " + strconv.Itoa(RADFormElement.obj.(*tForm).y) + string(13)
-		memCode.obj.(*tMemo).text += "    frmMain.obj.(*tForm).sizeX = " + strconv.Itoa(RADFormElement.obj.(*tForm).sizeX) + string(13)
-		memCode.obj.(*tMemo).text += "    frmMain.obj.(*tForm).sizeY = " + strconv.Itoa(RADFormElement.obj.(*tForm).sizeY) + string(13)
-		memCode.obj.(*tMemo).text += "    frmMain.children[0].obj.(*tBitBtn).x = frmMain.obj.(*tForm).sizeX - 17" + string(13) + string(13)
+		
+		//memCode.obj.(*tMemo).text += "    frmMain.obj.(*tForm).x = " + strconv.Itoa(RADFormElement.obj.(*tForm).x) + string(13)
+		//memCode.obj.(*tMemo).text += "    frmMain.obj.(*tForm).y = " + strconv.Itoa(RADFormElement.obj.(*tForm).y) + string(13)
+		//memCode.obj.(*tMemo).text += "    frmMain.obj.(*tForm).sizeX = " + strconv.Itoa(RADFormElement.obj.(*tForm).sizeX) + string(13)
+		//memCode.obj.(*tMemo).text += "    frmMain.obj.(*tForm).sizeY = " + strconv.Itoa(RADFormElement.obj.(*tForm).sizeY) + string(13)
+		//memCode.obj.(*tMemo).text += "    frmMain.children[0].obj.(*tBitBtn).x = frmMain.obj.(*tForm).sizeX - 17" + string(13) + string(13)
 	
 		PrintElementNode(RADFormElement, &layout)	
 		// }		
-		memCode.obj.(*tMemo).text += "}" + string(13) + string(13) + string(13)
+		//memCode.obj.(*tMemo).text += "}" + string(13) + string(13) + string(13)
 	
 		PrintFuncNode(RADFormElement)
 	} 
@@ -320,7 +323,7 @@ func editPropTextEnter(node *Node){
 	case *tEdit:
 		obj.text = node.obj.(*tEdit).text
 	case *tMemo:
-		obj.text = node.obj.(*tEdit).text
+		//obj.text = node.obj.(*tEdit).text
 	case *tComboBox:
 		obj.text = node.obj.(*tEdit).text
 	}
@@ -808,7 +811,7 @@ func btnAddCheckBoxClick(node *Node){
 }
 
 func btnAddMemoClick(node *Node){
-	CreateMemo(RADFormElement, "memMemo", 10, 24, 100, 100, 0xF8FCF8, 0x000000, "Memo", nil)
+	CreateMemo(RADFormElement, "memMemo", 10, 24, 100, 100, 0xF8FCF8, 0x000000, nil)
 }
 
 func btnAddPanelClick(node *Node){
@@ -840,48 +843,48 @@ func PrintFuncNode(node *Node){
 		switch obj := node.obj.(type) {
 		case *tForm:
 			if obj.onClickStr != ""{
-				memCode.obj.(*tMemo).text += "func " + obj.onClickStr +"(node *Node){" + string(13) + string(13)
-				memCode.obj.(*tMemo).text += "}" + string(13) + string(13) + string(13)
+				//memCode.obj.(*tMemo).text += "func " + obj.onClickStr +"(node *Node){" + string(13) + string(13)
+				//memCode.obj.(*tMemo).text += "}" + string(13) + string(13) + string(13)
 			}
 		case *tBtn:
 			if obj.onClickStr != ""{
-				memCode.obj.(*tMemo).text += "func " + obj.onClickStr +"(node *Node){" + string(13) + string(13)
-				memCode.obj.(*tMemo).text += "}" + string(13) + string(13) + string(13)
+				//memCode.obj.(*tMemo).text += "func " + obj.onClickStr +"(node *Node){" + string(13) + string(13)
+				//memCode.obj.(*tMemo).text += "}" + string(13) + string(13) + string(13)
 			}
 		case *tLabel:
 			if obj.onClickStr != ""{
-				memCode.obj.(*tMemo).text += "func " + obj.onClickStr +"(node *Node){" + string(13) + string(13)
-				memCode.obj.(*tMemo).text += "}" + string(13) + string(13) + string(13)
+				//memCode.obj.(*tMemo).text += "func " + obj.onClickStr +"(node *Node){" + string(13) + string(13)
+				//memCode.obj.(*tMemo).text += "}" + string(13) + string(13) + string(13)
 			}
 		case *tEdit:
 			if obj.onClickStr != ""{
-				memCode.obj.(*tMemo).text += "func " + obj.onClickStr +"(node *Node){" + string(13) + string(13)
-				memCode.obj.(*tMemo).text += "}" + string(13) + string(13) + string(13)
+				//memCode.obj.(*tMemo).text += "func " + obj.onClickStr +"(node *Node){" + string(13) + string(13)
+				//memCode.obj.(*tMemo).text += "}" + string(13) + string(13) + string(13)
 			}
 		case *tPanel:
 			if obj.onClickStr != ""{
-				memCode.obj.(*tMemo).text += "func " + obj.onClickStr +"(node *Node){" + string(13) + string(13)
-				memCode.obj.(*tMemo).text += "}" + string(13) + string(13) + string(13)
+				//memCode.obj.(*tMemo).text += "func " + obj.onClickStr +"(node *Node){" + string(13) + string(13)
+				//memCode.obj.(*tMemo).text += "}" + string(13) + string(13) + string(13)
 			}
 		case *tCheckBox:
 			if obj.onClickStr != ""{
-				memCode.obj.(*tMemo).text += "func " + obj.onClickStr +"(node *Node){" + string(13) + string(13)
-				memCode.obj.(*tMemo).text += "}" + string(13) + string(13) + string(13)
+				//memCode.obj.(*tMemo).text += "func " + obj.onClickStr +"(node *Node){" + string(13) + string(13)
+				//memCode.obj.(*tMemo).text += "}" + string(13) + string(13) + string(13)
 			}
 		case *tCanvas:
 			if obj.onClickStr != ""{
-				memCode.obj.(*tMemo).text += "func " + obj.onClickStr +"(node *Node){" + string(13) + string(13)
-				memCode.obj.(*tMemo).text += "}" + string(13) + string(13) + string(13)
+				//memCode.obj.(*tMemo).text += "func " + obj.onClickStr +"(node *Node){" + string(13) + string(13)
+				//memCode.obj.(*tMemo).text += "}" + string(13) + string(13) + string(13)
 			}
 		case *tBitBtn:
 			if obj.onClickStr != ""{
-				memCode.obj.(*tMemo).text += "func " + obj.onClickStr +"(node *Node){" + string(13) + string(13)
-				memCode.obj.(*tMemo).text += "}" + string(13) + string(13) + string(13)
+				//memCode.obj.(*tMemo).text += "func " + obj.onClickStr +"(node *Node){" + string(13) + string(13)
+				//memCode.obj.(*tMemo).text += "}" + string(13) + string(13) + string(13)
 			}
 		case *tMemo:
 			if obj.onClickStr != ""{
-				memCode.obj.(*tMemo).text += "func " + obj.onClickStr +"(node *Node){" + string(13) + string(13)
-				memCode.obj.(*tMemo).text += "}" + string(13) + string(13) + string(13)
+				//memCode.obj.(*tMemo).text += "func " + obj.onClickStr +"(node *Node){" + string(13) + string(13)
+				//memCode.obj.(*tMemo).text += "}" + string(13) + string(13) + string(13)
 			}
 		}
 	}
@@ -896,26 +899,26 @@ func PrintFuncNode(node *Node){
 
 
 func PrintVarNode(node *Node){
-	if node.obj != nil {
+/*	if node.obj != nil {
 		switch obj := node.obj.(type) {
 		case *tForm:
-			//memCode.obj.(*tMemo).text += "var " + obj.name + " *Node" + string(13)
+
 		case *tBtn:
-			memCode.obj.(*tMemo).text += "var " + obj.name + " *Node" + string(13)
-		case *tLabel:
-			memCode.obj.(*tMemo).text += "var " + obj.name + " *Node" + string(13)
-		case *tEdit:
-			memCode.obj.(*tMemo).text += "var " + obj.name + " *Node" + string(13)
-		case *tPanel:
-			memCode.obj.(*tMemo).text += "var " + obj.name + " *Node" + string(13)
-		case *tCheckBox:
-			memCode.obj.(*tMemo).text += "var " + obj.name + " *Node" + string(13)
-		case *tCanvas:
-			memCode.obj.(*tMemo).text += "var " + obj.name + " *Node" + string(13)
-		case *tBitBtn:
 			//memCode.obj.(*tMemo).text += "var " + obj.name + " *Node" + string(13)
+		case *tLabel:
+			//memCode.obj.(*tMemo).text += "var " + obj.name + " *Node" + string(13)
+		case *tEdit:
+			//memCode.obj.(*tMemo).text += "var " + obj.name + " *Node" + string(13)
+		case *tPanel:
+			//memCode.obj.(*tMemo).text += "var " + obj.name + " *Node" + string(13)
+		case *tCheckBox:
+			//memCode.obj.(*tMemo).text += "var " + obj.name + " *Node" + string(13)
+		case *tCanvas:
+			//memCode.obj.(*tMemo).text += "var " + obj.name + " *Node" + string(13)
+		case *tBitBtn:
+			
 		case *tMemo:
-			memCode.obj.(*tMemo).text += "var " + obj.name + " *Node" + string(13)
+			//memCode.obj.(*tMemo).text += "var " + obj.name + " *Node" + string(13)
 		}
 	}
 	
@@ -924,12 +927,12 @@ func PrintVarNode(node *Node){
 				PrintVarNode(node.children[i])
 			}
 	}
-	return
+	return*/
 }
 
 
 func PrintElementNode(node *Node, parent *Node){
-	if node.obj != nil {
+/*	if node.obj != nil {
 		var parentName string = "frmMain"
 		switch obj := parent.obj.(type) {
 		case *tForm:
@@ -990,16 +993,7 @@ func PrintElementNode(node *Node, parent *Node){
 		
 		switch obj := node.obj.(type) {
 		case *tForm:
-			//frm := CreateForm(&layout, 400, 400, 200, 130, 0xD8DCC0, WIN, name, true, nil)
-			/*memCode.obj.(*tMemo).text += "    " + obj.name + " := CreateForm(" + parentName + ", " +
-				strconv.Itoa(obj.x) + ", " +
-				strconv.Itoa(obj.y) + ", " +
-				strconv.Itoa(obj.sizeX) + ", " +
-				strconv.Itoa(obj.sizeY) + ", " +
-				fmt.Sprintf("0x%x", obj.BC) + ", " +
-				"WIN, " +
-				"\"" + obj.caption + "\"" + ", " +
-				"true, nil)" + string(13)*/
+			
 		case *tBtn:
 			var onClickStr string = "nil"
 			if obj.onClickStr != "" {
@@ -1100,21 +1094,7 @@ func PrintElementNode(node *Node, parent *Node){
 				strconv.Itoa(obj.sizeY) + ", " +
 				onClickStr + ")" + string(13)
 		case *tBitBtn:
-			/*var onClickStr string = "nil"
-			if obj.onClickStr != "" {
-				onClickStr = obj.onClickStr
-			}
-			//CreateBitBtn(&node, obj.sizeX - 17, 2, 15, 15, 0xD8DCC0, 0x000000, "X", formClose)
-			memCode.obj.(*tMemo).text += "    " + obj.name + " = CreateBitBtn(" + parentName + ", " +
-				"\"" + obj.name + "\", " +
-				strconv.Itoa(obj.x) + ", " +
-				strconv.Itoa(obj.y) + ", " +
-				strconv.Itoa(obj.sizeX) + ", " +
-				strconv.Itoa(obj.sizeY) + ", " +
-				fmt.Sprintf("0x%x", obj.BC) + ", " +
-				fmt.Sprintf("0x%x", obj.TC) + ", " +
-				"\"" + obj.caption + "\"" + ", " +
-				onClickStr + ")" + string(13)*/
+
 		case *tMemo:
 			var onClickStr string = "nil"
 			if obj.onClickStr != "" {
@@ -1139,7 +1119,7 @@ func PrintElementNode(node *Node, parent *Node){
 				PrintElementNode(node.children[i], node)
 			}
 	}
-	return
+	return*/
 }
 
 

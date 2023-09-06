@@ -153,7 +153,7 @@ func startDispatch(frmMain *Node){
 	lblCurEventsPage = CreateLabel(pnlEventsDisp, "lblCurEventsPage", tblEvents.obj.(*tTable).x + tblEvents.obj.(*tTable).sizeX/2, 278, 20, 20, 0xD8DCC0, 0x0000FF, strconv.Itoa(CurEventsPage), nil)
 	btnNextEvents = CreateBitBtn(pnlEventsDisp, "btnNextEvents", bmpNext, tblEvents.obj.(*tTable).x + tblEvents.obj.(*tTable).sizeX/2 + 30, 269, 30, 30, 0xD8DCC0, 0x000000, "", FLAT, btnNextEventsClick)
 	
-	memTest = CreateMemo(pnlEventsDisp, "memTest", 760, 44, 100, 100, 0x000000, 0xF8FCF8, "", nil)
+	memTest = CreateMemo(pnlEventsDisp, "memTest", 760, 44, 100, 100, 0x000000, 0xF8FCF8, nil)
 	
 
 	

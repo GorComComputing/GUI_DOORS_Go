@@ -5,6 +5,7 @@ import (
     //"syscall/js"
     //"math/rand"
     "strconv"
+    //"strings"
 
 )
 
@@ -17,21 +18,24 @@ type tMemo struct{
     sizeY int
     BC int
     TC int
-    text string
+    //text string
+    list []string
     visible bool
     focused bool
     enabled bool
     curX int
     curY int
-    pos int
-    line_start int
+    curXR int
+    curYR int
+    //pos int
+    //line_start int
     onClick func(*Node)
     onClickStr string
 }
 
 
-func CreateMemo(parent *Node, name string, x int, y int, sizeX int, sizeY int, BC int, TC int, text string, onClick func(*Node)) *Node {
-	obj := tMemo{name: name, x: x, y: y, sizeX: sizeX, sizeY: sizeY, BC: BC, TC: TC, text: text, visible: true, enabled: true, curX: 0, curY: 0, pos: 0, line_start: 0, onClick: onClick}
+func CreateMemo(parent *Node, name string, x int, y int, sizeX int, sizeY int, BC int, TC int, onClick func(*Node)) *Node {
+	obj := tMemo{name: name, x: x, y: y, sizeX: sizeX, sizeY: sizeY, BC: BC, TC: TC, list: []string{""}, visible: true, enabled: true, curX: 0, curY: 0, curXR: 0, curYR: 0, onClick: onClick}
 	node := Node{typ: MEMO, parent: parent, previous: nil, children: nil, obj: &obj}
 	parent.children = append(parent.children, &node)
 	return &node
@@ -61,16 +65,142 @@ func (obj *tMemo) Draw(parX int, parY int, parSizeX int, parSizeY int){
 	p = append(p, p4)
 
     FillPoly(nil, 4, p);
+   
 
+	var end_row int = 0
+	if len(obj.list)-1 < obj.sizeY/14 {
+		end_row = len(obj.list)-1
+	} else {
+		end_row = obj.sizeY/14-1
+	}
 
     SetColor(obj.TC);
     SetBackColor(obj.BC);
-    TextOutgl(nil, obj.text, parX+obj.x + 4, parY+obj.y + 4, 1);
+    if obj.list != nil {
+    	for i := 0; i <= end_row; i++ {
+    		if (i + obj.curYR) < len(obj.list) && obj.curXR < len(obj.list[i+obj.curYR]) {
+    			var end int
+    			if len(obj.list[i+obj.curYR]) > obj.curXR + 80 {
+    				end = obj.curXR + 80
+    			} else {
+    				end = len(obj.list[i+obj.curYR])
+    			}
+    			TextOutgl(nil, obj.list[i+obj.curYR][obj.curXR:end], parX+obj.x + 4, parY+obj.y + 4 + 14*i, 1)
+    		}
+    	}
+    }
     if obj.focused && cursor {
-    	TextOutgl(nil, "|", parX+obj.x + 4 + obj.curX*8, parY+obj.y + 4 + (7+2)*obj.curY, 1);
+    	var offset int = 0
+    	for i := 0; i < obj.curX; i++ {
+    		if len(obj.list[obj.curYR + obj.curY]) > (obj.curXR + i) {
+    		switch obj.list[obj.curYR + obj.curY][obj.curXR + i] {
+    		case 'A': offset += 8
+    		case 'B': offset += 8
+    		case 'C': offset += 8
+    		case 'D': offset += 8
+    		case 'E': offset += 8
+    		case 'F': offset += 8
+    		case 'G': offset += 8
+    		case 'H': offset += 8
+    		case 'I': offset += 8
+    		case 'J': offset += 8
+    		case 'K': offset += 8
+    		case 'L': offset += 8
+    		case 'M': offset += 9
+    		case 'N': offset += 8
+    		case 'O': offset += 8
+    		case 'P': offset += 8
+    		case 'Q': offset += 8
+    		case 'R': offset += 8
+    		case 'S': offset += 8
+    		case 'T': offset += 9
+    		case 'U': offset += 8
+    		case 'V': offset += 9
+    		case 'W': offset += 9
+    		case 'X': offset += 9
+    		case 'Y': offset += 9
+    		case 'Z': offset += 9
+    		
+    		case ' ': offset += 8
+    		case '-': offset += 7
+    		case '0': offset += 8
+    		case '1': offset += 8
+    		case '2': offset += 8
+    		case '3': offset += 8
+    		case '4': offset += 8
+    		case '5': offset += 8
+    		case '6': offset += 8
+    		case '7': offset += 8
+    		case '8': offset += 8
+    		case '9': offset += 8
+    		case '|': offset += 7
+    		
+    		case 'a': offset += 8
+    		case 'b': offset += 8
+    		case 'c': offset += 8
+    		case 'd': offset += 8
+    		case 'e': offset += 8
+    		case 'f': offset += 8
+    		case 'g': offset += 8
+    		case 'h': offset += 8
+    		case 'i': offset += 8
+    		case 'j': offset += 8
+    		case 'k': offset += 8
+    		case 'l': offset += 8
+    		case 'm': offset += 9
+    		case 'n': offset += 8
+    		case 'o': offset += 8
+    		case 'p': offset += 8
+    		case 'q': offset += 8
+    		case 'r': offset += 8
+    		case 's': offset += 8
+    		case 't': offset += 8
+    		case 'u': offset += 8
+    		case 'v': offset += 9
+    		case 'w': offset += 9
+    		case 'x': offset += 8
+    		case 'y': offset += 8
+    		case 'z': offset += 8
+    		
+    		case '{': offset += 8
+       		case '}': offset += 8
+       		case '~': offset += 8
+			case '!': offset += 5
+			case 0x22: offset += 8
+			case '#': offset += 8
+			case '$': offset += 8
+			case '%': offset += 8
+			case '&': offset += 8
+			case '\'': offset += 5
+			case '(': offset += 5
+			case ')': offset += 5
+			case '*': offset += 9
+			case '+': offset += 9
+			case ',': offset += 5
+        	case '.': offset += 5
+        	case '/': offset += 8
+        	case ':': offset += 5
+        	case ';': offset += 5
+        	case '<': offset += 8
+        	case '=': offset += 8
+        	case '>': offset += 8
+        	case '?': offset += 8
+        	case '@': offset += 8
+        	case '[': offset += 5
+			case '\\': offset += 8
+			case ']': offset += 5
+			case '^': offset += 8
+			case '_': offset += 8
+			case '`': offset += 5
+			case 0x09: offset += 32 // TAB
+
+			default: offset += 7
+			}
+			}
+    	} 
+    	TextOutgl(nil, "|", parX+obj.x + 4 + offset, parY+obj.y + 4 + 14*obj.curY, 1);
     }
 
-    
     SetColor(0x000000);
     LinePP(nil, parX+obj.x, parY+obj.y, parX+obj.x + obj.sizeX, parY+obj.y);
     LinePP(nil, parX+obj.x, parY+obj.y, parX+obj.x, parY+obj.y + obj.sizeY);
@@ -101,8 +231,8 @@ func (obj *tMemo) RAD(x int, y int){
 			editPropLeft = CreateEdit(pnlProperties, "editPropLeft", 80, 25, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.x), nil, editPropLeftEnter)
 			lblPropTop = CreateLabel(pnlProperties, "lblPropTop", 5, 45, 95, 20, 0xD8DCC0, 0x000000, "Top", nil)
 			editPropTop = CreateEdit(pnlProperties, "editPropTop", 80, 45, 95, 20, 0xF8FCF8, 0x000000, strconv.Itoa(obj.y), nil, editPropTopEnter)
-			lblPropText = CreateLabel(pnlProperties, "lblPropText", 5, 65, 95, 20, 0xD8DCC0, 0x000000, "Text", nil)
-			editPropText = CreateEdit(pnlProperties, "editPropText", 80, 65, 95, 20, 0xF8FCF8, 0x000000, obj.text, nil, editPropTextEnter)
+			//lblPropText = CreateLabel(pnlProperties, "lblPropText", 5, 65, 95, 20, 0xD8DCC0, 0x000000, "Text", nil)
+			//editPropText = CreateEdit(pnlProperties, "editPropText", 80, 65, 95, 20, 0xF8FCF8, 0x000000, obj.text, nil, editPropTextEnter)
 			lblPropBC = CreateLabel(pnlProperties, "lblPropBC", 5, 85, 95, 20, 0xD8DCC0, 0x000000, "BC", nil)
 			editPropBC = CreateEdit(pnlProperties, "editPropBC", 80, 85, 95, 20, 0xF8FCF8, 0x000000, fmt.Sprintf("%x", obj.BC), nil, editPropBCEnter)
 			lblPropTC = CreateLabel(pnlProperties, "lblPropTC", 5, 105, 95, 20, 0xD8DCC0, 0x000000, "TC", nil)
@@ -124,57 +254,212 @@ func (obj *tMemo) RAD(x int, y int){
 
 func (obj *tMemo) KeyDown(key int){
 	if obj.enabled {
-	if key == 8 {
-    			if len(obj.text) > 0 {
-    				obj.text = obj.text[:obj.pos-1] + obj.text[obj.pos:]
+			if key == 8 {
+    			if len(obj.list[obj.curYR + obj.curY]) > 0 && (obj.curXR + obj.curX) > 0 {
+    				obj.list[obj.curYR + obj.curY] = obj.list[obj.curYR + obj.curY][:obj.curXR + obj.curX-1] + obj.list[obj.curYR + obj.curY][obj.curXR + obj.curX:]
     				obj.curX--
-    				obj.pos--
+    			} else if (obj.curXR + obj.curX) == 0 && (obj.curYR + obj.curY) > 0 {
+    				obj.curX = len(obj.list[obj.curYR + obj.curY-1])
+    				obj.list[obj.curYR + obj.curY-1] += obj.list[obj.curYR + obj.curY]
+    				copy(obj.list[obj.curYR + obj.curY:], obj.list[obj.curYR + obj.curY+1:])
+    				obj.list[len(obj.list)-1] = ""
+    				obj.list = obj.list[:len(obj.list)-1]
+    				obj.curY--
     			}
     		} else if key == 13 {
-    			obj.text = obj.text[:obj.line_start + obj.pos] + string(key) + obj.text[obj.line_start + obj.pos:]
-    			//obj.pos++
-    			obj.line_start += obj.pos+1
+    			begin := obj.list[obj.curYR + obj.curY][:obj.curXR + obj.curX]
+    			end := obj.list[obj.curYR + obj.curY][obj.curXR + obj.curX:]
+    			
+    			obj.list = append(obj.list, "")
+    			copy(obj.list[obj.curYR + obj.curY+1:], obj.list[obj.curYR + obj.curY:])
+    			obj.list[obj.curYR + obj.curY] = begin
+    			obj.list[obj.curYR + obj.curY+1] = end
+    			
     			obj.curY++
     			obj.curX = 0
-    			obj.pos = 0
-    		} else if key == 37 {
+				obj.curXR = 0
+			} else if key == 33 {	// PG_UP
+				if obj.curYR > obj.sizeY/14-1 {
+					obj.curYR -= obj.sizeY/14-1
+				} else {
+					obj.curYR = 0
+				}
+				obj.curY = 0
+				if (obj.curX + obj.curXR) > len(obj.list[obj.curYR + obj.curY]) {
+    				obj.curX = len(obj.list[obj.curYR + obj.curY]) - obj.curXR
+    			}
+			} else if key == 34 {	// PG_DOWN
+				if obj.curYR + (obj.sizeY/14-1)*2 < len(obj.list) {
+					obj.curYR += obj.sizeY/14-1
+					obj.curY = obj.sizeY/14-1
+				} else if obj.curYR == 0 && obj.curYR + (obj.sizeY/14-1) > len(obj.list) {
+					obj.curY = len(obj.list) - 1
+				} else {
+					obj.curYR = len(obj.list) - obj.sizeY/14-1
+					obj.curY = obj.sizeY/14-1
+				}
+				if (obj.curX + obj.curXR) > len(obj.list[obj.curYR + obj.curY]) {
+    				obj.curX = len(obj.list[obj.curYR + obj.curY]) - obj.curXR
+    			}
+			} else if key == 35 {	// END
+				if len(obj.list[obj.curYR + obj.curY]) > obj.curXR + 79 {
+					obj.curXR = len(obj.list[obj.curYR + obj.curY]) - 79
+					obj.curX = 79
+				} else {
+    				obj.curX = len(obj.list[obj.curYR + obj.curY]) - obj.curXR
+    			}
+    		} else if key == 36 {	// HOME
+    			obj.curXR = 0
+    			obj.curX = 0
+    		} else if key == 37 {	// ARROW_LEFT
     			if obj.curX > 0 {
     				obj.curX--
-    				obj.pos--
-    			}
-    		} else if key == 39 {
-    			if ((obj.line_start + obj.pos) < (len(obj.text)-1)) && ((obj.line_start + obj.pos+1) != 13) {
-    				obj.curX++
-    				obj.pos++
-    			}
-    		} else if key == 38 {
-    			oldNL := obj.line_start
-    			if obj.line_start != 0 { 
-    				obj.curY--
-    				obj.line_start = findLeft(obj.text, obj.line_start)
-    				if obj.curX > oldNL - obj.line_start - 1 {
-    					obj.curX = oldNL - obj.line_start - 1
-    					obj.pos = oldNL - obj.line_start - 1
+    			} else {
+    				if obj.curXR > 0 {
+    					obj.curXR--
     				}
     			}
-    			
-    		} else if key == 40 {
-    			right := findRight(obj.text, obj.line_start)
-    			if obj.line_start == right || right == len(obj.text)-1 {
-    				return
+    		} else if key == 39 {	// ARROW_RIGHT
+    			var end_col int = 0
+				if len(obj.list[obj.curYR + obj.curY])-1 < 80 {
+					end_col = len(obj.list[obj.curYR + obj.curY])
+				} else {
+					end_col = 80-1
+				}
+				
+    			if obj.curX < end_col {
+    				obj.curX++
+    			} else {
+    				if obj.curXR + obj.curX < len(obj.list[obj.curYR + obj.curY])-1 {
+    					obj.curXR++
+    				}
     			}
-    			obj.line_start = right
-    			if obj.curX > len(obj.text)-1 - obj.line_start {
-    				obj.curX = len(obj.text) - obj.line_start
-    				obj.pos = len(obj.text) - obj.line_start
+    		} else if key == 38 {	// ARROW_UP
+    			if obj.curY > 0 {	
+    				obj.curY--
+    				if (obj.curX + obj.curXR) > len(obj.list[obj.curYR + obj.curY]) {
+    					obj.curX = len(obj.list[obj.curYR + obj.curY]) - obj.curXR
+    				}
+    			} else {
+    				if obj.curYR > 0 {
+    					obj.curYR--
+    					if (obj.curX + obj.curXR) > len(obj.list[obj.curYR + obj.curY]) {
+    						obj.curX = len(obj.list[obj.curYR + obj.curY]) - obj.curXR
+    					}
+    				}
     			}
-    			obj.curY++
-			} else {
-				obj.text = obj.text[:obj.line_start + obj.pos] + string(key) + obj.text[obj.line_start + obj.pos:]
-				obj.pos++
-				obj.curX++
+    		} else if key == 40 {	// ARROW_DOWN
+    			var end_row int = 0
+				if len(obj.list)-1 < obj.sizeY/14 {
+					end_row = len(obj.list)-1
+				} else {
+					end_row = obj.sizeY/14-1
+				}
+	
+    			if obj.curY < end_row {
+    				obj.curY++
+    				if (obj.curX + obj.curXR) > len(obj.list[obj.curYR + obj.curY]) {
+    					obj.curX = len(obj.list[obj.curYR + obj.curY]) - obj.curXR
+    				}
+    			} else {
+    				if obj.curYR + obj.curY < len(obj.list)-1 {
+    					obj.curYR++
+    					if (obj.curX + obj.curXR) > len(obj.list[obj.curYR + obj.curY]) {
+    						obj.curX = len(obj.list[obj.curYR + obj.curY]) - obj.curXR
+    					}
+    				}
+    			}
+    		} else if key == 46 {	// DEL
+    			if (obj.curXR + obj.curX) < len(obj.list[obj.curYR + obj.curY]) {
+    				obj.list[obj.curYR + obj.curY] = obj.list[obj.curYR + obj.curY][:obj.curXR + obj.curX] + obj.list[obj.curYR + obj.curY][obj.curXR + obj.curX+1:]
+    			} else if (obj.curXR + obj.curX) == len(obj.list[obj.curYR + obj.curY]) && (obj.curYR + obj.curY) < len(obj.list)-1 {
+    				obj.list[obj.curYR + obj.curY] += obj.list[obj.curYR + obj.curY+1]
+    				copy(obj.list[obj.curYR + obj.curY+1:], obj.list[obj.curYR + obj.curY+2:])
+    				obj.list[len(obj.list)-1] = ""
+    				obj.list = obj.list[:len(obj.list)-1]
+    			}
+			} else {			
+				var end_col int = 0
+				if len(obj.list[obj.curYR + obj.curY])-1 < 80 {
+					end_col = len(obj.list[obj.curYR + obj.curY])
+				} else {
+					end_col = 80-1
+				}
+				
+				if key >= 0x20 && key <= 0x7E {
+					if !(isShiftKeyDown) && key >= 0x41 && key <= 0x5A {
+						key += 0x20
+					} else if isShiftKeyDown && key >= 0x31 && key <= 0x39 {
+						key -= 0x10
+					}
+					
+					
+					
+/*					
+			//case ' ': 32
+    		case '-': 189
+    		case '0': 0x30
+    		case '1': 
+    		case '2': 
+    		case '3': 
+    		case '4': 
+    		case '5': 
+    		case '6': 
+    		case '7': 
+    		case '8': 
+    		case '9': 0x39
+    		case '|': 220 s
+    		
+   
+    		
+    		case '{': 219 s
+       		case '}': 221 s
+       		case '~': 192
+			case '!': 0x31 s
+			case 0x22: 222 s
+			case '#': 51 s
+			case '$': 52 s
+			case '%': 53 s
+			case '&': 55 s
+			case '\'': 222
+			case '(': 57 s
+			case ')': 48 s
+			case '*': 56 s
+			case '+': 187 s
+			case ',': 188
+        	case '.': 190
+        	case '/': 191
+        	case ':': 186 s
+        	case ';': 186
+        	case '<': 188 s
+        	case '=': 187
+        	case '>': 190 s
+        	case '?': 191 s
+        	case '@': 50 s
+        	case '[': 219
+			case '\\': 220
+			case ']': 221
+			case '^': 54 s
+			case '_': 189 s
+			case '`': 192
+			case 0x09: 0x9 // TAB
+    		
+   */ 		
+					
+				
+				
+    				if obj.curX <= end_col {
+    					obj.list[obj.curYR + obj.curY] = obj.list[obj.curYR + obj.curY][:obj.curXR + obj.curX] + string(key) + obj.list[obj.curYR + obj.curY][obj.curXR + obj.curX:]
+    					obj.curX++
+    				} else {
+    					if obj.curXR + obj.curX < len(obj.list[obj.curYR + obj.curY])-1 {
+    						obj.list[obj.curYR + obj.curY] = obj.list[obj.curYR + obj.curY][:obj.curXR + obj.curX] + string(key) + obj.list[obj.curYR + obj.curY][obj.curXR + obj.curX:]
+    						obj.curXR++
+    					}
+    				}
+    			}
 			}
-		}
+	}
 }
 
 

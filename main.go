@@ -2,20 +2,31 @@ package main
 
 import ()
 
-var ServerIP string = "192.168.0.104" // "172.18.0.1" // "192.168.63.60" // "192.168.0.104"
-var RootDir string = "/home/jon/IT/WORK/Go/projects/DOORS" // "/home/user/WORK/DOORS/" // "/home/gor/WORK/Go/projects/DOORS/Server/" // "/home/jon/IT/WORK/Go/projects/DOORS/Server/"
-var DesktopDir string = "/home/jon/IT/WORK/Go/projects/" // "/home/user/WORK/" // "/home/gor/WORK/Go/projects/" 		// "/home/jon/IT/WORK/Go/projects/"
+// Work
+var ServerIP string = "192.168.63.60" 
+var RootDir string = "/home/gor/WORK/Go/projects/DOORS/Server/" 
+var DesktopDir string = "/home/gor/WORK/Go/projects/" 
+
+// Remote
+//var ServerIP string = "172.18.0.1" 
+//var RootDir string = "/home/user/WORK/DOORS/" 
+//var DesktopDir string = "/home/user/WORK/"
+
+// Home
+//var ServerIP string = "192.168.0.104"
+//var RootDir string = "/home/jon/IT/WORK/Go/projects/DOORS/Server/"
+//var DesktopDir string = "/home/jon/IT/WORK/Go/projects/"
 
 // Список программ
 var programs = []*tProgram{
-	{"Explorer", startExplorer, &bmpFolder_small},
+	{"Files", startExplorer, &bmpFolder_small},
 	{"Notepad", startNotepad, &bmpNotepad},
-	{"Browser", startBrowser, &bmpBrowser},
+	{"Internet", startBrowser, &bmpBrowser},
 	{"Flag", startFlag, &bmpProgram}, 
 	{"SNMP", startSNMP, &bmpProgram},
 	{"Dispatch", startDispatch, &bmpProgram},
 	{"Terminal", startTerminal, &bmpProgram},
-	{"TMP", startTMP, nil},
+	{"Temp", startTMP, nil},
 	}
 	
 

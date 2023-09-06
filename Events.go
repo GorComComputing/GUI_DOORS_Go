@@ -721,8 +721,20 @@ func eventMouseMove(x int, y int)  {
 }
 
 
+var isShiftKeyDown bool = false
+var isCtrlKeyDown bool = false
+var isAltKeyDown bool = false
+
 //export eventKeyDown
 func eventKeyDown(key int){
+	if key == 16 {
+		isShiftKeyDown = true
+	} else if key == 17 {
+		isCtrlKeyDown = true
+	} else if key == 18 {
+		isAltKeyDown = true
+	}
+	
 	// Удаление элемента RAD (Del)
 	if RAD && layout.children[len(layout.children)-1] != frmProperties && layout.children[len(layout.children)-1] != frmRAD && layout.children[len(layout.children)-1] != frmCode && key == 46 && layout.children[len(layout.children)-1].obj.(*tForm).mode != DIALOG {
 		for i := 0; i < len(RADElement.parent.children); i++ {
@@ -759,29 +771,16 @@ func eventKeyDown(key int){
 }
 
 
-func findLeft(str string, current int) int {
-	if current == 0 {
-		return 0
+//export eventKeyUp
+func eventKeyUp(key int){
+	if key == 16 {
+		isShiftKeyDown = false
+	} else if key == 17 {
+		isCtrlKeyDown = false
+	} else if key == 18 {
+		isAltKeyDown = false
 	}
-	for i := current - 2; i >= 0; i-- {
-		if str[i] == 13 {
-			return i + 1
-		}
-	}
-	return 0
 }
 
-
-func findRight(str string, current int) int {
-	if current == len(str)-1 {
-		return current
-	}
-	for i := current; i < len(str)-1; i++ {
-		if str[i] == 13 {
-			return i+1
-		}
-	}
-	return len(str)-1
-}
 
 

@@ -38,9 +38,11 @@ func lsfExplorerClick(node *Node, x int, y int){
 	if node.obj.(*tListFileBox).list[node.obj.(*tListFileBox).selected].typ == "F" {
 		execProcess(1)  // Run Notepad
 		result := ReadFile(edtExplorerPath.obj.(*tEdit).text + node.obj.(*tListFileBox).list[node.obj.(*tListFileBox).selected].name)
-		result = strings.Replace(result, "\r\n", string(13), -1)
-		result = strings.Replace(result, "\t", string(0x20) + string(0x20) + string(0x20) + string(0x20), -1)
-		memNotepad.obj.(*tMemo).text = result
+		memNotepad.obj.(*tMemo).list = strings.Split(result, string(10))
+		memNotepad.obj.(*tMemo).curX = 0
+		memNotepad.obj.(*tMemo).curY = 0
+		memNotepad.obj.(*tMemo).curXR = 0
+		memNotepad.obj.(*tMemo).curYR = 0
 	} else if node.obj.(*tListFileBox).list[node.obj.(*tListFileBox).selected].typ == "D" {
 		edtExplorerPath.obj.(*tEdit).text += node.obj.(*tListFileBox).list[node.obj.(*tListFileBox).selected].name + "/"
 		lsfExplorer.obj.(*tListFileBox).list = GetCatalogList(edtExplorerPath.obj.(*tEdit).text)

@@ -43,7 +43,7 @@ func startSNMP(frmMain *Node){
 	frmMain.obj.(*tForm).x = 190
 	frmMain.obj.(*tForm).y = 70
 	frmMain.obj.(*tForm).sizeX = 568
-	frmMain.obj.(*tForm).sizeY = 434
+	frmMain.obj.(*tForm).sizeY = 440
 	frmMain.children[0].obj.(*tBitBtn).x = frmMain.obj.(*tForm).sizeX - 17
 	
 	lblIPaddr = CreateLabel(frmMain, "lblIPaddr", 12, 32, 120, 20, 0xD8DCC0, 0x000000, "IP address", nil)
@@ -76,7 +76,8 @@ func startSNMP(frmMain *Node){
 	cbxVersion2 = CreateCheckBox(frmMain, "cbxVersion2", 430, 60, 140, 16, 0xD8DCC0, 0x000000, "Version 2", true, cbxVersion2Click)
 	cbxVersion3 = CreateCheckBox(frmMain, "cbxVersion3", 430, 90, 140, 16, 0xD8DCC0, 0x000000, "Version 3", false, cbxVersion3Click)
 	
-	memSNMPTerminal = CreateMemo(frmMain, "memSNMPTerminal", 2, 230, 564, 202, 0xD8DCC0, 0x000000, "", nil)
+	memSNMPTerminal = CreateMemo(frmMain, "memSNMPTerminal", 2, 230, 564, 208, 0xD8DCC0, 0x000000, nil)
+	memSNMPTerminal.obj.(*tMemo).list = []string{"Terminal SNMP"}
 
 	//lblFontTest = CreateLabel(frmMain, "lblFontTest", 12, 200, 500, 20, 0xD8DCC0, 0x000000, "abcdefghijklmnopqrstuvwxyz !\"#$%&'()*+,-./ :;<=>?@ [\\]^_`  {|}~", nil)
 	//lblFontTest2 = CreateLabel(frmMain, "lblFontTest2", 12, 230, 500, 20, 0xD8DCC0, 0x000000, "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890", nil)
@@ -84,7 +85,23 @@ func startSNMP(frmMain *Node){
 
 
 func printSNMPTerminal(str string) {
-	memSNMPTerminal.obj.(*tMemo).text = str
+	arr := strings.Split(str, string(10))
+	
+	memSNMPTerminal.obj.(*tMemo).list[memSNMPTerminal.obj.(*tMemo).curYR + memSNMPTerminal.obj.(*tMemo).curY] += arr[0]
+	if len(arr) > 0 {
+		var i int 
+		for i = 0; i < len(arr)-1; i++ {
+			memSNMPTerminal.obj.(*tMemo).list = append(memSNMPTerminal.obj.(*tMemo).list, "")
+		}
+		copy(memSNMPTerminal.obj.(*tMemo).list[memSNMPTerminal.obj.(*tMemo).curYR + memSNMPTerminal.obj.(*tMemo).curY+1:], arr[1:])
+		memSNMPTerminal.obj.(*tMemo).curY += i
+	}
+	
+	if memSNMPTerminal.obj.(*tMemo).curY > memSNMPTerminal.obj.(*tMemo).sizeY/14-1 {
+		memSNMPTerminal.obj.(*tMemo).curYR += memSNMPTerminal.obj.(*tMemo).curY - memSNMPTerminal.obj.(*tMemo).sizeY/14
+		memSNMPTerminal.obj.(*tMemo).curY -= memSNMPTerminal.obj.(*tMemo).curY - memSNMPTerminal.obj.(*tMemo).sizeY/14
+	}
+	//memSNMPTerminal.obj.(*tMemo).curX = len(memSNMPTerminal.obj.(*tMemo).list[memSNMPTerminal.obj.(*tMemo).curYR + memSNMPTerminal.obj.(*tMemo).curY])-1
 }
 
 
@@ -121,21 +138,18 @@ func btnTrapServerClick(node *Node){
 
 func btnSendHelpClick(node *Node){
 	result := Get("http://"+editIPaddr.obj.(*tEdit).text+":8087/api", "cmd=.help", "")
-	result = strings.Replace(result, "\n", string(13), -1)
 	printSNMPTerminal(result)
 }
 
 
 func btnSendGetClick(node *Node){
 	result := Get("http://"+editIPaddr.obj.(*tEdit).text+":8087/api", "cmd=get_param " + editIPaddr.obj.(*tEdit).text + " " + editPortGet.obj.(*tEdit).text + " " + editOID.obj.(*tEdit).text, "")	
-	result = strings.Replace(result, "\n", string(13), -1)
 	printSNMPTerminal(result)
 }
 
 
 func btnSetClick(node *Node){
 	result := Get("http://"+editIPaddr.obj.(*tEdit).text+":8087/api", "cmd=set " + editIPaddr.obj.(*tEdit).text + " " + editPortGet.obj.(*tEdit).text + " " + editOID.obj.(*tEdit).text + " " + editValue.obj.(*tEdit).text, "")	
-	result = strings.Replace(result, "\n", string(13), -1)
 	printSNMPTerminal(result)
 }
 

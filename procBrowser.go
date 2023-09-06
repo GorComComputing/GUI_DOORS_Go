@@ -33,13 +33,13 @@ func startBrowser(frmMain *Node){
 
     btnGo = CreateBtn(pnlBrowser1, "btnGo", 2, 2, 40, 24, 0xd8dcc0, 0x0, "GO", btnGoClick)
     edtUrl = CreateEdit(pnlBrowser1, "edtUrl", 43, 2, 522, 24, 0xf8fcf8, 0x0, "http://google.com", nil, nil)
-    memWebPage = CreateMemo(pnlBrowser1, "memWebPage", 2, 27, 563, 480, 0xf8fcf8, 0x0, "", nil)
+    memWebPage = CreateMemo(pnlBrowser1, "memWebPage", 2, 27, 563, 480, 0xf8fcf8, 0x0, nil)
     
     btnGoClick(btnGo)
     
     btnGo2 = CreateBtn(pnlBrowser2, "btnGo2", 2, 2, 40, 24, 0xd8dcc0, 0x0, "GO", btnGoClick)
     edtUrl2 = CreateEdit(pnlBrowser2, "edtUrl2", 43, 2, 522, 24, 0xf8fcf8, 0x0, "http://info.cern.ch/hypertext/WWW/TheProject.html", nil, nil)
-    memWebPage2 = CreateMemo(pnlBrowser2, "memWebPage2", 2, 27, 563, 480, 0xf8fcf8, 0x0, "", nil)
+    memWebPage2 = CreateMemo(pnlBrowser2, "memWebPage2", 2, 27, 563, 480, 0xf8fcf8, 0x0, nil)
     
     //btnGo2Click(btnGo2)
 }
@@ -58,15 +58,15 @@ func tabBrowserClick(node *Node, x int, y int) {
 
 func btnGoClick(node *Node){
 	result := Get(edtUrl.obj.(*tEdit).text, "", "")	
-	result = strings.Replace(result, "\n", string(13), -1)
-	memWebPage.obj.(*tMemo).text = result
+	result = strings.Replace(result, "\n", string(10), -1)
+	memWebPage.obj.(*tMemo).list = strings.Split(result, string(10))
 }
 
 
 func btnGo2Click(node *Node){
 	result := Get(edtUrl2.obj.(*tEdit).text, "", "")	
-	result = strings.Replace(result, "\n", string(13), -1)
-	memWebPage2.obj.(*tMemo).text = result
+	result = strings.Replace(result, "\n", string(10), -1)
+	memWebPage2.obj.(*tMemo).list = strings.Split(result, string(10))
 }
 
 
@@ -76,6 +76,6 @@ func newPageBrowser(name string, url string){
 	edtUrl.obj.(*tEdit).text = url
 	tabBrowser.obj.(*tTab).list[0] = name
 	result := Get(edtUrl.obj.(*tEdit).text, "", "")	
-	result = strings.Replace(result, "\n", string(13), -1)
-	memWebPage.obj.(*tMemo).text = result
+	result = strings.Replace(result, "\n", string(10), -1)
+	memWebPage.obj.(*tMemo).list = strings.Split(result, string(10))
 }
