@@ -54,7 +54,8 @@ func lsfOpenDialogClick(node *Node, x int, y int){
 
 func btnOpenDialogOpenClick(node *Node){
 	if edtOpenDialogFile.obj.(*tEdit).text != "" {
-		result := ReadFile(edtOpenDialogPath.obj.(*tEdit).text + edtOpenDialogFile.obj.(*tEdit).text)		
+		result := ReadFile(edtOpenDialogPath.obj.(*tEdit).text + edtOpenDialogFile.obj.(*tEdit).text)
+		result = strings.Replace(result, "\r\n", string(10), -1)
 		*TO = strings.Split(result, string(10))
 		
 		// Удаляет форму

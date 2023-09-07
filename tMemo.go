@@ -18,8 +18,8 @@ type tMemo struct{
     sizeY int
     BC int
     TC int
-    //text string
     list []string
+    color [][]int
     visible bool
     focused bool
     enabled bool
@@ -27,8 +27,6 @@ type tMemo struct{
     curY int
     curXR int
     curYR int
-    //pos int
-    //line_start int
     onClick func(*Node)
     onClickStr string
 }
@@ -74,10 +72,14 @@ func (obj *tMemo) Draw(parX int, parY int, parSizeX int, parSizeY int){
 		end_row = obj.sizeY/14-1
 	}
 
-    SetColor(obj.TC);
+	var offset_num int = len(strconv.Itoa(len(obj.list)))*8+5
+    //SetColor(obj.TC);
     SetBackColor(obj.BC);
     if obj.list != nil {
     	for i := 0; i <= end_row; i++ {
+    		SetColor(0xCDBAB5)
+    		TextOutgl(nil, strconv.Itoa(i + obj.curYR), parX+obj.x + 4 + offset_num - len(strconv.Itoa(i + obj.curYR))*8 - 5, parY+obj.y + 4 + 14*i, 1)
+    		
     		if (i + obj.curYR) < len(obj.list) && obj.curXR < len(obj.list[i+obj.curYR]) {
     			var end int
     			if len(obj.list[i+obj.curYR]) > obj.curXR + 80 {
@@ -85,7 +87,121 @@ func (obj *tMemo) Draw(parX int, parY int, parSizeX int, parSizeY int){
     			} else {
     				end = len(obj.list[i+obj.curYR])
     			}
-    			TextOutgl(nil, obj.list[i+obj.curYR][obj.curXR:end], parX+obj.x + 4, parY+obj.y + 4 + 14*i, 1)
+    			
+    			var offset int = 0
+    			for c := obj.curXR; c < end; c++ {
+    				if obj.color != nil && len(obj.color) > (i+obj.curYR) && len(obj.color[i+obj.curYR]) > c {
+    					SetColor(obj.color[i+obj.curYR][c])
+    				} else {
+    					SetColor(obj.TC)
+    				}
+    				TextOutgl(nil, string(obj.list[i+obj.curYR][c]), parX+obj.x + 4 + offset + offset_num, parY+obj.y + 4 + 14*i, 1)
+    				
+    				switch obj.list[i+obj.curYR][c] { //obj.curYR + obj.curY    obj.curXR + i
+    				case 'A': offset += 8
+    				case 'B': offset += 8
+    				case 'C': offset += 8
+    				case 'D': offset += 8
+    				case 'E': offset += 8
+    				case 'F': offset += 8
+    				case 'G': offset += 8
+    				case 'H': offset += 8
+    				case 'I': offset += 8
+    				case 'J': offset += 8
+    				case 'K': offset += 8
+    				case 'L': offset += 8
+    				case 'M': offset += 9
+    				case 'N': offset += 8
+    				case 'O': offset += 8
+    				case 'P': offset += 8
+    				case 'Q': offset += 8
+    				case 'R': offset += 8
+    				case 'S': offset += 8
+    				case 'T': offset += 9
+    				case 'U': offset += 8
+    				case 'V': offset += 9
+    				case 'W': offset += 9
+    				case 'X': offset += 9
+    				case 'Y': offset += 9
+    				case 'Z': offset += 9
+    		
+    				case ' ': offset += 8
+    				case '-': offset += 7
+    				case '0': offset += 8
+    				case '1': offset += 8
+    				case '2': offset += 8
+    				case '3': offset += 8
+    				case '4': offset += 8
+    				case '5': offset += 8
+    				case '6': offset += 8
+    				case '7': offset += 8
+    				case '8': offset += 8
+    				case '9': offset += 8
+    				case '|': offset += 7
+    		
+    				case 'a': offset += 8
+    				case 'b': offset += 8
+    				case 'c': offset += 8
+    				case 'd': offset += 8
+    				case 'e': offset += 8
+    				case 'f': offset += 8
+    				case 'g': offset += 8
+    				case 'h': offset += 8
+    				case 'i': offset += 8
+    				case 'j': offset += 8
+    				case 'k': offset += 8
+    				case 'l': offset += 8
+    				case 'm': offset += 9
+    				case 'n': offset += 8
+    				case 'o': offset += 8
+    				case 'p': offset += 8
+    				case 'q': offset += 8
+    				case 'r': offset += 8
+    				case 's': offset += 8
+    				case 't': offset += 8
+    				case 'u': offset += 8
+    				case 'v': offset += 9
+    				case 'w': offset += 9
+    				case 'x': offset += 8
+    				case 'y': offset += 8
+    				case 'z': offset += 8
+    		
+    				case '{': offset += 8
+       				case '}': offset += 8
+       				case '~': offset += 8
+					case '!': offset += 5
+					case 0x22: offset += 8
+					case '#': offset += 8
+					case '$': offset += 8
+					case '%': offset += 8
+					case '&': offset += 8
+					case '\'': offset += 5
+					case '(': offset += 5
+					case ')': offset += 5
+					case '*': offset += 9
+					case '+': offset += 9
+					case ',': offset += 5
+        			case '.': offset += 5
+        			case '/': offset += 8
+        			case ':': offset += 5
+        			case ';': offset += 5
+        			case '<': offset += 8
+        			case '=': offset += 8
+        			case '>': offset += 8
+        			case '?': offset += 8
+        			case '@': offset += 8
+        			case '[': offset += 5
+					case '\\': offset += 8
+					case ']': offset += 5
+					case '^': offset += 8
+					case '_': offset += 8
+					case '`': offset += 5
+					case 0x09: offset += 32 // TAB
+
+					default: offset += 7
+					}
+    			}
+    			//TextOutgl(nil, obj.list[i+obj.curYR][obj.curXR:end], parX+obj.x + 4, parY+obj.y + 4 + 14*i, 1)	
     		}
     	}
     }
@@ -198,7 +314,7 @@ func (obj *tMemo) Draw(parX int, parY int, parSizeX int, parSizeY int){
 			}
 			}
     	} 
-    	TextOutgl(nil, "|", parX+obj.x + 4 + offset, parY+obj.y + 4 + 14*obj.curY, 1);
+    	TextOutgl(nil, "|", parX+obj.x + 4 + offset + offset_num, parY+obj.y + 4 + 14*obj.curY, 1);
     }
 
     SetColor(0x000000);
@@ -221,7 +337,6 @@ func (obj *tMemo) RAD(x int, y int){
     			enabled = "false"
     		}
     		
-			//frmProperties.obj.(*tForm).caption = "Properties: MEMO"
 			downX = x 
     		downY = y 
     		mouseIsDown = true
@@ -254,7 +369,7 @@ func (obj *tMemo) RAD(x int, y int){
 
 func (obj *tMemo) KeyDown(key int){
 	if obj.enabled {
-			if key == 8 {
+			if key == 8 {	// BACKSPACE
     			if len(obj.list[obj.curYR + obj.curY]) > 0 && (obj.curXR + obj.curX) > 0 {
     				obj.list[obj.curYR + obj.curY] = obj.list[obj.curYR + obj.curY][:obj.curXR + obj.curX-1] + obj.list[obj.curYR + obj.curY][obj.curXR + obj.curX:]
     				obj.curX--
@@ -266,7 +381,7 @@ func (obj *tMemo) KeyDown(key int){
     				obj.list = obj.list[:len(obj.list)-1]
     				obj.curY--
     			}
-    		} else if key == 13 {
+    		} else if key == 13 {	// ENTER
     			begin := obj.list[obj.curYR + obj.curY][:obj.curXR + obj.curX]
     			end := obj.list[obj.curYR + obj.curY][obj.curXR + obj.curX:]
     			
@@ -378,7 +493,7 @@ func (obj *tMemo) KeyDown(key int){
     				obj.list[len(obj.list)-1] = ""
     				obj.list = obj.list[:len(obj.list)-1]
     			}
-			} else {			
+			} else {	// OTHER
 				var end_col int = 0
 				if len(obj.list[obj.curYR + obj.curY])-1 < 80 {
 					end_col = len(obj.list[obj.curYR + obj.curY])
@@ -386,65 +501,93 @@ func (obj *tMemo) KeyDown(key int){
 					end_col = 80-1
 				}
 				
-				if key >= 0x20 && key <= 0x7E {
+				//if key >= 0x20 && key <= 0x7E {
+					
+					
+	
+				switch key {
+				case 0x20: key = ' '
+    			case 0x30: if isShiftKeyDown {key = ')'}
+    			case 0x31: if isShiftKeyDown {key = '!'}
+    			case 0x32: if isShiftKeyDown {key = '@'}
+    			case 0x33: if isShiftKeyDown {key = '#'}
+    			case 0x34: if isShiftKeyDown {key = '$'}
+    			case 0x35: if isShiftKeyDown {key = '%'}
+    			case 0x36: if isShiftKeyDown {key = '^'}
+    			case 0x37: if isShiftKeyDown {key = '&'}
+    			case 0x38: if isShiftKeyDown {key = '*'}
+    			case 0x39: if isShiftKeyDown {key = '('}
+    			case 220: if isShiftKeyDown {key = '|'} else {key = '\\'}
+    			case 219: if isShiftKeyDown {key = 0x7B} else {key = 0x5B}
+    			case 221: if isShiftKeyDown {key = 0x7D} else {key = 0x5D}
+    			case 192: if isShiftKeyDown {key = 0x7E} else {key = 0x60}
+    			case 222: if isShiftKeyDown {key = 0x22} else {key = 0x27}
+    			case 187: if isShiftKeyDown {key = '+'} else {key = '='}
+    			case 188: if isShiftKeyDown {key = '<'} else {key = ','}
+    			case 190: if isShiftKeyDown {key = '>'} else {key = '.'}
+    			case 191: if isShiftKeyDown {key = '?'} else {key = '/'}
+    			case 186: if isShiftKeyDown {key = 0x3A} else {key = 0x3B}
+    			case 189: if isShiftKeyDown {key = 0x5F} else {key = 0x2D}
+				case 0x09: key = '\t' 
+				case 96: key = '0'
+				case 97: key = '1'
+				case 98: key = '2'
+				case 99: key = '3'
+				case 100: key = '4'
+				case 101: key = '5'
+				case 102: key = '6'
+				case 103: key = '7'
+				case 104: key = '8'
+				case 105: key = '9'
+				case 106: key = '*'
+				case 107: key = '+'
+				case 109: key = 0x2D
+				case 110: key = ','
+				case 111: key = '/'
+				
+				default: 
 					if !(isShiftKeyDown) && key >= 0x41 && key <= 0x5A {
 						key += 0x20
-					} else if isShiftKeyDown && key >= 0x31 && key <= 0x39 {
-						key -= 0x10
-					}
-					
-					
-					
-/*					
-			//case ' ': 32
-    		case '-': 189
-    		case '0': 0x30
-    		case '1': 
-    		case '2': 
-    		case '3': 
-    		case '4': 
-    		case '5': 
-    		case '6': 
-    		case '7': 
-    		case '8': 
-    		case '9': 0x39
-    		case '|': 220 s
+					} else if !(key >= 0x41 && key <= 0x5A) {return}
+    			}
+    		
+    		//case '|': 220 s
     		
    
     		
-    		case '{': 219 s
-       		case '}': 221 s
-       		case '~': 192
-			case '!': 0x31 s
-			case 0x22: 222 s
-			case '#': 51 s
-			case '$': 52 s
-			case '%': 53 s
-			case '&': 55 s
-			case '\'': 222
-			case '(': 57 s
-			case ')': 48 s
-			case '*': 56 s
-			case '+': 187 s
-			case ',': 188
-        	case '.': 190
-        	case '/': 191
-        	case ':': 186 s
-        	case ';': 186
-        	case '<': 188 s
-        	case '=': 187
-        	case '>': 190 s
-        	case '?': 191 s
-        	case '@': 50 s
-        	case '[': 219
-			case '\\': 220
-			case ']': 221
-			case '^': 54 s
-			case '_': 189 s
-			case '`': 192
-			case 0x09: 0x9 // TAB
+    		//case '{': 219 s
+       		//case '}': 221 s
+       		//case '~': 192
+			//case '!': 0x31 s
+			//case 0x22: 222 s
+			//case '#': 51 s
+			//case '$': 52 s
+			//case '%': 53 s
+			//case '&': 55 s
+			//case '\'': 222
+			//case '(': 57 s
+			//case ')': 48 s
+			//case '*': 56 s
+			//case '+': 187 s
+			//case ',': 188
+        	//case '.': 190
+        	//case '/': 191
+        	//case ':': 186 s
+        	//case ';': 186
+        	//case '<': 188 s
+        	//case '=': 187
+        	//case '>': 190 s
+        	//case '?': 191 s
+        	//case '@': 50 s
+        	//case '[': 219
+			//case '\\': 220
+			//case ']': 221
+			//case '^': 54 s
+			//case '_': 189 s
+			//case '`': 192
+			//case 0x09: 0x9 // TAB
     		
-   */ 		
+		
 					
 				
 				
@@ -457,7 +600,7 @@ func (obj *tMemo) KeyDown(key int){
     						obj.curXR++
     					}
     				}
-    			}
+    			//}
 			}
 	}
 }
