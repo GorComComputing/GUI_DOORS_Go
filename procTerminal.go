@@ -31,7 +31,24 @@ func startTerminal(frmMain *Node){
 
 
 func printTerminal(str string) {
-	memTerminal.obj.(*tMemo).list = strings.Split(str, string(10))
+	arr := strings.Split(str, string(10))
+	
+	memTerminal.obj.(*tMemo).list[memTerminal.obj.(*tMemo).curYR + memTerminal.obj.(*tMemo).curY] += arr[0]
+	if len(arr) > 0 {
+		var i int 
+		for i = 0; i < len(arr)-1; i++ {
+			memTerminal.obj.(*tMemo).list = append(memTerminal.obj.(*tMemo).list, "")
+		}
+		copy(memTerminal.obj.(*tMemo).list[memTerminal.obj.(*tMemo).curYR + memTerminal.obj.(*tMemo).curY+1:], arr[1:])
+		memTerminal.obj.(*tMemo).curY += i
+	}
+	
+	if memTerminal.obj.(*tMemo).curY > memTerminal.obj.(*tMemo).sizeY/14-1 {
+		memTerminal.obj.(*tMemo).curYR += memTerminal.obj.(*tMemo).curY - memTerminal.obj.(*tMemo).sizeY/14
+		memTerminal.obj.(*tMemo).curY -= memTerminal.obj.(*tMemo).curY - memTerminal.obj.(*tMemo).sizeY/14
+	}
+	
+	//memTerminal.obj.(*tMemo).list = strings.Split(str, string(10))
 }
 
 

@@ -26,7 +26,7 @@ var programs = []*tProgram{
 	{"SNMP", startSNMP, &bmpProgram},
 	{"Dispatch", startDispatch, &bmpProgram},
 	{"Terminal", startTerminal, &bmpProgram},
-	{"Temp", startTMP, nil},
+	{"VM", startVM, &bmpProgram},
 	}
 	
 
