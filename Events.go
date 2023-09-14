@@ -58,7 +58,54 @@ type Node struct {
     children []*Node
     obj tWinComponents 
 }   
-         
+   
+
+//export eventResizeWindow
+func eventResizeWindow(width int, height int) {
+	fmt.Println("Width: "+strconv.Itoa(width))
+	fmt.Println("Height: "+strconv.Itoa(height))
+	
+	//SetBackColor(0xFFFF00)
+	//ClearDevice(nil)
+	
+	BITMAP_WIDTH = width   
+	BITMAP_HEIGHT = height
+	
+	
+	
+	SIZE = width*height 
+	GETMAX_X = width - 1 
+	GETMAX_Y = height - 1
+	BUFFER_SIZE = width*height * 4
+	
+	fmt.Println("BITMAP_WIDTH: "+strconv.Itoa(BITMAP_WIDTH))
+	fmt.Println("BITMAP_HEIGHT: "+strconv.Itoa(BITMAP_HEIGHT))
+	fmt.Println("SIZE: "+strconv.Itoa(SIZE))
+	
+	
+	
+	frmDesktop.obj.(*tForm).sizeY = BITMAP_HEIGHT-2
+	frmDesktop.obj.(*tForm).sizeX = BITMAP_WIDTH-1
+	pnlTask.obj.(*tPanel).y = frmDesktop.obj.(*tForm).sizeY - 28
+	pnlTask.obj.(*tPanel).sizeX = BITMAP_WIDTH - 1
+	lblTime.obj.(*tLabel).x = pnlTask.obj.(*tPanel).sizeX - 45
+	frmMenuStart.obj.(*tForm).y = BITMAP_HEIGHT-len(menuStart.obj.(*tMenu).list)*20-20-37-50+2
+	
+	//SetBackColor(0xFF0000)
+	//FillLB(nil, 0, SIZE, BC)
+	
+	//graphicsBuffer = make([]uint8, BUFFER_SIZE)
+	
+	//SetViewPort(0, 0, GETMAX_X, GETMAX_Y)
+	//SetLocalViewPort(0, 0, GETMAX_X, GETMAX_Y)
+	
+	eventDraw()
+	
+	
+	
+	//graphicsBuffer = make([]uint8, BUFFER_SIZE, BUFFER_SIZE)
+}
+      
 
 //export eventDraw
 func eventDraw() {	
@@ -69,8 +116,8 @@ func eventDraw() {
 	SetViewPort(0, 0, GETMAX_X, GETMAX_Y)
 	ClearDevice(nil)
 	DrawNode(&layout, 0, 0)
-	//FillCircle(nil, 0, 100, 30)
-	//Circle(nil, 0, 200, 30)
+		//FillCircle(nil, 0, 100, 30)
+		//Circle(nil, 0, 200, 30)
 	onTimer()
 	
 	t := time.Now()
@@ -252,6 +299,8 @@ func eventClick(x int, y int)  {
 			obj.Click(x-X, y-Y)
 		}
 	}
+	
+	eventDraw()
 }
 
 
@@ -650,6 +699,8 @@ func eventMouseDown(x int, y int) {
 	case *tImage:
 		obj.MouseDown(x, y)
 	}
+	
+	eventDraw()
 }
 
 
@@ -668,6 +719,8 @@ func eventMouseUp(x int, y int)  {
 		bitbtnPressed.pressed = false
 		bitbtnPressed = nil
 	}
+	
+	eventDraw()
 }
 
 
@@ -718,6 +771,8 @@ func eventMouseMove(x int, y int)  {
 	}
     downX = x 
     downY = y
+    
+    eventDraw()
 }
 
 
@@ -768,6 +823,8 @@ func eventKeyDown(key int){
 		fmt.Println(key)
 		fmt.Println(string(key))
 	}
+	
+	eventDraw()
 }
 
 
@@ -780,6 +837,8 @@ func eventKeyUp(key int){
 	} else if key == 18 {
 		isAltKeyDown = false
 	}
+	
+	eventDraw()
 }
 
 

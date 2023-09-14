@@ -28,21 +28,24 @@
   go.run(wasmModule.instance);
 
   // Get our exports object, with all of our exported Wasm Properties
-  const exports = wasmModule.instance.exports;
+  let exports = wasmModule.instance.exports;
 
   // Get our memory object from the exports
-  const memory = exports.memory;
+  let memory = exports.memory;
 
   // Create a Uint8Array to give us access to Wasm Memory
-  const wasmByteMemoryArray = new Uint8Array(memory.buffer);
+  let wasmByteMemoryArray = new Uint8Array(memory.buffer);
 
   // Get the pointer (index) to where our graphics buffer is located in wasm linear memory
-  const graphicsBufferPointer = exports.getGraphicsBufferPointer();
-  const graphicsBufferSize = exports.getGraphicsBufferSize();
+  let graphicsBufferPointer = exports.getGraphicsBufferPointer();
+  let graphicsBufferSize = exports.getGraphicsBufferSize();
+  
+  console.log(graphicsBufferPointer)
+  console.log(graphicsBufferSize)
 
-  const canvasElement = document.querySelector("canvas");
-  const canvasContext = canvasElement.getContext("2d");
-  const canvasImageData = canvasContext.createImageData(canvasElement.width, canvasElement.height);
+  let canvasElement = document.querySelector("canvas");
+  let canvasContext = canvasElement.getContext("2d");
+  //let canvasImageData = canvasContext.createImageData(canvasElement.width, canvasElement.height);
   
   canvasElement.onclick = function() {
   		exports.eventClick(event.offsetX, event.offsetY);
@@ -63,15 +66,13 @@
   // Clear the canvas
   canvasContext.clearRect(0, 0, canvasElement.width, canvasElement.height);
 
-  const drawCheckerBoard = () => {
-    //const checkerBoardSize = 20;
+  const draw = () => {
 
-    // Generate a new checkboard in wasm
-    exports.eventDraw();
+    //exports.eventDraw();
+    
+    let canvasImageData = canvasContext.createImageData(canvasElement.width, canvasElement.height);
 
-    // Pull out the RGBA values from Wasm memory, the we wrote to in wasm,
-    // starting at the checkerboard pointer (memory array index)
-    const imageDataArray = wasmByteMemoryArray.slice(graphicsBufferPointer, graphicsBufferPointer + graphicsBufferSize);
+    let imageDataArray = wasmByteMemoryArray.slice(graphicsBufferPointer, graphicsBufferPointer + graphicsBufferSize);
     canvasImageData.data.set(imageDataArray);
 
     canvasContext.clearRect(0, 0, canvasElement.width, canvasElement.height);
@@ -85,17 +86,44 @@
    
    const eventKeyUp = (e) => {
    	console.log(e.key);
-
    	exports.eventKeyUp(e.keyCode);
+   }
+   
+   const resizeWindow = (e) => {
+   	//console.log(e);
+   	
+   	
+  	
+  	exports.eventResizeWindow(window.innerWidth, window.innerHeight);
+  	
+  	graphicsBufferPointer = exports.getGraphicsBufferPointer();
+  	console.log(graphicsBufferPointer);
+  	graphicsBufferSize = exports.getGraphicsBufferSize();
+  	console.log(graphicsBufferSize);
+  	
+  	canvasElement.width = window.innerWidth;
+  	canvasElement.height = window.innerHeight;
+  	
+  	let canvasImageData = canvasContext.createImageData(canvasElement.width, canvasElement.height);
+  	
+  	
+  	let imageDataArray = wasmByteMemoryArray.slice(graphicsBufferPointer, graphicsBufferPointer + window.innerWidth*4*window.innerWidth ); //graphicsBufferSize
+    canvasImageData.data.set(imageDataArray);
+
+    canvasContext.clearRect(0, 0, canvasElement.width, canvasElement.height);
+    canvasContext.putImageData(canvasImageData, 0, 0);	
+  
+   	
    }
 
   //drawCheckerBoard();
   setInterval(() => {
-    drawCheckerBoard();
+    draw();
   }, 5); // 25
   
   addEventListener("keydown",  eventKeyDown);
   addEventListener("keyup",  eventKeyUp);
+  addEventListener("resize", resizeWindow);
 };
 runWasm();
 </script> 

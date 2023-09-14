@@ -31,7 +31,7 @@ func startDesktop(){
 	btnStart = CreateBtn(pnlTask, "btnStart", 2, 2, 70, 28 - 4, 0x50A0F8, 0xF8FCF8, "START", btnStartClick)
 
 	listFileDesktop := GetCatalogList(DesktopDir)
-    lsfDesktop = CreateListFileBox(frmDesktop, "lsfDesktop", 10, 30, 590, 800, 0x0080C0, 0xF8FCF8, listFileDesktop, BIGICON, lsfDesktopClick, nil)
+    lsfDesktop = CreateListFileBox(frmDesktop, "lsfDesktop", 10, 30, 590, 300, 0x0080C0, 0xF8FCF8, listFileDesktop, BIGICON, lsfDesktopClick, nil)
 	
 	lblFPS = CreateLabel(frmDesktop, "lblFPS", 10, 10, 200, 20, 0x0080C0, 0xF8FCF8, "", nil)
 	

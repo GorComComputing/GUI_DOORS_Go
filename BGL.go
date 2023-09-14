@@ -256,7 +256,8 @@ func FloodFillgl(buffer []uint8, x int, y int, bord int){
 }
 
 
-var YXbuf [GETMAX_Y]tXbuf
+//var YXbuf [GETMAX_Y]tXbuf
+var YXbuf []tXbuf = make([]tXbuf, GETMAX_Y)
 
 
 type tPoint struct{

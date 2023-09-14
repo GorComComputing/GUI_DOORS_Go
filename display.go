@@ -9,16 +9,16 @@ import (
 )
 
 
-const BITMAP_WIDTH int = 1920 //1600 //1024 //640   
-const BITMAP_HEIGHT int = 1080 //900 //768 //480
-const SIZE int = BITMAP_WIDTH*BITMAP_HEIGHT  
-const GETMAX_X int = BITMAP_WIDTH - 1 
-const GETMAX_Y int = BITMAP_HEIGHT - 1
+var BITMAP_WIDTH int = 1920 // 1920 //1600 //1024 //640   
+var BITMAP_HEIGHT int = 1080 // 1080 //900 //768 //480
+var SIZE int = BITMAP_WIDTH*BITMAP_HEIGHT  
+var GETMAX_X int = BITMAP_WIDTH - 1 
+var GETMAX_Y int = BITMAP_HEIGHT - 1
 
 
-const BUFFER_SIZE int = SIZE * 4;
-var graphicsBuffer [BUFFER_SIZE]uint8;
-//var graphicsBuffer []uint8 = make([]uint8, BUFFER_SIZE)
+var BUFFER_SIZE int = SIZE * 4
+//var graphicsBuffer [BUFFER_SIZE]uint8
+var graphicsBuffer []uint8 = make([]uint8, BUFFER_SIZE, BUFFER_SIZE)
 
 
 func FillLB(buffer []uint8, start int, count int, value int){
@@ -66,15 +66,16 @@ func GetPixelgl(buffer []uint8, x int, y int) int {
 
 // Function to return a pointer (Index) to our buffer in wasm memory
 //export getGraphicsBufferPointer
-func getGraphicsBufferPointer() *[BUFFER_SIZE]uint8 {
-  return &graphicsBuffer
+func getGraphicsBufferPointer() *uint8 {		//*[BUFFER_SIZE]uint8
+	return &graphicsBuffer[0]
 }
 
 
 // Function to return the size of our buffer in wasm memory
 //export getGraphicsBufferSize
 func getGraphicsBufferSize() int {
-  return BUFFER_SIZE;
+	return BUFFER_SIZE
 }
+
 
 
