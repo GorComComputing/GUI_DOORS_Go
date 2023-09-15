@@ -17,16 +17,12 @@ type tListBox struct{
     sizeY int
     BC int
     TC int
-    //text string
     visible bool
     focused bool
     enabled bool
-    //curX int
-    //curY int
     list []string
     selected int
-    //pos int
-    //line_start int
+    align tAlign
     onClick func(*Node, int, int)
     onClickStr string
     onEnter func(*Node)

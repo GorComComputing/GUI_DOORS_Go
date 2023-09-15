@@ -1066,6 +1066,15 @@ var charUndefined string =
     "p     p" +
     "ppppppp"
     ;//7x7
+var charMinimized string =
+    "       " +
+    "  ppppp" +
+    "  p   p" +
+    "ppppp p" +
+    "p   ppp" +
+    "p   p  " +
+    "ppppp  "
+    ;//7x7
 var char3A string =
     "    " +
     "    " +
@@ -1928,6 +1937,7 @@ var char60 string =
         } else if str[j] == 0x0A { x = x_start; y += 12 + interval; continue;
         //} else if str[j] == 0x0D { x = x_start; y += 12 + interval; continue;
         } else if str[j] == 0x09 { x += 32; continue;
+        } else if str[j] == 0x01 { DrawBitmapTransparent(buffer, charMinimized, x, y, 7, 7, scale); x += 7;
         } else { DrawBitmapTransparent(buffer, charUndefined, x, y, 7, 7, scale); x += 7;}
         // Перенос
         /*if x + 8 > xright_loc {

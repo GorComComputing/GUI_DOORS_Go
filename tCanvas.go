@@ -17,6 +17,7 @@ type tCanvas struct{
     sizeY int
     visible bool
     buffer []uint8
+    align tAlign
     onClick func(*Node)
     onClickStr string
 }

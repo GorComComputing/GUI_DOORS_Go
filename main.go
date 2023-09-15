@@ -1,7 +1,8 @@
 package main
 
 import (
-	//"syscall/js"
+	//"fmt"
+	"syscall/js"
 )
 
 // Work
@@ -26,35 +27,25 @@ var programs = []*tProgram{
 	{"Internet", startBrowser, &bmpBrowser},
 	{"Flag", startFlag, &bmpProgram}, 
 	{"SNMP", startSNMP, &bmpProgram},
-	{"Dispatch", startDispatch, &bmpProgram},
+	{"Dispatcher", startDispatch, &bmpProgram},
 	{"Terminal", startTerminal, &bmpProgram},
-	{"VM", startVM, &bmpProgram},
+	{"Virtual Machine", startVM, &bmpProgram},
 	}
 	
 
 func main() {
-
-  	initDOORS(programs)
   	
-  	/*BITMAP_WIDTH := js.Global().Get("innerWidth").Float()
-    	BITMAP_HEIGHT := js.Global().Get("innerHeight").Float()
+  	BITMAP_WIDTH = js.Global().Get("innerWidth").Int()
+    	BITMAP_HEIGHT = js.Global().Get("innerHeight").Int()
     	
     	SIZE = BITMAP_WIDTH*BITMAP_HEIGHT 
 	GETMAX_X = BITMAP_WIDTH - 1 
 	GETMAX_Y = BITMAP_HEIGHT - 1
 	BUFFER_SIZE = BITMAP_WIDTH*BITMAP_HEIGHT * 4
 	
-
+	initDOORS(programs)
 	
-	
-	frmDesktop.obj.(*tForm).sizeY = BITMAP_HEIGHT-2
-	frmDesktop.obj.(*tForm).sizeX = BITMAP_WIDTH-1
-	pnlTask.obj.(*tPanel).y = frmDesktop.obj.(*tForm).sizeY - 28
-	pnlTask.obj.(*tPanel).sizeX = BITMAP_WIDTH - 1
-	lblTime.obj.(*tLabel).x = pnlTask.obj.(*tPanel).sizeX - 45
-	frmMenuStart.obj.(*tForm).y = BITMAP_HEIGHT-len(menuStart.obj.(*tMenu).list)*20-20-37-50+2
-	
-	eventDraw()*/
+	eventDraw()
   	
     <-make(chan bool)
 }

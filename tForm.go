@@ -22,17 +22,22 @@ type tForm struct{
     focused bool
     focus *Node
     isRAD bool
+    isMaximized bool
+    old_x int
+    old_y int
+    old_sizeX int
+    old_sizeY int
     picture []byte
     onClick func(*Node)
     onClickStr string
 }
 
 type tMode int
-
 const (
     NONE tMode = iota	//tForm, tPanel
     WIN			//tForm
     DIALOG		//tForm
+    FIXED		//tForm
     FLAT		//tBitBtn, tMenu, tForm, tPanel
     BORDER		//tBitBtn
     TASK		//tPanel
@@ -41,16 +46,74 @@ const (
     BIGICON		//tListFileBox
 )
 
+type tAlign int
+const (
+    CENTER tAlign = iota	
+    LEFT
+    RIGHT
+    TOP
+    BOTTOM
+    RIGHT_TOP
+    LEFT_TOP
+    RIGHT_BOTTOM
+    LEFT_BOTTOM
+    CLIENT
+)
+
 
 func CreateForm(parent *Node, name string, picture []byte, x int, y int, sizeX int, sizeY int, BC int, mode tMode, caption string, visible bool, onClick func(*Node)) *Node {
-	obj := tForm{name: name, picture: picture, x: x, y: y, sizeX: sizeX, sizeY: sizeY, BC: BC, mode: mode, caption: caption, visible: visible, focus: nil, isRAD: false, onClick: onClick}
+	obj := tForm{name: name, picture: picture, x: x, y: y, sizeX: sizeX, sizeY: sizeY, BC: BC, mode: mode, caption: caption, visible: visible, focus: nil, isRAD: false, isMaximized: false, onClick: onClick}
 	node := Node{typ: FORM, parent: parent, previous: nil, children: nil, obj: &obj}
 	parent.children = append(parent.children, &node)
 	
-	if obj.mode == WIN || obj.mode == DIALOG {
-		CreateBitBtn(&node, "bitbtnClose"+name, nil, obj.sizeX - 17, 2, 15, 15, 0xD8DCC0, 0x000000, "X", BORDER, formClose)
+	if obj.mode == WIN || obj.mode == DIALOG || obj.mode == FIXED {
+		bitbtn := CreateBitBtn(&node, "bitbtnClose"+name, nil, obj.sizeX - 17, 2, 15, 15, 0xD8DCC0, 0x000000, "X", BORDER, formClose)
+		bitbtn.obj.(*tBitBtn).align = RIGHT_TOP
+	}
+	if obj.mode == WIN {
+		bitbtn := CreateBitBtn(&node, "bitbtnMax"+name, nil, obj.sizeX - 17-15, 2, 15, 15, 0xD8DCC0, 0x000000, string(0), BORDER, formMax)
+		bitbtn.obj.(*tBitBtn).align = RIGHT_TOP
+	} else if obj.mode == FIXED {
+		bitbtn := CreateBitBtn(&node, "bitbtnMax"+name, nil, obj.sizeX - 17-15, 2, 15, 15, 0xD8DCC0, 0x000000, string(0), BORDER, formMax)
+		bitbtn.obj.(*tBitBtn).align = RIGHT_TOP
+		bitbtn.obj.(*tBitBtn).enabled = false
+	}
+	if obj.mode == WIN || obj.mode == FIXED {
+		bitbtn := CreateBitBtn(&node, "bitbtnLine"+name, nil, obj.sizeX - 17-15-15, 2, 15, 15, 0xD8DCC0, 0x000000, "_", BORDER, formLine)
+		bitbtn.obj.(*tBitBtn).align = RIGHT_TOP
 	}
 	return &node
+}
+
+
+
+func formLine(node *Node){
+	node.parent.obj.(*tForm).visible = false
+}
+
+
+func formMax(node *Node){
+	node.parent.obj.(*tForm).isMaximized = !(node.parent.obj.(*tForm).isMaximized)
+	if 	node.parent.obj.(*tForm).isMaximized {
+		node.obj.(*tBitBtn).caption = string(0x01)
+		node.parent.obj.(*tForm).old_x = node.parent.obj.(*tForm).x
+    	node.parent.obj.(*tForm).old_y = node.parent.obj.(*tForm).y
+    	node.parent.obj.(*tForm).old_sizeX = node.parent.obj.(*tForm).sizeX
+    	node.parent.obj.(*tForm).old_sizeY = node.parent.obj.(*tForm).sizeY
+    	
+    	node.parent.obj.(*tForm).x = 0
+    	node.parent.obj.(*tForm).y = 0
+    	setSize(node.parent, BITMAP_WIDTH-1, BITMAP_HEIGHT-2-28)
+    	//node.parent.obj.(*tForm).sizeX = BITMAP_WIDTH-1
+    	//node.parent.obj.(*tForm).sizeY = BITMAP_HEIGHT-2-28
+    } else {
+    	node.obj.(*tBitBtn).caption = string(0x00)
+    	node.parent.obj.(*tForm).x = node.parent.obj.(*tForm).old_x
+    	node.parent.obj.(*tForm).y = node.parent.obj.(*tForm).old_y
+    	setSize(node.parent, node.parent.obj.(*tForm).old_sizeX, node.parent.obj.(*tForm).old_sizeY)
+    	//node.parent.obj.(*tForm).sizeX = node.parent.obj.(*tForm).old_sizeX
+    	//node.parent.obj.(*tForm).sizeY = node.parent.obj.(*tForm).old_sizeY
+    }
 }
 
 
@@ -111,29 +174,35 @@ func formClose(node *Node){
 
 
 func (obj *tForm) Draw(parX int, parY int, parSizeX int, parSizeY int){
-	SetLocalViewPort(parX + obj.x+2, parY + obj.y+2, parX + obj.x + obj.sizeX-2, parY + obj.y + obj.sizeY-2)
-    SetColor(obj.BC);
+	SetColor(obj.BC);
     var p []tPoint
-
-    p1 := tPoint{x: parX + obj.x, y: parY + obj.y}
+    
+    var sizeY int = obj.sizeY
+    var sizeX int = obj.sizeX
+    var startY int = parY + obj.y
+    var startX int = parX + obj.x
+    
+    
+	SetLocalViewPort(startX+2, startY+2, startX + sizeX-2, startY + sizeY-2)
+    	
+    p1 := tPoint{x: startX, y: startY}
 	p = append(p, p1)
 	
-	p2 := tPoint{x: parX + obj.x + obj.sizeX, y: parY + obj.y}
+	p2 := tPoint{x: startX + sizeX, y: startY}
 	p = append(p, p2)
 	
-	p3 := tPoint{x: parX + obj.x + obj.sizeX, y: parY + obj.y + obj.sizeY}
+	p3 := tPoint{x: startX + sizeX, y: startY + sizeY}
 	p = append(p, p3)
 	
-	p4 := tPoint{x: parX + obj.x, y: parY + obj.y + obj.sizeY}
+	p4 := tPoint{x: startX, y: startY + sizeY}
 	p = append(p, p4)
-
     FillPoly(nil, 4, p);
     
     if obj.isRAD {
     	SetColor(0xFF0000)
-    	for i := 0; i < obj.sizeY; i += 10 {
-    		for j := 0; j < obj.sizeX; j += 10 {
-    			PutPixel(nil, parX + obj.x + j, parY + obj.y + i, 0x000000)
+    	for i := 0; i < sizeY; i += 10 {
+    		for j := 0; j < sizeX; j += 10 {
+    			PutPixel(nil, startX + j, startY + i, 0x000000)
     		}
     	}
     }
@@ -145,18 +214,19 @@ func (obj *tForm) Draw(parX int, parY int, parSizeX int, parSizeY int){
     		SetColor(0x80A8E8)
     	}
     	p = nil
-    	p1 = tPoint{x: parX + obj.x, y: parY + obj.y}
+
+    	p1 := tPoint{x: startX, y: startY}
 		p = append(p, p1)
 	
-		p2 = tPoint{x: parX + obj.x + obj.sizeX, y: parY + obj.y}
+		p2 := tPoint{x: startX + sizeX, y: startY}
 		p = append(p, p2)
 	
-		p3 = tPoint{x: parX + obj.x + obj.sizeX, y: parY + obj.y + 17}
+		p3 := tPoint{x: startX + sizeX, y: startY + 17}
 		p = append(p, p3)
 	
-		p4 = tPoint{x: parX + obj.x, y: parY + obj.y + 17}
+		p4 := tPoint{x: startX, y: startY + 17}
 		p = append(p, p4)
-	
+
 		FillPoly(nil, 4, p);
 		
 		if obj.focused {
@@ -166,27 +236,28 @@ func (obj *tForm) Draw(parX int, parY int, parSizeX int, parSizeY int){
     		SetColor(0x787C78)
     		SetBackColor(0x80A8E8);
     	}
+
     	if obj.picture != nil {
-    		showBMP(nil, obj.picture, parX + obj.x + 7, parY + obj.y + 2)
-    		TextOutgl(nil, obj.caption, parX + obj.x + 7 + 20, parY + obj.y + 6, 1);
+    		showBMP(nil, obj.picture, startX + 7, startY + 2)
+    		TextOutgl(nil, obj.caption, startX + 7 + 20, startY + 6, 1);
     	} else {
-    		TextOutgl(nil, obj.caption, parX + obj.x + 9, parY + obj.y + 6, 1);
+    		TextOutgl(nil, obj.caption, startX + 9, startY + 6, 1);
     	}
     }
 
 	if obj.mode != FLAT {
     	SetColor(0xF8FCF8);
-    	LinePP(nil, parX + obj.x, parY + obj.y, parX + obj.x + obj.sizeX, parY + obj.y);
-    	LinePP(nil, parX + obj.x, parY + obj.y, parX + obj.x, parY + obj.y + obj.sizeY);
+    	LinePP(nil, startX, startY, startX + sizeX, startY);
+    	LinePP(nil, startX, startY, startX, startY + sizeY);
     	SetColor(0xE0E0E0);
-    	LinePP(nil, parX + obj.x+1, parY + obj.y+1, parX + obj.x + obj.sizeX - 2, parY + obj.y+1);
-    	LinePP(nil, parX + obj.x+1, parY + obj.y+1, parX + obj.x+1, parY + obj.y + obj.sizeY - 1);
+    	LinePP(nil, startX+1, startY+1, startX + sizeX - 2, startY+1);
+    	LinePP(nil, startX+1, startY+1, startX+1, startY + sizeY - 1);
     	SetColor(0x787C78);
-    	LinePP(nil, parX + obj.x+2, parY + obj.y + obj.sizeY - 1, parX + obj.x + obj.sizeX - 1, parY + obj.y + obj.sizeY - 1);
-    	LinePP(nil, parX + obj.x + obj.sizeX - 1, parY + obj.y + 1, parX + obj.x + obj.sizeX - 1, parY + obj.y + obj.sizeY - 1);
+    	LinePP(nil, startX+2, startY + sizeY - 1, startX + sizeX - 1, startY + sizeY - 1);
+    	LinePP(nil, startX + sizeX - 1, startY + 1, startX + sizeX - 1, startY + sizeY - 1);
     	SetColor(0x000000);
-    	LinePP(nil, parX + obj.x, parY + obj.y + obj.sizeY, parX + obj.x + obj.sizeX, parY + obj.y + obj.sizeY);
-    	LinePP(nil, parX + obj.x + obj.sizeX, parY + obj.y, parX + obj.x + obj.sizeX, parY + obj.y + obj.sizeY);  
+    	LinePP(nil, startX, startY + sizeY, startX + sizeX, startY + sizeY);
+    	LinePP(nil, startX + sizeX, startY, startX + sizeX, startY + sizeY);  
     }  
 }
 
@@ -273,9 +344,6 @@ func (obj *tForm) MouseDown(x int, y int){
 		}
 }
 
-/*func (obj tForm) SetSize(width int, height int){
-	obj.sizeX = width
-	obj.sizeY = height
-	
-}*/
+
+
 

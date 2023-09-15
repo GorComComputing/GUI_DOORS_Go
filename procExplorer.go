@@ -10,16 +10,15 @@ var btnExplorerUp *Node
 var lsfExplorer *Node
 
 func startExplorer(frmMain *Node){ 
-    frmMain.obj.(*tForm).x = 200
-    frmMain.obj.(*tForm).y = 200
-    frmMain.obj.(*tForm).sizeX = 600
-    frmMain.obj.(*tForm).sizeY = 400
-    frmMain.children[0].obj.(*tBitBtn).x = frmMain.obj.(*tForm).sizeX - 17
+    setSize(frmMain, 600, 400)
+    frmMain.obj.(*tForm).x = BITMAP_WIDTH/2 - frmMain.obj.(*tForm).sizeX/2
+	frmMain.obj.(*tForm).y = BITMAP_HEIGHT/2 - frmMain.obj.(*tForm).sizeY/2
     
 	edtExplorerPath = CreateEdit(frmMain, "edtExplorerPath", 50, 22, 546, 20, 0xf8fcf8, 0x0, RootDir, nil, nil)
 	btnExplorerUp = CreateBitBtn(frmMain, "btnExplorerUp", bmpUp, 4, 20, 40, 24, 0xd8dcc0, 0x0, "", FLAT, btnExplorerUpClick)
     listExplorer := GetCatalogList(edtExplorerPath.obj.(*tEdit).text)
     lsfExplorer = CreateListFileBox(frmMain, "lsfExplorer", 4, 48, 592, 348, 0xF8FCF8, 0x0, listExplorer, BIGICON, lsfExplorerClick, nil)
+    lsfExplorer.obj.(*tListFileBox).align = CLIENT
 
 }
 

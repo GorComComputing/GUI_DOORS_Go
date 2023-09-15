@@ -18,6 +18,7 @@ type tPanel struct{
     BC int
     visible bool
     mode tMode
+    align tAlign
     onClick func(*Node)
     onClickStr string
 }

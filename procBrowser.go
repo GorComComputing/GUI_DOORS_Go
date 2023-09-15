@@ -18,28 +18,32 @@ var tabBrowser *Node
 
 
 func startBrowser(frmMain *Node){ 
-    frmMain.obj.(*tForm).x = 661
-    frmMain.obj.(*tForm).y = 218
-    frmMain.obj.(*tForm).sizeX = 572
-    frmMain.obj.(*tForm).sizeY = 552
-    frmMain.children[0].obj.(*tBitBtn).x = frmMain.obj.(*tForm).sizeX - 17
+    setSize(frmMain, 572, 552)
+    frmMain.obj.(*tForm).x = BITMAP_WIDTH/2 - frmMain.obj.(*tForm).sizeX/2
+	frmMain.obj.(*tForm).y = BITMAP_HEIGHT/2 - frmMain.obj.(*tForm).sizeY/2
     
     listTabBrowser := []string{"Google", "Web"} 
     pnlBrowser1 = CreatePanel(frmMain, "pnlBrowser1", 2, 41, 568, 509, 0xd8dcc0, NONE, nil)
+    pnlBrowser1.obj.(*tPanel).align = CLIENT
     pnlBrowser2 = CreatePanel(frmMain, "pnlBrowser2", 2, 41, 568, 509, 0xd8dcc0, NONE, nil)
+    pnlBrowser2.obj.(*tPanel).align = CLIENT
     pnlBrowser2.obj.(*tPanel).visible = false
 	tabBrowser = CreateTab(frmMain, "tabBrowser", 2, 20, 90, 20, 0xd8dcc0, 0x0, listTabBrowser, tabBrowserClick, nil)
 	
 
-    btnGo = CreateBtn(pnlBrowser1, "btnGo", 2, 2, 40, 24, 0xd8dcc0, 0x0, "GO", btnGoClick)
+    btnGo = CreateBitBtn(pnlBrowser1, "btnGo", bmpRefresh, 2, 2, 30, 30, 0xD8DCC0, 0x000000, "", FLAT, btnGoClick)
+    //btnRefreshDevices = CreateBitBtn(pnlDevicesDisp, "btnRefreshDevices", bmpRefresh, 60, 7, 30, 30, 0xD8DCC0, 0x000000, "", FLAT, btnRefreshDevicesClick)
     edtUrl = CreateEdit(pnlBrowser1, "edtUrl", 43, 2, 522, 24, 0xf8fcf8, 0x0, "http://google.com", nil, nil)
     memWebPage = CreateMemo(pnlBrowser1, "memWebPage", 2, 27, 563, 480, 0xf8fcf8, 0x0, nil)
+    memWebPage.obj.(*tMemo).align = CLIENT
     
     btnGoClick(btnGo)
     
-    btnGo2 = CreateBtn(pnlBrowser2, "btnGo2", 2, 2, 40, 24, 0xd8dcc0, 0x0, "GO", btnGoClick)
+    btnGo2 = CreateBitBtn(pnlBrowser2, "btnGo2", bmpRefresh, 2, 2, 30, 30, 0xD8DCC0, 0x000000, "", FLAT, btnGoClick)
+    //btnGo2 = CreateBtn(pnlBrowser2, "btnGo2", 2, 2, 40, 24, 0xd8dcc0, 0x0, "GO", btnGoClick)
     edtUrl2 = CreateEdit(pnlBrowser2, "edtUrl2", 43, 2, 522, 24, 0xf8fcf8, 0x0, "http://info.cern.ch/hypertext/WWW/TheProject.html", nil, nil)
     memWebPage2 = CreateMemo(pnlBrowser2, "memWebPage2", 2, 27, 563, 480, 0xf8fcf8, 0x0, nil)
+    memWebPage2.obj.(*tMemo).align = CLIENT
     
     //btnGo2Click(btnGo2)
 }

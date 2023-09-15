@@ -100,7 +100,7 @@ func btnTaskClick(node *Node){
 	var i int = 0
 	for ; i < len(process); i++ {
 		if node == process[i].btn {
-			process[i].form.obj.(*tForm).visible = !(process[i].form.obj.(*tForm).visible)
+			process[i].form.obj.(*tForm).visible = true //!(process[i].form.obj.(*tForm).visible)
 			i := findNode(process[i].form)
 			fmt.Println(i)
 			if i > 0 {
@@ -153,7 +153,8 @@ func execProcess(num int) {
 		process[num].form.obj.(*tForm).visible = true
 	
 		obj := tBitBtn{name: "btnTask"+process[num].name, x: xTask, y: 2, sizeX: 100, sizeY: 28 - 4, BC: 0xD8DCC0, TC: 0x000000, caption: process[num].name, visible: true, pressed: false, enabled: true, picture: process[num].picture, mode: BORDER, onClick: btnTaskClick}
-		node_new := Node{typ: BUTTON, parent: pnlTask, previous: nil, children: nil, obj: &obj}
+		obj.inalign = LEFT
+		node_new := Node{typ: BIT_BUTTON, parent: pnlTask, previous: nil, children: nil, obj: &obj}
 		pnlTask.children = append(pnlTask.children, &node_new)
 		//obj.pressed = true
 	

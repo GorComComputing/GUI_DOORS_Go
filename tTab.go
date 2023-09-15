@@ -22,6 +22,7 @@ type tTab struct{
     enabled bool
     list []string
     selected int
+    align tAlign
     onClick func(*Node, int, int)
     onClickStr string
     onEnter func(*Node)

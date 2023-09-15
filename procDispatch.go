@@ -94,12 +94,11 @@ var CurUsersPage = 1
 
 
 func startDispatch(frmMain *Node){
-	frmMain.obj.(*tForm).x = 100
-	frmMain.obj.(*tForm).y = 100
-	frmMain.obj.(*tForm).sizeX = 904
-	frmMain.obj.(*tForm).sizeY = 353
-	frmMain.children[0].obj.(*tBitBtn).x = frmMain.obj.(*tForm).sizeX - 17
-	frmMain.obj.(*tForm).visible = false
+	setSize(frmMain, 904, 353)
+	frmMain.obj.(*tForm).x = BITMAP_WIDTH/2 - frmMain.obj.(*tForm).sizeX/2
+	frmMain.obj.(*tForm).y = BITMAP_HEIGHT/2 - frmMain.obj.(*tForm).sizeY/2
+	
+	//frmMain.obj.(*tForm).visible = false
 	
 	
 	listTabDispath := []string{"Devices", "Events", "Users"} 

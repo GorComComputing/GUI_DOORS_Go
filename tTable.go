@@ -28,6 +28,7 @@ type tTable struct{
     selectedY int
     cellX int
     cellY int
+    align tAlign
     onClick func(*Node, int, int)
     onClickStr string
     onEnter func(*Node)

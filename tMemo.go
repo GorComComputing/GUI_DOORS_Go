@@ -27,6 +27,7 @@ type tMemo struct{
     curY int
     curXR int
     curYR int
+    align tAlign
     onClick func(*Node)
     onClickStr string
 }

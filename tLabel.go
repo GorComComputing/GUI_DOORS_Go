@@ -19,6 +19,7 @@ type tLabel struct{
     TC int
     caption string
     visible bool
+    align tAlign
     onClick func(*Node)
     onClickStr string
 }

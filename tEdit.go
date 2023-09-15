@@ -22,6 +22,7 @@ type tEdit struct{
     focused bool
     enabled bool
     curX int
+    align tAlign
     onClick func(*Node)
     onClickStr string
     onEnter func(*Node)

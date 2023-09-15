@@ -23,13 +23,19 @@ type tBitBtn struct{
     enabled bool
     picture []byte
     mode tMode
+    inalign tAlign
+    align tAlign
+    alTop bool
+    alBottom bool
+    alLeft bool
+    alRight bool
     onClick func(*Node)
     onClickStr string
 }
 
 
 func CreateBitBtn(parent *Node, name string, picture []byte, x int, y int, sizeX int, sizeY int, BC int, TC int, caption string, mode tMode, onClick func(*Node)) *Node {
-	obj := tBitBtn{name: name, x: x, y: y, sizeX: sizeX, sizeY: sizeY, BC: BC, TC: TC, caption: caption, visible: true, pressed: false, enabled: true, picture: picture, mode: mode, onClick: onClick}
+	obj := tBitBtn{name: name, x: x, y: y, sizeX: sizeX, sizeY: sizeY, BC: BC, TC: TC, caption: caption, visible: true, pressed: false, enabled: true, picture: picture, mode: mode, inalign: CENTER, alTop: true, alLeft: true, alBottom: false, alRight: false, onClick: onClick}
 	node := Node{typ: BIT_BUTTON, parent: parent, previous: nil, children: nil, obj: &obj}
 	parent.children = append(parent.children, &node)
 	return &node
@@ -87,24 +93,42 @@ func (obj *tBitBtn) Draw(parX int, parY int, parSizeX int, parSizeY int){
     	
 	}
 	
+	
+	var add int = 0
+    if obj.picture != nil {
+    	add = 20
+    }
+	
+	
+	var startYpic int = parY + obj.y + obj.sizeY/2-4
+    var startXpic int = parX + obj.x + 8
+    var startYtex int = parY + obj.y + obj.sizeY/2-4
+    var startXtex int = parX + obj.x + 8
+    switch obj.inalign {
+    case LEFT:
+    	startYpic = parY + obj.y + obj.sizeY/2-4
+    	startXpic = parX + obj.x + 8
+    	startYtex = parY + obj.y + obj.sizeY/2-4
+    	startXtex = parX + obj.x + 8
+    case CENTER:
+    	startYpic = parY + obj.y + obj.sizeY/2-4
+    	startXpic = parX + obj.x + obj.sizeX/2-((len(obj.caption)-1)*8+20)/2
+    	startYtex = parY + obj.y + obj.sizeY/2-4
+    	startXtex = parX+obj.x + obj.sizeX/2-((len(obj.caption)-1)*8 + add)/2
+    }
+	
+	if obj.picture != nil {
+    	showBMP(nil, obj.picture, startXpic - 3, startYpic-3)
+    }
+	
 	if obj.enabled {
     	SetColor(obj.TC);
     	SetBackColor(obj.BC);
-    	var add int = 0
-    	if obj.picture != nil {
-    		showBMP(nil, obj.picture, parX + obj.x + obj.sizeX/2-((len(obj.caption)-1)*8+20)/2 - 3, parY + obj.y + obj.sizeY/2-4-3)
-    		add = 20
-    	}
-    	TextOutgl(nil, obj.caption, parX+obj.x + obj.sizeX/2-((len(obj.caption)-1)*8 + add)/2 - 3 + add, parY+obj.y + obj.sizeY/2-4, 1)
+    	TextOutgl(nil, obj.caption, startXtex - 3 + add, startYtex, 1)
     } else {
     	SetColor(0x787C78);
     	SetBackColor(obj.BC);
-    	var add int = 0
-    	if obj.picture != nil {
-    		showBMP(nil, obj.picture, parX + obj.x + obj.sizeX/2-((len(obj.caption)-1)*8+20)/2 - 3, parY + obj.y + obj.sizeY/2-4-3)
-    		add = 20
-    	}
-    	TextOutgl(nil, obj.caption, parX+obj.x + obj.sizeX/2-((len(obj.caption)-1)*8 + add)/2 - 3 + add, parY+obj.y + obj.sizeY/2-4, 1)
+    	TextOutgl(nil, obj.caption, startXtex - 3 + add, startYtex, 1)
     }
 }
 

@@ -12,17 +12,14 @@ import (
 )
 
 
-//var frmFlag *Node
 var cnvFlag *Node
 
 
 func startFlag(frmMain *Node){
-	//frmFlag = CreateForm(&layout, 50, 50, 380, 340, 0x000000, WIN, "Flag", false, nil)
-	frmMain.obj.(*tForm).x = 50
-	frmMain.obj.(*tForm).y = 50
-	frmMain.obj.(*tForm).sizeX = 380
-	frmMain.obj.(*tForm).sizeY = 340
-	frmMain.children[0].obj.(*tBitBtn).x = frmMain.obj.(*tForm).sizeX - 17
+	setSize(frmMain, 380, 340)
+	frmMain.obj.(*tForm).x = BITMAP_WIDTH/2 - frmMain.obj.(*tForm).sizeX/2
+	frmMain.obj.(*tForm).y = BITMAP_HEIGHT/2 - frmMain.obj.(*tForm).sizeY/2
+	
 	frmMain.obj.(*tForm).visible = false
 	
 	cnvFlag = CreateCanvas(frmMain, "cnvFlag", 2, 17, 376, 321, nil)

@@ -16,9 +16,9 @@ var lblIsRun *Node
 func startVM(frmMain *Node){ 
     frmMain.obj.(*tForm).x = 290
     frmMain.obj.(*tForm).y = 240
-    frmMain.obj.(*tForm).sizeX = 300
-    frmMain.obj.(*tForm).sizeY = 170
-    frmMain.children[0].obj.(*tBitBtn).x = frmMain.obj.(*tForm).sizeX - 17
+    setSize(frmMain, 300, 170)
+    
+    frmMain.children[1].obj.(*tBitBtn).enabled = false
     
     frmMain.obj.(*tForm).BC = 0xd8dcff
 
@@ -28,7 +28,7 @@ func startVM(frmMain *Node){
     btnAsmVM = CreateBtn(frmMain, "btnAsmVM", 185, 33, 80, 24, 0xd8dcc0, 0x0, "Assembly", btnAsmVMClick)
     
     edtEnterVM = CreateEdit(frmMain, "edtEnterVM", 25, 75, 200, 20, 0xf8fcf8, 0x0, "", nil, nil)
-    lblIsRun = CreateLabel(frmMain, "lblIsRun", 25, 33, 70, 20, 0xd8dcff, 0x0, "STOP", nil)
+    lblIsRun = CreateLabel(frmMain, "lblIsRun", 25, 33, 40, 20, 0xd8dcff, 0x0, "STOP", nil)
    
     
   

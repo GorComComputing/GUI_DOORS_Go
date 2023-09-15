@@ -40,11 +40,9 @@ var memSNMPTerminal *Node
 
 
 func startSNMP(frmMain *Node){
-	frmMain.obj.(*tForm).x = 190
-	frmMain.obj.(*tForm).y = 70
-	frmMain.obj.(*tForm).sizeX = 568
-	frmMain.obj.(*tForm).sizeY = 440
-	frmMain.children[0].obj.(*tBitBtn).x = frmMain.obj.(*tForm).sizeX - 17
+	setSize(frmMain, 568, 440)
+	frmMain.obj.(*tForm).x = BITMAP_WIDTH/2 - frmMain.obj.(*tForm).sizeX/2
+	frmMain.obj.(*tForm).y = BITMAP_HEIGHT/2 - frmMain.obj.(*tForm).sizeY/2
 	
 	lblIPaddr = CreateLabel(frmMain, "lblIPaddr", 12, 32, 120, 20, 0xD8DCC0, 0x000000, "IP address", nil)
 	editIPaddr = CreateEdit(frmMain, "editIPaddr", 100, 30, 100, 20, 0xF8FCF8, 0x000000, "127.0.0.1", nil, nil)

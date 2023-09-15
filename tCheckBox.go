@@ -21,6 +21,7 @@ type tCheckBox struct{
     visible bool
     checked bool
     enabled bool
+    align tAlign
     onClick func(*Node)
     onClickStr string
 }

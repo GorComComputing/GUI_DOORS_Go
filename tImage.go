@@ -17,6 +17,7 @@ type tImage struct{
     sizeY int
     visible bool
     picture []byte
+    align tAlign
     onClick func(*Node)
     onClickStr string
 }

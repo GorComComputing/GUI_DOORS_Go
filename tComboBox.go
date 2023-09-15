@@ -24,6 +24,7 @@ type tComboBox struct{
     curX int
     list []string
     selected int
+    align tAlign
     onClick func(*Node)
     onClickStr string
     onEnter func(*Node)

@@ -93,7 +93,7 @@ func startRAD(){
 	
 	
 	
-	frmProperties = CreateForm(&layout, "frmProperties", nil, 0, 81, 185, 400, 0xD8DCC0, WIN, "Object Inspector", false, nil)
+	frmProperties = CreateForm(&layout, "frmProperties", nil, 0, 81, 185, 400, 0xD8DCC0, DIALOG, "Object Inspector", false, nil)
 	listTab := []string{"Properties", "Events"} 
     pnlProperties = CreatePanel(frmProperties, "pnlPropertis", 2, 41, 181, 357, 0xd8dcc0, NONE, nil)
     pnlEvents = CreatePanel(frmProperties, "pnlEvents", 2, 41, 181, 357, 0xd8dcc0, NONE, nil)

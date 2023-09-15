@@ -23,6 +23,7 @@ type tListFileBox struct{
     list []Catalog
     selected int
     mode tMode 
+    align tAlign
     onClick func(*Node, int, int)
     onClickStr string
     onEnter func(*Node)

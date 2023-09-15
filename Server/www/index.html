@@ -20,6 +20,9 @@
 
 <!-- My scripts --> 
 <script>
+  document.querySelector("canvas").width = window.innerWidth;
+  document.querySelector("canvas").height = window.innerHeight;
+  	
   const go = new Go();
 
   const runWasm = async () => {
@@ -66,10 +69,7 @@
   // Clear the canvas
   canvasContext.clearRect(0, 0, canvasElement.width, canvasElement.height);
 
-  const draw = () => {
-
-    //exports.eventDraw();
-    
+  const draw = () => {   
     let canvasImageData = canvasContext.createImageData(canvasElement.width, canvasElement.height);
 
     let imageDataArray = wasmByteMemoryArray.slice(graphicsBufferPointer, graphicsBufferPointer + graphicsBufferSize);
@@ -90,33 +90,23 @@
    }
    
    const resizeWindow = (e) => {
-   	//console.log(e);
-   	
-   	
-  	
   	exports.eventResizeWindow(window.innerWidth, window.innerHeight);
   	
   	graphicsBufferPointer = exports.getGraphicsBufferPointer();
-  	console.log(graphicsBufferPointer);
   	graphicsBufferSize = exports.getGraphicsBufferSize();
-  	console.log(graphicsBufferSize);
   	
   	canvasElement.width = window.innerWidth;
   	canvasElement.height = window.innerHeight;
   	
   	let canvasImageData = canvasContext.createImageData(canvasElement.width, canvasElement.height);
   	
-  	
   	let imageDataArray = wasmByteMemoryArray.slice(graphicsBufferPointer, graphicsBufferPointer + window.innerWidth*4*window.innerWidth ); //graphicsBufferSize
     canvasImageData.data.set(imageDataArray);
 
     canvasContext.clearRect(0, 0, canvasElement.width, canvasElement.height);
     canvasContext.putImageData(canvasImageData, 0, 0);	
-  
-   	
    }
 
-  //drawCheckerBoard();
   setInterval(() => {
     draw();
   }, 5); // 25

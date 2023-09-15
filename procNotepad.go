@@ -13,17 +13,16 @@ var menuEditNotepad *Node
 
 
 func startNotepad(frmMain *Node){ 
-    frmMain.obj.(*tForm).x = 300
-    frmMain.obj.(*tForm).y = 200
-    frmMain.obj.(*tForm).sizeX = 900
-    frmMain.obj.(*tForm).sizeY = 800
-    frmMain.children[0].obj.(*tBitBtn).x = frmMain.obj.(*tForm).sizeX - 17
+    setSize(frmMain, 400, 400)
+    frmMain.obj.(*tForm).x = BITMAP_WIDTH/2 - frmMain.obj.(*tForm).sizeX/2
+	frmMain.obj.(*tForm).y = BITMAP_HEIGHT/2 - frmMain.obj.(*tForm).sizeY/2
     
 	memNotepad = CreateMemo(frmMain, "memNotepad", 2, 18+21, 900-4, 800-17-4-21, 0xF8FCF8, 0x000000, nil)
 	memNotepad.obj.(*tMemo).list = []string{"#include <stdio.h>", "", "// Main function", "int main(){", "	printf(\"Hello %d\", 0x1A);", "", "	return 0;", "}"}
+	memNotepad.obj.(*tMemo).align = CLIENT
 	
 	listNotepad := []tMenuList{{"File", nil}, {"Syntax", nil}}
-	menuNotepad = CreateMenu(frmMain, "menuNotepad", 2, 18, 900-1-4, 20, 0xd8dcc0, 0x0, LINE, listNotepad, menuNotepadClick, nil)
+	menuNotepad = CreateMenu(frmMain, "menuNotepad", 2, 18, 200, 20, 0xd8dcc0, 0x0, LINE, listNotepad, menuNotepadClick, nil)
 	
 	listFileNotepad := []tMenuList{{"New", bmpNew_file}, {"Open", bmpOpen_file}, {"Save", bmpSave_file}}
 	menuFileNotepad = CreateMenu(frmMain, "menuFileNotepad", 2, 18+20, 100, len(listFileNotepad)*20, 0xd8dcc0, 0x0, NONE, listFileNotepad, menuFileNotepadClick, nil)

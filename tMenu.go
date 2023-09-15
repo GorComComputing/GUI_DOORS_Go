@@ -30,6 +30,7 @@ type tMenu struct{
     list []tMenuList
     selected int
     cellY int
+    align tAlign
     onClick func(*Node, int, int)
     onClickStr string
     onEnter func(*Node)

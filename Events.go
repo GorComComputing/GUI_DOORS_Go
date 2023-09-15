@@ -842,4 +842,139 @@ func eventKeyUp(key int){
 }
 
 
+func setSize(node *Node, sizeX int, sizeY int){
+	var sizeXpar int
+	var sizeYpar int
+	if node.obj != nil {
+		switch obj := node.obj.(type) {
+		case *tForm:
+			sizeXpar = obj.sizeX
+			sizeYpar = obj.sizeY
+			obj.sizeX = sizeX
+			obj.sizeY = sizeY
+		case *tPanel:
+			sizeXpar = obj.sizeX
+			sizeYpar = obj.sizeY
+			obj.sizeX = sizeX
+			obj.sizeY = sizeY
+		}
+	}
+	
+	
+	for i := 0; i < len(node.children); i++ {
+		if node.children[i].obj != nil {
+		switch obj := node.children[i].obj.(type) {
+		case *tBtn:
+			switch obj.align {
+			case RIGHT_TOP:
+				deltaX := sizeXpar - obj.x
+				obj.x = sizeX - deltaX 
+			case BOTTOM:
+				deltaY := sizeYpar - obj.y
+				obj.y = sizeY - deltaY
+			case CLIENT:
+				obj.sizeX = sizeX - obj.x - 2
+				obj.sizeY = sizeY - obj.y - 2
+			} 
+		case *tPanel:
+			switch obj.align {
+			case RIGHT_TOP:
+				deltaX := sizeXpar - obj.x
+				obj.x = sizeX - deltaX 
+			case CLIENT:
+				setSize(node.children[i], sizeX - obj.x - 2, sizeY - obj.y - 2)
+			} 
+		case *tEdit:
+			switch obj.align {
+			case RIGHT_TOP:
+				deltaX := sizeXpar - obj.x
+				obj.x = sizeX - deltaX 
+			} 
+		case *tLabel:
+			switch obj.align {
+			case RIGHT_TOP:
+				deltaX := sizeXpar - obj.x
+				obj.x = sizeX - deltaX 
+			} 
+		case *tCanvas:
+			switch obj.align {
+			case RIGHT_TOP:
+				deltaX := sizeXpar - obj.x
+				obj.x = sizeX - deltaX 
+			} 
+		case *tBitBtn:
+			/*if obj.alRight {
+				deltaX := sizeXpar - obj.x
+				obj.x = sizeX - deltaX
+			}*/
+			switch obj.align {
+			case RIGHT_TOP:
+				deltaX := sizeXpar - obj.x
+				obj.x = sizeX - deltaX 
+			} 
+		case *tMemo:
+			switch obj.align {
+			case RIGHT_TOP:
+				deltaX := sizeXpar - obj.x
+				obj.x = sizeX - deltaX 
+			case CLIENT:
+				obj.sizeX = sizeX - obj.x - 2
+				obj.sizeY = sizeY - obj.y - 2
+			} 
+		case *tCheckBox:
+			switch obj.align {
+			case RIGHT_TOP:
+				deltaX := sizeXpar - obj.x
+				obj.x = sizeX - deltaX 
+			} 
+		case *tComboBox:
+			switch obj.align {
+			case RIGHT_TOP:
+				deltaX := sizeXpar - obj.x
+				obj.x = sizeX - deltaX 
+			} 
+		case *tListBox:
+			switch obj.align {
+			case RIGHT_TOP:
+				deltaX := sizeXpar - obj.x
+				obj.x = sizeX - deltaX 
+			} 
+		case *tTab:
+			switch obj.align {
+			case RIGHT_TOP:
+				deltaX := sizeXpar - obj.x
+				obj.x = sizeX - deltaX 
+			} 
+		case *tMenu:
+			switch obj.align {
+			case RIGHT_TOP:
+				deltaX := sizeXpar - obj.x
+				obj.x = sizeX - deltaX 
+			} 
+		case *tListFileBox:
+			switch obj.align {
+			case RIGHT_TOP:
+				deltaX := sizeXpar - obj.x
+				obj.x = sizeX - deltaX 
+			case CLIENT:
+				obj.sizeX = sizeX - obj.x - 2
+				obj.sizeY = sizeY - obj.y - 2
+			} 
+		case *tTable:
+			switch obj.align {
+			case RIGHT_TOP:
+				deltaX := sizeXpar - obj.x
+				obj.x = sizeX - deltaX 
+			} 
+		case *tImage:
+			switch obj.align {
+			case RIGHT_TOP:
+				deltaX := sizeXpar - obj.x
+				obj.x = sizeX - deltaX 
+			} 
+		}
+	}
+	}	
+}
+
 

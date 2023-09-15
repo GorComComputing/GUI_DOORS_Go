@@ -21,6 +21,7 @@ type tBtn struct{
     visible bool
     pressed bool
     enabled bool
+    align tAlign
     onClick func(*Node)
     onClickStr string
 }
