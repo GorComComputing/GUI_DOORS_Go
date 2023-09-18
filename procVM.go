@@ -1,8 +1,9 @@
 package main
 
 import (
-	//"strings"
+	"strings"
 	"strconv"
+	"fmt"
 )
 
 var btnRunVM *Node
@@ -36,7 +37,32 @@ func startVM(frmMain *Node){
 
 
 func btnAsmVMClick(node *Node){
+	isRun = false
+	lblIsRun.obj.(*tLabel).caption = "STOP"
+	
+	RAM = make([]int, 0) 
+	
+	textAsm = ReadFile(RootDir + "asm.asm")
+	textAsm = strings.Replace(textAsm, "\r\n", string(10), -1)
+	InitNameTable()
 	Assemble()
+	
+	for i := 0; i < 4096; i++ {
+		RAM = append(RAM, 0)
+	}
+	
+	IP = 0
+	SP = len(RAM)
+	
+	fmt.Println(RAM)
+	
+	var tmp string = ""
+	for i := 0; i < PC; i++ {
+		tmp += string(RAM[i])
+	}
+	
+	WriteFile(RootDir + "asm.dor", tmp)
+	
 }
 
 
@@ -53,8 +79,8 @@ func btnResetVMClick(node *Node){
 	isRun = false
 	lblIsRun.obj.(*tLabel).caption = "STOP"
 	IP = 0
-	RAM = make([]int, 4096) 
-	copy(RAM, asmProgram1)
+	//RAM = make([]int, MemSize, MemSize) 
+	//copy(RAM, asmProgram1)
 	SP = len(RAM)
 }
 
@@ -65,7 +91,7 @@ func btnEnterVMClick(node *Node){
 	btnRunVMClick(btnRunVM)
 }
 
-
+/*
 var asmProgram1 = []int{
 	cmPUSH, 6,
 	cmSYSCALL, 0,
@@ -92,5 +118,5 @@ var asmProgram1 = []int{
 	
 	int('H'),int('E'),int('L'),int('O'), 0,
 }
-
+*/
 

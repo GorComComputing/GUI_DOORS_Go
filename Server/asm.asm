@@ -1,25 +1,31 @@
-;test
+; This is a test assembly program
+	
+		jmp Start
 
-      IN	; X		
-      IN	; X, Y
+Title:  "My First Assembly Program",0
 
-Loop: OVER	; X, Y, X
-      OVER	; X, Y, X, Y
-      Quit
-      IFEQ	; X, Y		На выход (Quit), если X=Y
-      OVER	; X, Y, X
-      OVER	; X, Y, X, Y
-      NoSwap
-      IFLT	; X, Y		В обход SWAP, если X>Y
-      SWAP	; Y, X		На вершине большее
-NoSwap:
-      OVER	; Min(X, Y), Max(X, Y), Min(X, Y)
-      SUB		; Новое X, Новое Y 
-      Loop
-      GOTO	; X, Y		На начало цикла
+Start:
+		;push 6
+		;syscall 0              ; Run Terminal
 
-Quit: DROP	; X			Одно значение было лишним
-      0		; X, 0
-      OUT
-      OUTLN
-      STOP
+		;out 2
+		;outln
+		;out 3
+
+		;in
+		;syscall 0              ; Run any program
+
+		push 0                  ; nil
+		push 1                  ; true
+		push Title              ; caption
+		push 1                  ; WIN
+		push 127           ; BC
+		push 127                ; sizeY
+		push 127                ; sizeX
+		push 127                ; y
+		push 127                ; x
+		syscall 1               ; Create window
+Exit:
+		hlt
+	
+Old:	72,101,112,111,0        ; "Hepo",0

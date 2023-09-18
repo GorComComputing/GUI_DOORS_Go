@@ -2,43 +2,44 @@ package main
 
 import (
 	"strconv"
+	"fmt"
 )
 
 const (
-   MemSize = 256; // 8*1024; 
+   MemSize = 4096 
 
-   cmStop   = -1;
+   cmStop   = 1
 
-   cmAdd    = -2;
-   cmSub    = -3;
-   cmMult   = -4;
-   cmDiv    = -5;
-   cmMod    = -6;
-   cmNeg    = -7;
+   cmAdd    = 2
+   cmSub    = 3
+   cmMult   = 4
+   cmDiv    = 5
+   cmMod    = 6
+   cmNeg    = 7
 
-   cmLoad   = -8;
-   cmSave  = -9;
+   cmLoad   = 8
+   cmSave  = 9
 
-   cmDup    = -10;
-   cmDrop   = -11;
-   cmSwap   = -12;
-   cmOver   = -13;
+   cmDup    = 10
+   cmDrop   = 11
+   cmSwap   = 12
+   cmOver   = 13
 
-   cmGOTO   = -14;
-   cmIfEQ   = -15;
-   cmIfNE   = -16;
-   cmIfLE   = -17;
-   cmIfLT   = -18;
-   cmIfGE   = -19;
-   cmIfGT   = -20;
+   cmGOTO   = 14
+   cmIfEQ   = 15
+   cmIfNE   = 16
+   cmIfLE   = 17
+   cmIfLT   = 18
+   cmIfGE   = 19
+   cmIfGT   = 20
 
-   cmIn     = -21;
-   cmOut    = -22;
-   cmOutLn  = -23;
+   cmIn     = 21
+   cmOut    = 22
+   cmOutLn  = 23
    
-   cmSYSCALL  = -24;
+   cmSYSCALL  = 24
    
-   cmPUSH = -25
+   cmPUSH = 25
    
 )
 
@@ -100,8 +101,7 @@ func StepOVM(){
     	SP--
     	RAM[SP] = RAM[SP+2];
     case cmGOTO:
-    	IP = RAM[SP];
-    	SP++
+    	IP = RAM[IP+1] - 1
     case cmIfEQ:
     	if RAM[SP+2] == RAM[SP+1] {
         	IP = RAM[SP];
@@ -160,7 +160,8 @@ func StepOVM(){
          	SP += 7
          }
     default: 
-         printTerminal("Error run time VM: Unrecognized command")
+         printTerminal("Error run time VM: Unrecognized command " + strconv.Itoa(RAM[IP]))
+         fmt.Println(RAM)
          RAM[IP+1] = cmStop;
     }
     IP++	

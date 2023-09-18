@@ -17,7 +17,7 @@ func startNotepad(frmMain *Node){
     frmMain.obj.(*tForm).x = BITMAP_WIDTH/2 - frmMain.obj.(*tForm).sizeX/2
 	frmMain.obj.(*tForm).y = BITMAP_HEIGHT/2 - frmMain.obj.(*tForm).sizeY/2
     
-	memNotepad = CreateMemo(frmMain, "memNotepad", 2, 18+21, 900-4, 800-17-4-21, 0xF8FCF8, 0x000000, nil)
+	memNotepad = CreateMemo(frmMain, "memNotepad", 2, 18+21, 400-4, 400-17-4-21, 0xF8FCF8, 0x000000, nil)
 	memNotepad.obj.(*tMemo).list = []string{"#include <stdio.h>", "", "// Main function", "int main(){", "	printf(\"Hello %d\", 0x1A);", "", "	return 0;", "}"}
 	memNotepad.obj.(*tMemo).align = CLIENT
 	
@@ -28,7 +28,7 @@ func startNotepad(frmMain *Node){
 	menuFileNotepad = CreateMenu(frmMain, "menuFileNotepad", 2, 18+20, 100, len(listFileNotepad)*20, 0xd8dcc0, 0x0, NONE, listFileNotepad, menuFileNotepadClick, nil)
 	menuFileNotepad.obj.(*tMenu).visible = false
 	
-	listEditNotepad := []tMenuList{{"C/C++", nil}, {"Go", nil}, {"HTML", nil}, {"CSS", nil}, {"SQL", nil}}
+	listEditNotepad := []tMenuList{{"C/C++", nil}, {"Go", nil}, {"Asm", nil}, {"HTML", nil}, {"CSS", nil}, {"SQL", nil}}
 	menuEditNotepad = CreateMenu(frmMain, "menuEditNotepad", 2+60, 18+20, 100, len(listEditNotepad)*20, 0xd8dcc0, 0x0, NONE, listEditNotepad, menuEditNotepadClick, nil)
 	menuEditNotepad.obj.(*tMenu).visible = false
 }
@@ -73,11 +73,27 @@ func menuEditNotepadClick(node *Node, x int, y int){
 	node.obj.(*tMenu).visible = false
 	switch node.obj.(*tMenu).selected {
 	case 0:
-		syntax(keyWordsC1, keyWordsC2)
+		syntax(keyWordsC1, keyWordsC2, langC)
+		memNotepad.obj.(*tMemo).BC = 0xF8FCF8
 	case 1:
-		syntax(keyWordsGo1, keyWordsGo2)
+		syntax(keyWordsGo1, keyWordsGo2, langGO)
+		memNotepad.obj.(*tMemo).BC = 0xF8FCF8
+	case 2:
+		syntax(keyWordsAsm1, keyWordsAsm2, langASM)
+		memNotepad.obj.(*tMemo).BC = 0x293134
 	}
 }
+
+
+type tLang int
+const (
+    langC tLang = iota	
+    langASM
+    langGO
+    langHTML	
+    langCSS
+    langSQL
+)
 
 
 type tLex int
@@ -96,8 +112,10 @@ var keyWordsC2 = []string{"double", "float", "int", "short", "unsigned", "long",
 var keyWordsGo1 = []string{"break", "case", "const", "continue", "default", "defer", "else", "fallthrough", "for", "func", "go", "goto", "if", "import", "interface", "package", "range", "return", "select", "struct", "switch", "type", "var"}
 var keyWordsGo2 = []string{"chan", "map", "bool", "string", "int", "int8", "int16", "int32", "int64", "uint", "uint8", "uint16", "uint32", "uint64", "uintptr", "byte", "rune", "float32", "float64", "complex64", "complex128"}
     
+var keyWordsAsm1 = []string{"hlt", "out", "outln",	"in", "add", "sub", "mul", "div", "mod", "neg", "dup", "pop",	"swap",	"over",	"load",	"save",	"jmp",	"je",	"jne",	"jle",	"jl",	"jge",	"jg",	"syscall", "push"}
+var keyWordsAsm2 = []string{""}
 
-func syntax(keyWords1 []string, keyWords2 []string) {
+func syntax(keyWords1 []string, keyWords2 []string, lang tLang) {
 	memNotepad.obj.(*tMemo).color = make([][]int, len(memNotepad.obj.(*tMemo).list))
 	for i := 0; i < len(memNotepad.obj.(*tMemo).list); i++ {
 		memNotepad.obj.(*tMemo).color[i] = make([]int, len(memNotepad.obj.(*tMemo).list[i]))
@@ -110,10 +128,10 @@ func syntax(keyWords1 []string, keyWords2 []string) {
 			if c == len(memNotepad.obj.(*tMemo).list[i]) {break}
 			fmt.Println("af sp " + strconv.Itoa(c))
 			begin := c
-			c, Lex := getLex(c, memNotepad.obj.(*tMemo).list[i], keyWords1, keyWords2)
+			c, Lex := getLex(c, memNotepad.obj.(*tMemo).list[i], keyWords1, keyWords2, lang)
 			fmt.Println("af lex " + strconv.Itoa(c))
 			fmt.Println("color " + strconv.Itoa(begin) + " " + strconv.Itoa(c) + " " + strconv.Itoa(i) + " " + strconv.Itoa(int(Lex)))
-			setColorLex(begin, c, i, Lex)
+			setColorLex(begin, c, i, Lex, lang)
 			if Lex == COMMENT {break}
 			r = c
 			r++
@@ -131,7 +149,7 @@ func skipSpace(c int, str string) int {
 }
 
 
-func getLex(c int, str string, keyWords1 []string, keyWords2 []string) (int, tLex) {
+func getLex(c int, str string, keyWords1 []string, keyWords2 []string, lang tLang) (int, tLex) {
 	if str[c] >= 0x30 && str[c] <= 0x39 {			// NUM
 		if c < len(str) - 1 {
 			c++
@@ -145,7 +163,9 @@ func getLex(c int, str string, keyWords1 []string, keyWords2 []string) (int, tLe
 			}	
 			return len(str)-1, NUM
 		} else {return c, NUM}
-	} else if str[c] == '/' && len(str)-1 > c && str[c+1] == '/' {	// COMMENT
+	} else if str[c] == '/' && len(str)-1 > c && str[c+1] == '/' && (lang == langC || lang == langGO) {	// COMMENT
+		return len(str) - 1, COMMENT
+	} else if str[c] == ';' && lang == langASM {	// COMMENT
 		return len(str) - 1, COMMENT
 	} else if str[c] == 0x22 {						// STR
 		if c < len(str) - 1 {
@@ -189,22 +209,41 @@ func getLex(c int, str string, keyWords1 []string, keyWords2 []string) (int, tLe
 }
 
 
-func setColorLex(begin int, c int, i int, lex tLex) {
+func setColorLex(begin int, c int, i int, lex tLex, lang tLang) {
 	var color int
-	switch lex {
-	case NORMAL:
-		color = 0x000000
-	case NUM:
-		color = 0x9E519D
-	case KEYWORD1:
-		color = 0x128421
-	case KEYWORD2:
-		color = 0x007EC3
-	case COMMENT:
-		color = 0xA95292	
-	case STR:
-		color = 0xF7B41A
+	switch lang {
+	case langC, langGO:
+		switch lex {
+		case NORMAL:
+			color = 0x000000
+		case NUM:
+			color = 0x9E519D
+		case KEYWORD1:
+			color = 0x128421
+		case KEYWORD2:
+			color = 0x007EC3
+		case COMMENT:
+			color = 0xA95292	
+		case STR:
+			color = 0xF7B41A
+		}
+	case langASM:
+		switch lex {
+		case NORMAL:
+			color = 0xE0E2E4
+		case NUM:
+			color = 0xFFCD22
+		case KEYWORD1:
+			color = 0x93C754
+		case KEYWORD2:
+			color = 0x007EC3
+		case COMMENT:
+			color = 0x66747B	
+		case STR:
+			color = 0x914925
+		}
 	}
+	
 	for ; begin <= c; begin++ {
 		memNotepad.obj.(*tMemo).color[i][begin] = color
 	}
