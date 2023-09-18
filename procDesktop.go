@@ -75,18 +75,34 @@ func startDesktop(){
 
 
 func lsfDesktopClick(node *Node, x int, y int){
-	if node.obj.(*tListFileBox).list[node.obj.(*tListFileBox).selected].typ == "F" {
+	switch node.obj.(*tListFileBox).list[node.obj.(*tListFileBox).selected].typ {
+	case "F":
 		execProcess(1)  // Run Notepad
 		result := ReadFile(DesktopDir + node.obj.(*tListFileBox).list[node.obj.(*tListFileBox).selected].name)
-		memNotepad.obj.(*tMemo).list = strings.Split(result, string(10))
+		memNotepad.obj.(*tMemo).list = strings.Split(result, string(0x0D)+string(0x0A))
+		curFileNameNotepad = DesktopDir + node.obj.(*tListFileBox).list[node.obj.(*tListFileBox).selected].name
 		memNotepad.obj.(*tMemo).curX = 0
 		memNotepad.obj.(*tMemo).curY = 0
 		memNotepad.obj.(*tMemo).curXR = 0
 		memNotepad.obj.(*tMemo).curYR = 0
-	} else if node.obj.(*tListFileBox).list[node.obj.(*tListFileBox).selected].typ == "D" {
+		if strings.HasSuffix(curFileNameNotepad, ".asm"){
+			syntax(langASM)
+		} else if strings.HasSuffix(curFileNameNotepad, ".c") || 
+				  strings.HasSuffix(curFileNameNotepad, ".cpp") {
+			syntax(langC)
+		} else if strings.HasSuffix(curFileNameNotepad, ".go") {
+			syntax(langGO)
+		} else {
+			memNotepad.obj.(*tMemo).color = nil
+		}
+	case "D":
 		execProcess(0)  // Run Explorer
 		edtExplorerPath.obj.(*tEdit).text = DesktopDir + node.obj.(*tListFileBox).list[node.obj.(*tListFileBox).selected].name + "/"
 		lsfExplorer.obj.(*tListFileBox).list = GetCatalogList(edtExplorerPath.obj.(*tEdit).text)
+	case "B":
+		result := ReadFile(edtExplorerPath.obj.(*tEdit).text + node.obj.(*tListFileBox).list[node.obj.(*tListFileBox).selected].name)
+		loadOVM(result)
+		runVM()
 	}
 }
 

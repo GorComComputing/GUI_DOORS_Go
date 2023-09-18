@@ -110,8 +110,8 @@ func startRAD(){
 	menuFileRAD = CreateMenu(frmRAD, "menuFileRAD", 2, 18+20, 100, len(listFileRAD)*20, 0xd8dcc0, 0x0, NONE, listFileRAD, menuFileRADClick, nil)
 	menuFileRAD.obj.(*tMenu).visible = false
 	
-	listBuildRAD := []tMenuList{{"Generate", nil}}
-	menuBuildRAD = CreateMenu(frmRAD, "menuBuildRAD", 2+60, 18+20, 100, len(listBuildRAD)*20, 0xd8dcc0, 0x0, NONE, listBuildRAD, menuBuildRADClick, nil)
+	listBuildRAD := []tMenuList{{"Generate Go", nil}, {"Generate Asm", nil}, {"Assemble", nil}}
+	menuBuildRAD = CreateMenu(frmRAD, "menuBuildRAD", 2+60, 18+20, 150, len(listBuildRAD)*20, 0xd8dcc0, 0x0, NONE, listBuildRAD, menuBuildRADClick, nil)
 	menuBuildRAD.obj.(*tMenu).visible = false
 }
 
@@ -144,7 +144,8 @@ func menuFileRADClick(node *Node, x int, y int){
 
 func menuBuildRADClick(node *Node, x int, y int){
 	node.obj.(*tMenu).visible = false
-	if node.obj.(*tMenu).selected == 0 {
+	switch node.obj.(*tMenu).selected {
+	case 0:
 		//memCode.obj.(*tMemo).text = ""	
 		//package main
 		//import ()
@@ -173,6 +174,23 @@ func menuBuildRADClick(node *Node, x int, y int){
 		//memCode.obj.(*tMemo).text += "}" + string(13) + string(13) + string(13)
 	
 		PrintFuncNode(RADFormElement)
+	case 1:
+	case 2:	
+		/*var fileNameAsm string = "asm.asm"
+		RAMasm = make([]int, 0) 
+	
+		textAsm = ReadFile(RootDir + fileNameAsm)
+		textAsm = strings.Replace(textAsm, "\r\n", string(10), -1)
+		InitNameTable()
+		Assemble()
+	
+		fmt.Println(RAMasm)
+	
+		var tmp string = ""
+		for i := 0; i < PC; i++ {
+			tmp += string(RAMasm[i])
+		}
+		WriteFile(RootDir + fileNameAsm[:len(fileNameAsm) - 4] + ".dor", tmp)*/
 	} 
 }
 

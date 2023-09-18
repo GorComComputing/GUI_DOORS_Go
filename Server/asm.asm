@@ -1,8 +1,8 @@
 ; This is a test assembly program
-	
+
 		jmp Start
 
-Title:  "My First Assembly Program",0
+Title:  db "The My Test",0
 
 Start:
 		;push 6
@@ -15,17 +15,20 @@ Start:
 		;in
 		;syscall 0              ; Run any program
 
+		out 120432
+		outln
 		push 0                  ; nil
 		push 1                  ; true
-		push Title              ; caption
-		push 1                  ; WIN
-		push 127           ; BC
-		push 127                ; sizeY
-		push 127                ; sizeX
-		push 127                ; y
-		push 127                ; x
+		pushd Title              ; caption
+		out 512
+		push 1                 ; WIN
+		pushd 11272427                ; BC
+		pushw 300                ; sizeY
+		pushw 400                ; sizeX
+		pushw 300                ; y
+		pushw 300                ; x
 		syscall 1               ; Create window
 Exit:
 		hlt
-	
-Old:	72,101,112,111,0        ; "Hepo",0
+
+Old:	dw 72,101,112,111,0        ; "Hepo",0

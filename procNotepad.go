@@ -1,7 +1,7 @@
 package main
 
 import (
-	//"strings"
+	"strings"
 	"fmt"
 	"strconv"
 )
@@ -10,6 +10,10 @@ var memNotepad *Node
 var menuNotepad *Node
 var menuFileNotepad *Node
 var menuEditNotepad *Node
+var menuRunNotepad *Node
+
+var curFileNameNotepad string = ""
+var syntaxLang tLang = langNONE
 
 
 func startNotepad(frmMain *Node){ 
@@ -20,8 +24,9 @@ func startNotepad(frmMain *Node){
 	memNotepad = CreateMemo(frmMain, "memNotepad", 2, 18+21, 400-4, 400-17-4-21, 0xF8FCF8, 0x000000, nil)
 	memNotepad.obj.(*tMemo).list = []string{"#include <stdio.h>", "", "// Main function", "int main(){", "	printf(\"Hello %d\", 0x1A);", "", "	return 0;", "}"}
 	memNotepad.obj.(*tMemo).align = CLIENT
+	memNotepad.obj.(*tMemo).onKeyDown = memNotepadKeyDown
 	
-	listNotepad := []tMenuList{{"File", nil}, {"Syntax", nil}}
+	listNotepad := []tMenuList{{"File", nil}, {"Syntax", nil}, {"Run", nil}}
 	menuNotepad = CreateMenu(frmMain, "menuNotepad", 2, 18, 200, 20, 0xd8dcc0, 0x0, LINE, listNotepad, menuNotepadClick, nil)
 	
 	listFileNotepad := []tMenuList{{"New", bmpNew_file}, {"Open", bmpOpen_file}, {"Save", bmpSave_file}}
@@ -31,6 +36,10 @@ func startNotepad(frmMain *Node){
 	listEditNotepad := []tMenuList{{"C/C++", nil}, {"Go", nil}, {"Asm", nil}, {"HTML", nil}, {"CSS", nil}, {"SQL", nil}}
 	menuEditNotepad = CreateMenu(frmMain, "menuEditNotepad", 2+60, 18+20, 100, len(listEditNotepad)*20, 0xd8dcc0, 0x0, NONE, listEditNotepad, menuEditNotepadClick, nil)
 	menuEditNotepad.obj.(*tMenu).visible = false
+	
+	listRunNotepad := []tMenuList{{"Assemble", nil}, {"Run", nil}}
+	menuRunNotepad = CreateMenu(frmMain, "menuRunNotepad", 2+60+60, 18+20, 120, len(listRunNotepad)*20, 0xd8dcc0, 0x0, NONE, listRunNotepad, menuRunNotepadClick, nil)
+	menuRunNotepad.obj.(*tMenu).visible = false
 }
 
 
@@ -38,12 +47,19 @@ func menuNotepadClick(node *Node, x int, y int){
 	if node.obj.(*tMenu).selected == 0 {
 		menuFileNotepad.obj.(*tMenu).visible = true
 		menuEditNotepad.obj.(*tMenu).visible = false
+		menuRunNotepad.obj.(*tMenu).visible = false
 	} else if node.obj.(*tMenu).selected == 1 {
 		menuFileNotepad.obj.(*tMenu).visible = false
 		menuEditNotepad.obj.(*tMenu).visible = true
+		menuRunNotepad.obj.(*tMenu).visible = false
+	} else if node.obj.(*tMenu).selected == 2 {
+		menuFileNotepad.obj.(*tMenu).visible = false
+		menuEditNotepad.obj.(*tMenu).visible = false
+		menuRunNotepad.obj.(*tMenu).visible = true
 	} else {
 		menuFileNotepad.obj.(*tMenu).visible = false
 		menuEditNotepad.obj.(*tMenu).visible = false
+		menuRunNotepad.obj.(*tMenu).visible = false
 	}
 }
 
@@ -64,7 +80,7 @@ func menuFileNotepadClick(node *Node, x int, y int){
 		memNotepad.obj.(*tMemo).curXR = 0
 		memNotepad.obj.(*tMemo).curYR = 0
 	case 2:
-		//SaveDialog(RootDir, &(memNotepad.obj.(*tMemo).text))
+		SaveDialog(RootDir, memNotepad.obj.(*tMemo).list)
 	}
 }
 
@@ -73,21 +89,69 @@ func menuEditNotepadClick(node *Node, x int, y int){
 	node.obj.(*tMenu).visible = false
 	switch node.obj.(*tMenu).selected {
 	case 0:
-		syntax(keyWordsC1, keyWordsC2, langC)
-		memNotepad.obj.(*tMemo).BC = 0xF8FCF8
+		syntax(langC)
 	case 1:
-		syntax(keyWordsGo1, keyWordsGo2, langGO)
-		memNotepad.obj.(*tMemo).BC = 0xF8FCF8
+		syntax(langGO)
 	case 2:
-		syntax(keyWordsAsm1, keyWordsAsm2, langASM)
-		memNotepad.obj.(*tMemo).BC = 0x293134
+		syntax(langASM)
+	}
+}
+
+
+func menuRunNotepadClick(node *Node, x int, y int){
+	node.obj.(*tMenu).visible = false
+	switch node.obj.(*tMenu).selected {
+	case 0:
+		var tmp string = memNotepad.obj.(*tMemo).list[0]
+		for i := 1; i < len(memNotepad.obj.(*tMemo).list); i++ {
+			tmp += string(0x0D)+string(0x0A) + memNotepad.obj.(*tMemo).list[i] 
+		}
+		WriteFile(curFileNameNotepad, tmp)
+		
+		RAMasm = make([]byte, 0) 
+		textAsm = ReadFile(curFileNameNotepad)
+		textAsm = strings.Replace(textAsm, string(0x0D)+string(0x0A), string(10), -1)
+		InitNameTable()
+		Assemble()
+	
+		fmt.Println(RAMasm)
+	
+		tmp = ""
+		for i := uint32(0); i < PC; i++ {
+			tmp += string(RAMasm[i])
+		}
+		WriteFile(curFileNameNotepad[:len(curFileNameNotepad) - 4] + ".dor", tmp)
+	case 1:
+		var tmp string = memNotepad.obj.(*tMemo).list[0]
+		for i := 1; i < len(memNotepad.obj.(*tMemo).list); i++ {
+			tmp += string(0x0D)+string(0x0A) + memNotepad.obj.(*tMemo).list[i] 
+		}
+		WriteFile(curFileNameNotepad, tmp)
+
+		RAMasm = make([]byte, 0) 
+		textAsm = strings.Replace(tmp, string(0x0D)+string(0x0A), string(10), -1)
+		InitNameTable()
+		Assemble()
+	
+		fmt.Println(RAMasm)
+	
+		tmp = ""
+		for i := uint32(0); i < PC; i++ {
+			tmp += string(RAMasm[i])
+		}
+		WriteFile(curFileNameNotepad[:len(curFileNameNotepad) - 4] + ".dor", tmp)
+		
+		loadOVM(tmp)
+		runVM()
+		fmt.Println("Run")
 	}
 }
 
 
 type tLang int
 const (
-    langC tLang = iota	
+	langNONE tLang = iota
+    langC 	
     langASM
     langGO
     langHTML	
@@ -112,31 +176,59 @@ var keyWordsC2 = []string{"double", "float", "int", "short", "unsigned", "long",
 var keyWordsGo1 = []string{"break", "case", "const", "continue", "default", "defer", "else", "fallthrough", "for", "func", "go", "goto", "if", "import", "interface", "package", "range", "return", "select", "struct", "switch", "type", "var"}
 var keyWordsGo2 = []string{"chan", "map", "bool", "string", "int", "int8", "int16", "int32", "int64", "uint", "uint8", "uint16", "uint32", "uint64", "uintptr", "byte", "rune", "float32", "float64", "complex64", "complex128"}
     
-var keyWordsAsm1 = []string{"hlt", "out", "outln",	"in", "add", "sub", "mul", "div", "mod", "neg", "dup", "pop",	"swap",	"over",	"load",	"save",	"jmp",	"je",	"jne",	"jle",	"jl",	"jge",	"jg",	"syscall", "push"}
-var keyWordsAsm2 = []string{""}
+var keyWordsAsm1 = []string{"hlt", "out", "outln",	"in", "add", "sub", "mul", "div", "mod", "neg", "dup", "pop",	"swap",	"over",	"load",	"save",	"jmp",	"je",	"jne",	"jle",	"jl",	"jge",	"jg",	"syscall", "push", "pushw", "pushd"}
+var keyWordsAsm2 = []string{"db", "dw", "dd", "dq"}
 
-func syntax(keyWords1 []string, keyWords2 []string, lang tLang) {
+
+func syntax(lang tLang) {
+	syntaxLang = lang
+	switch lang {
+	case langC, langGO:
+		memNotepad.obj.(*tMemo).BC = 0xF8FCF8
+	case langASM:
+		memNotepad.obj.(*tMemo).BC = 0x293134
+	}	
+	
 	memNotepad.obj.(*tMemo).color = make([][]int, len(memNotepad.obj.(*tMemo).list))
 	for i := 0; i < len(memNotepad.obj.(*tMemo).list); i++ {
-		memNotepad.obj.(*tMemo).color[i] = make([]int, len(memNotepad.obj.(*tMemo).list[i]))
+		syntaxString(memNotepad.obj.(*tMemo).list[i], i, lang)
+	}
+}
+
+
+func syntaxString(str string, i int, lang tLang) {
+	var keyWords1 []string
+	var keyWords2 []string
+	switch lang {
+	case langC:
+		keyWords1 = keyWordsC1
+		keyWords2 = keyWordsC2
+	case langGO:
+		keyWords1 = keyWordsGo1
+		keyWords2 = keyWordsGo2
+	case langASM:
+		keyWords1 = keyWordsAsm1
+		keyWords2 = keyWordsAsm2
+	}
 	
-		var c int = 0
-		var r int = 0
-		for ; c < len(memNotepad.obj.(*tMemo).list[i]); c++ {
+	memNotepad.obj.(*tMemo).color[i] = make([]int, len(memNotepad.obj.(*tMemo).list[i]))
+
+	var c int = 0
+	var r int = 0
+	for ; c < len(str); c++ {
 			fmt.Println("bef sp " + strconv.Itoa(r))
-			c = skipSpace(r, memNotepad.obj.(*tMemo).list[i])
-			if c == len(memNotepad.obj.(*tMemo).list[i]) {break}
+			c = skipSpace(r, str)
+			if c == len(str) {break}
 			fmt.Println("af sp " + strconv.Itoa(c))
 			begin := c
-			c, Lex := getLex(c, memNotepad.obj.(*tMemo).list[i], keyWords1, keyWords2, lang)
+			c, Lex := getLex(c, str, keyWords1, keyWords2, lang)
 			fmt.Println("af lex " + strconv.Itoa(c))
 			fmt.Println("color " + strconv.Itoa(begin) + " " + strconv.Itoa(c) + " " + strconv.Itoa(i) + " " + strconv.Itoa(int(Lex)))
 			setColorLex(begin, c, i, Lex, lang)
 			if Lex == COMMENT {break}
 			r = c
 			r++
-			if r >= len(memNotepad.obj.(*tMemo).list[i]) {break}
-		}
+			if r >= len(str) {break}
 	}
 }
 
@@ -246,6 +338,20 @@ func setColorLex(begin int, c int, i int, lex tLex, lang tLang) {
 	
 	for ; begin <= c; begin++ {
 		memNotepad.obj.(*tMemo).color[i][begin] = color
+	}
+}
+
+
+func memNotepadKeyDown(node *Node, key int) {
+	syntaxString(memNotepad.obj.(*tMemo).list[memNotepad.obj.(*tMemo).curYR + memNotepad.obj.(*tMemo).curY], memNotepad.obj.(*tMemo).curYR + memNotepad.obj.(*tMemo).curY, syntaxLang)
+	if key == 13 {
+		memNotepad.obj.(*tMemo).color = append(memNotepad.obj.(*tMemo).color, make([]int, 0))
+	}
+	switch key {
+	case 13, 46, 8:
+		for i := memNotepad.obj.(*tMemo).curYR + memNotepad.obj.(*tMemo).curY-1; i < len(memNotepad.obj.(*tMemo).list); i++ {
+			syntaxString(memNotepad.obj.(*tMemo).list[i], i, syntaxLang)
+		}	
 	}
 }
 

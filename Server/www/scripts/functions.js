@@ -3,9 +3,11 @@ function  HttpRequest(s, body) {
 	var response = "";
 	var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
-    	if (this.readyState == 4 && this.status == 200) {
-        	//console.log(xhttp.responseText);
+    	if (this.readyState == 4 && this.status == 200) {  
+        	console.log(xhttp.responseText);
             response = xhttp.responseText;
+        } else {
+        	response = "Response FAIL"
         }
       };
       //xhttp.withCredentials = true;

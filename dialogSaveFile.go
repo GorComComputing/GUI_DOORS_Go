@@ -13,9 +13,9 @@ var btnSaveDialogCancel *Node
 var btnSaveDialogUp *Node
 var lsfSaveDialog *Node
 
-var FROM *string
+var FROM []string
 
-func SaveDialog(path string, from *string){ 
+func SaveDialog(path string, from []string){ 
     frmSaveDialog := CreateForm(&layout, "frmSaveDialog", nil, BITMAP_WIDTH/2-465/2, BITMAP_HEIGHT/2-310/2, 465, 310, 0xD8DCC0, DIALOG, "Save File", true, nil)
     btnSaveDialogSave = CreateBtn(frmSaveDialog, "btnSaveDialogSave", 389, 251, 70, 24, 0xd8dcc0, 0x0, "Save", btnSaveDialogSaveClick)
     edtSaveDialogPath = CreateEdit(frmSaveDialog, "edtSaveDialogPath", 60, 22, 400, 20, 0xf8fcf8, 0x0, path, nil, nil)
@@ -52,8 +52,12 @@ func lsfSaveDialogClick(node *Node, x int, y int){
 
 func btnSaveDialogSaveClick(node *Node){
 	if edtSaveDialogFile.obj.(*tEdit).text != "" {
-		tmp := strings.Replace(*FROM, string(13), "\r\n", -1)
+		var tmp string = FROM[0]
+		for i := 1; i < len(FROM); i++ {
+			tmp += string(0x0D)+string(0x0A) + FROM[i] 
+		}
 		WriteFile(edtSaveDialogPath.obj.(*tEdit).text + edtSaveDialogFile.obj.(*tEdit).text, tmp)
+		curFileNameNotepad = edtSaveDialogPath.obj.(*tEdit).text + edtSaveDialogFile.obj.(*tEdit).text
 		
 		// Удаляет форму
 		for i := 0; i < len(layout.children); i++ {

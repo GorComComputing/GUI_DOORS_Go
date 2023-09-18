@@ -2,7 +2,7 @@ package main
 
 import (
 	"strings"
-	"fmt"
+	//"fmt"
 )
 
 
@@ -35,29 +35,33 @@ func btnExplorerUpClick(node *Node){
 
 
 func lsfExplorerClick(node *Node, x int, y int){
-	if node.obj.(*tListFileBox).list[node.obj.(*tListFileBox).selected].typ == "F" {
-		/*execProcess(1)  // Run Notepad
+	switch node.obj.(*tListFileBox).list[node.obj.(*tListFileBox).selected].typ {
+	case "F":
+		execProcess(1)  // Run Notepad
 		result := ReadFile(edtExplorerPath.obj.(*tEdit).text + node.obj.(*tListFileBox).list[node.obj.(*tListFileBox).selected].name)
-		memNotepad.obj.(*tMemo).list = strings.Split(result, string(10))
+		memNotepad.obj.(*tMemo).list = strings.Split(result, string(0x0D)+string(0x0A))
+		curFileNameNotepad = edtExplorerPath.obj.(*tEdit).text + node.obj.(*tListFileBox).list[node.obj.(*tListFileBox).selected].name
 		memNotepad.obj.(*tMemo).curX = 0
 		memNotepad.obj.(*tMemo).curY = 0
 		memNotepad.obj.(*tMemo).curXR = 0
-		memNotepad.obj.(*tMemo).curYR = 0*/
-		result := ReadFile(edtExplorerPath.obj.(*tEdit).text + node.obj.(*tListFileBox).list[node.obj.(*tListFileBox).selected].name)
-		RAM = make([]int, 0)
-		for i := 0; i < len(result); i++ {
-			RAM = append(RAM, int(result[i]))
+		memNotepad.obj.(*tMemo).curYR = 0
+		if strings.HasSuffix(curFileNameNotepad, ".asm"){
+			syntax(langASM)
+		} else if strings.HasSuffix(curFileNameNotepad, ".c") || 
+				  strings.HasSuffix(curFileNameNotepad, ".cpp") {
+			syntax(langC)
+		} else if strings.HasSuffix(curFileNameNotepad, ".go") {
+			syntax(langGO)
+		} else {
+			memNotepad.obj.(*tMemo).color = nil
 		}
-		for i := 0; i < 4096; i++ {
-			RAM = append(RAM, 0)
-		}
-		IP = 0
-		SP = len(RAM)
-		fmt.Println(RAM)
-		btnRunVMClick(btnRunVM)
-	} else if node.obj.(*tListFileBox).list[node.obj.(*tListFileBox).selected].typ == "D" {
+	case "D":
 		edtExplorerPath.obj.(*tEdit).text += node.obj.(*tListFileBox).list[node.obj.(*tListFileBox).selected].name + "/"
 		lsfExplorer.obj.(*tListFileBox).list = GetCatalogList(edtExplorerPath.obj.(*tEdit).text)
-	} 
+	case "B":
+		result := ReadFile(edtExplorerPath.obj.(*tEdit).text + node.obj.(*tListFileBox).list[node.obj.(*tListFileBox).selected].name)
+		loadOVM(result)
+		runVM()
+	}
 }
 

@@ -1,9 +1,9 @@
 package main
 
 import (
-	"strings"
+	//"strings"
 	"strconv"
-	"fmt"
+	//"fmt"
 )
 
 var btnRunVM *Node
@@ -37,7 +37,7 @@ func startVM(frmMain *Node){
 
 
 func btnAsmVMClick(node *Node){
-	isRun = false
+/*	isRun = false
 	lblIsRun.obj.(*tLabel).caption = "STOP"
 	
 	RAM = make([]int, 0) 
@@ -62,61 +62,35 @@ func btnAsmVMClick(node *Node){
 	}
 	
 	WriteFile(RootDir + "asm.dor", tmp)
-	
+	*/
 }
 
 
 func btnRunVMClick(node *Node){
-	isRun = true
+/*	isRun = true
 	lblIsRun.obj.(*tLabel).caption = "RUN"
 	for ; isRun; {
 		StepOVM()
-	}
+	}*/
 }
 
 
 func btnResetVMClick(node *Node){
-	isRun = false
+/*	isRun = false
 	lblIsRun.obj.(*tLabel).caption = "STOP"
 	IP = 0
 	//RAM = make([]int, MemSize, MemSize) 
 	//copy(RAM, asmProgram1)
-	SP = len(RAM)
+	SP = len(RAM)*/
 }
 
 
 func btnEnterVMClick(node *Node){
-	RAM[SP], _ = strconv.Atoi(edtEnterVM.obj.(*tEdit).text);
+	buf, _ := strconv.Atoi(edtEnterVM.obj.(*tEdit).text)
+	RAM[SP] = byte(buf)
 	printTerminal(edtEnterVM.obj.(*tEdit).text + "\n")
 	btnRunVMClick(btnRunVM)
 }
 
-/*
-var asmProgram1 = []int{
-	cmPUSH, 6,
-	cmSYSCALL, 0,
-	
-	cmOut, 2,
-	cmOutLn, 
-	cmOut, 3, 
-	
-	cmIn, 
-	cmSYSCALL, 0, 
-	 
-	cmPUSH, 0,	// nil
-	cmPUSH, 1,	// true
-	cmPUSH, 33,	// caption
-	cmPUSH, 1, 	// WIN
-	cmPUSH, 0xFFAA00, // BC
-	cmPUSH, 200,
-	cmPUSH, 200,
-	cmPUSH, 300,
-	cmPUSH, 600,
-	cmSYSCALL, 1,
-	   
-	cmStop,
-	
-	int('H'),int('E'),int('L'),int('O'), 0,
-}
-*/
+
 

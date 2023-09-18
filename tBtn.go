@@ -195,9 +195,9 @@ func (obj *tBtn) KeyDown(key int){
 
 func (obj *tBtn) Click(x int, y int){
 	fmt.Println("CLICKED: " + obj.caption)
-			if obj.onClick != nil && obj.enabled {
-				obj.onClick(list[len(list)-1])
-			}
+	if obj.onClick != nil && obj.enabled {
+		obj.onClick(list[len(list)-1])
+	}
 }
 
 

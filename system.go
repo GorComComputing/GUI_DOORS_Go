@@ -23,8 +23,8 @@ func ReadFile(name string) string {
 
 
 type Catalog struct {
-		name string 
-    	typ string
+	name string 
+    typ string
 }
 
 func GetCatalogList(name string) []Catalog {
@@ -38,11 +38,12 @@ func GetCatalogList(name string) []Catalog {
 
 	for i := 1; i < len(words)-1; i++ {
 		row := strings.Fields(words[i])
-
 		if row[0][0] == byte('d') {
 			typCat = "D"
 		} else if row[0][0] == byte('-') && row[0][9] == byte('x') {
 			typCat = "X"
+		} else if strings.HasSuffix(row[8], ".dor") && row[0][0] != byte('d') {
+			typCat = "B"
 		} else if row[0][0] == byte('-') && row[0][9] == byte('-') {
 			typCat = "F"
 		} 

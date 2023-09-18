@@ -55,8 +55,22 @@ func lsfOpenDialogClick(node *Node, x int, y int){
 func btnOpenDialogOpenClick(node *Node){
 	if edtOpenDialogFile.obj.(*tEdit).text != "" {
 		result := ReadFile(edtOpenDialogPath.obj.(*tEdit).text + edtOpenDialogFile.obj.(*tEdit).text)
-		result = strings.Replace(result, "\r\n", string(10), -1)
-		*TO = strings.Split(result, string(10))
+		//result = strings.Replace(result, "\r\n", string(10), -1)
+		//result = strings.Replace(result, string(0x0A)+string(0x0D), string(0x0D)+string(0x0A), -1)
+		//result = strings.Replace(result, string(0x0D)+string(0x0A), string(0x0D), -1)
+		*TO = strings.Split(result, string(0x0D)+string(0x0A))
+		curFileNameNotepad = edtOpenDialogPath.obj.(*tEdit).text + edtOpenDialogFile.obj.(*tEdit).text
+		
+		if strings.HasSuffix(curFileNameNotepad, ".asm"){
+			syntax(langASM)
+		} else if strings.HasSuffix(curFileNameNotepad, ".c") || 
+				  strings.HasSuffix(curFileNameNotepad, ".cpp") {
+			syntax(langC)
+		} else if strings.HasSuffix(curFileNameNotepad, ".go") {
+			syntax(langGO)
+		} else {
+			memNotepad.obj.(*tMemo).color = nil
+		}
 		
 		// Удаляет форму
 		for i := 0; i < len(layout.children); i++ {

@@ -25,15 +25,15 @@ const (
 	lexStr
 	lexEOL
 	lexEOT
+	lexDir
 )
 	
 var textAsm string
 
-var NameLen int = 31
-
 var Lex int
 var Num int
-var OpCode int
+var NumLen int
+var OpCode byte
 var Name string
 var Str string
 
@@ -42,68 +42,52 @@ var Line int
 var Pos int
 var ChCount int
 
-var PC int
+var PC uint32
 
 var LexPos int
 
 var Top *tObjRec
 
-var Code = [44]int{
-	cmStop,
-	cmOut,
-	cmOutLn,
-	cmIn,
-   	cmAdd,
-   	cmSub,
-   	cmMult,
-   	cmDiv,
-   	cmMod,
-   	cmNeg,
-   	cmDup,
-   	cmDrop,
-   	cmSwap,
-   	cmOver,
-   	cmLoad,
-  	cmSave,
-   	cmGOTO,
-   	cmIfEQ,
-   	cmIfNE,
-  	cmIfLE,
-   	cmIfLT,
-   	cmIfGE,
-   	cmIfGT,
-   	cmSYSCALL,
-   	cmPUSH,
-} 
-   
-var Mnemo = [44]string{
-	"HLT",
-	"OUT",
-	"OUTLN",
-	"IN",
-	"ADD",
-	"SUB",
-	"MUL",
-	"DIV",
-	"MOD",
-	"NEG",
-	"DUP",
-	"POP",
-	"SWAP",
-	"OVER",
-	"LOAD",
-	"SAVE",
-	"JMP",	// GOTO
-	"JE",   // IFEQ
-	"JNE", 	// IFNE
-	"JLE",	// IFLE
-	"JL",	// IFLT
-	"JGE",	// IFGE
-	"JG",	// IFGT
-	"SYSCALL",
-	"PUSH",
+var RAMasm []byte
+
+type tOpCode struct{
+    Code byte
+    Mnemo string
+    Len int
+}
+
+var Code = [44]tOpCode{
+	{cmStop, "HLT", 0},
+	{cmOut, "OUT", 4},
+	{cmOutLn, "OUTLN", 0},
+	{cmIn, "IN", 0},
+	{cmAdd, "ADD", 0},
+	{cmSub, "SUB", 0},
+	{cmMult, "MUL", 0},
+	{cmDiv, "DIV", 0},
+	{cmMod, "MOD", 0},
+	{cmNeg, "NEG", 0},
+	{cmDup, "DUP", 0},
+	{cmDrop, "POP", 0},
+	{cmSwap, "SWAP", 0},
+	{cmOver, "OVER", 0},
+	{cmLoad, "LOAD", 0},
+	{cmSave, "SAVE", 0},
+	{cmJMP, "JMP", 4},
+	{cmIfEQ, "JE", 4},
+	{cmIfNE, "JNE", 4},
+	{cmIfLE, "JLE", 4},
+	{cmIfLT, "JL", 4},
+	{cmIfGE, "JGE", 4},
+	{cmIfGT, "JG", 4},
+	{cmSYSCALL, "SYSCALL", 1},
+	{cmPUSH, "PUSH", 1},
+	{cmPUSHW, "PUSHW", 2},
+	{cmPUSHD, "PUSHD", 4},
+}
+
 	
-	"AND",
+	/*"AND",
 	"CALL",
 	"CMP",
 	"DEC",
@@ -115,7 +99,18 @@ var Mnemo = [44]string{
 	"ROR",
 	"SHL",
 	"SHR",
-	"XOR",
+	"XOR",*/
+	
+type tDir struct{
+    Name string
+    Len int
+}
+
+var Dir = [4]tDir{
+	{"DB", 1},
+	{"DW", 2},
+	{"DD", 4},
+	{"DQ", 8},
 }
 
 
@@ -126,7 +121,7 @@ func Assemble(){
 	Pass(LineSecond);
 
   	printTerminal("Assembled OK\n")
-  	printTerminal("PC: " + strconv.Itoa(PC) + "\n")
+  	printTerminal("PC: " + strconv.Itoa(int(PC)) + "\n")
 
   	btnResetVMClick(btnResetVM)
 }
@@ -179,7 +174,6 @@ func NextCh() {
       		}
       	}
    }
-  // ChCount++
   }
 }
 
@@ -212,12 +206,13 @@ func NextLex() {
 	
 	switch Lex {
 	case 0: fmt.Println("Lex: LAB " + Name)
-	case 1: fmt.Println("Lex: OP " + strconv.Itoa(OpCode))
+	case 1: fmt.Println("Lex: OP " + strconv.Itoa(int(OpCode)))
 	case 2: fmt.Println("Lex: NUM " + strconv.Itoa(Num))
 	case 3: fmt.Println("Lex: NAME "  + Name)
 	case 4:	fmt.Println("Lex: STR " + Str)
 	case 5: fmt.Println("Lex: EOL")
 	case 6: fmt.Println("Lex: EOT")
+	case 7: fmt.Println("Lex: DIR")
 	}
 }
 
@@ -229,16 +224,30 @@ func LineFirst(){
 		NextLex()
 	}
 	for ; Lex != lexEOL && Lex != lexEOT; {
-		if Lex == lexName || Lex == lexNum || Lex == lexOpCode {
+		if Lex == lexOpCode {
 			PC++
 			NextLex()
 		} else if Lex == lexStr {
-			PC += len(Str)
+			PC += uint32(len(Str))
+			NextLex()
+		} else if Lex == lexName {
+			PC += 4
+			NextLex()
+		} else if Lex == lexNum {
+			switch NumLen {
+			case 1:
+				PC++
+			case 2:
+				PC += 2
+			case 4:
+				PC += 4
+			}
+			NextLex()
+		} else if Lex == lexDir {
 			NextLex()
 		}
 	}
 }
-
 
 
 func LineSecond(){
@@ -249,18 +258,34 @@ func LineSecond(){
 		switch Lex {
 		case lexName:
 			Addr :=	FindName()
-			Gen(Addr)
+			Gen(byte(Addr))
+			Gen(byte(Addr/0xFF))
+			Gen(byte(Addr/0xFFFF))
+			Gen(byte(Addr/0xFFFFFF))
 			NextLex()
 		case lexNum:
-			Gen(Num)
+			switch NumLen {
+			case 1:
+				Gen(byte(Num))
+			case 2:
+				Gen(byte(Num))
+				Gen(byte(Num/0xFF))
+			case 4:
+				Gen(byte(Num))
+				Gen(byte(Num/0xFF))
+				Gen(byte(Num/0xFFFF))
+				Gen(byte(Num/0xFFFFFF))
+			}
 			NextLex()
 		case lexOpCode:
 			Gen(OpCode)
 			NextLex()
 		case lexStr:
 			for i := 0; i < len(Str); i++ {
-				Gen(int(Str[i]))
+				Gen(Str[i])
 			}
+			NextLex()
+		case lexDir:
 			NextLex()
 		}	
 	}
@@ -269,7 +294,7 @@ func LineSecond(){
 
 type tObjRec struct{
     Name string
-    Addr int
+    Addr uint32
     Prev *tObjRec
 }
 
@@ -279,7 +304,7 @@ func InitNameTable() {
 }
 
 
-func NewName(Addr int){
+func NewName(Addr uint32){
 	var Obj *tObjRec
 
 	Obj = Top
@@ -295,7 +320,7 @@ func NewName(Addr int){
 }
 
 
-func FindName() int {
+func FindName() uint32 {
 	var Obj *tObjRec
 
 	Obj = Top
@@ -304,7 +329,7 @@ func FindName() int {
 	}
 	if Obj == nil {
 		printTerminal("Error Name\n")
-		return -1
+		return 0xFFFFFFFF
 	} else {
 		Addr := Obj.Addr
 		return Addr
@@ -313,20 +338,12 @@ func FindName() int {
 
 
 func Ident() {
-	//var i int = 0
 	Name = ""
-	
-	//if i < NameLen {
-	//	i++
-		Name += string(Ch)
-	//}
+	Name += string(Ch)
 	NextCh()
 	
 	for ; (Ch >= 0x30 && Ch <= 0x39) || (Ch >= 0x41 && Ch <= 0x5A) || (Ch >= 0x61 && Ch <= 0x7A); {
-      	//if i < NameLen {
-		//	i++
-			Name += string(Ch)
-		//}
+		Name += string(Ch)
 		NextCh()
     }
 	
@@ -341,12 +358,17 @@ func Ident() {
 
 func TestOpCode(){
 	NameUpper := strings.ToUpper(Name)
-	for i := 0; i < len(Mnemo); i++ {
-		if NameUpper == Mnemo[i] {
+	for i := 0; i < len(Code); i++ {
+		if i < len(Code) && NameUpper == Code[i].Mnemo {
 			Lex = lexOpCode
-			OpCode = Code[i]
+			OpCode = Code[i].Code
+			NumLen = Code[i].Len
 			return
-		} 
+		} else if i < len(Dir) && NameUpper == Dir[i].Name {
+			Lex = lexDir
+			NumLen = Dir[i].Len
+			return
+		}
 	}
 	Lex = lexName
 }
@@ -380,11 +402,11 @@ func String() {
 }
 
 
-func Gen(Cmd int) {
-	fmt.Println("PC: " + strconv.Itoa(PC))
+func Gen(Cmd byte) {
+	//fmt.Println("PC: " + strconv.Itoa(PC))
 	if PC < MemSize {
-		fmt.Println("Gen: " + strconv.Itoa(Cmd))
-		RAM = append(RAM, Cmd)
+		//fmt.Println("Gen: " + strconv.Itoa(Cmd))
+		RAMasm = append(RAMasm, Cmd)
 		PC++
 	} else {
 		printTerminal("Error Memory\n")

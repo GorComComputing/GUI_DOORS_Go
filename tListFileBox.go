@@ -91,11 +91,14 @@ func (obj *tListFileBox) Draw(parX int, parY int, parSizeX int, parSizeY int){
     	}
     	TextOutgl(nil, obj.list[i].name, parX+obj.x + 4 + 23, parY+obj.y + 4 + i*20, 1);
     	
-    	if obj.list[i].typ == "D" {
+    	switch obj.list[i].typ {
+    	case "D":
     		showBMP(nil, bmpFolder_small, parX+obj.x + 4, parY+obj.y + 4 + i*20)
-    	} else if obj.list[i].typ == "F" {
+    	case "F":
     		showBMP(nil, bmpFile_small, parX+obj.x + 4, parY+obj.y + 4 + i*20)
-    	} else if obj.list[i].typ == "X" {
+    	case "X":
+    		showBMP(nil, bmpProgram, parX+obj.x + 4, parY+obj.y + 4 + i*20)
+    	case "B":
     		showBMP(nil, bmpProgram, parX+obj.x + 4, parY+obj.y + 4 + i*20)
     	}   	
     }
@@ -134,11 +137,14 @@ func (obj *tListFileBox) Draw(parX int, parY int, parSizeX int, parSizeY int){
     		
     		TextOutgl(nil, obj.list[i].name, parX+obj.x + 4 + 30+20 - len(obj.list[i].name)*10/2+ (col)*100, parY+obj.y + 4 + row*70+40, 1);
     	
-    		if obj.list[i].typ == "D" {
+    		switch obj.list[i].typ {
+    		case "D":
     			showBMP(nil, bmpFolder, parX+obj.x + 4 + 30 + (col)*100, parY+obj.y + 4 + row*70)
-    		} else if obj.list[i].typ == "F" {
+    		case "F":
     			showBMP(nil, bmpFile, parX+obj.x + 4 + 30 + (col)*100, parY+obj.y + 4 + row*70)
-    		} else if obj.list[i].typ == "X" {
+    		case "X":
+    			showBMP(nil, bmpProgram, parX+obj.x + 4 + 30 + (col)*100, parY+obj.y + 4 + row*70)
+    		case "B":
     			showBMP(nil, bmpProgram, parX+obj.x + 4 + 30 + (col)*100, parY+obj.y + 4 + row*70)
     		}
     		col++
