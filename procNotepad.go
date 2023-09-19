@@ -106,27 +106,32 @@ func menuRunNotepadClick(node *Node, x int, y int){
 		for i := 1; i < len(memNotepad.obj.(*tMemo).list); i++ {
 			tmp += string(0x0D)+string(0x0A) + memNotepad.obj.(*tMemo).list[i] 
 		}
-		WriteFile(curFileNameNotepad, tmp)
+		WriteFile(curFileNameNotepad, tmp, fUTF8)
 		
 		RAMasm = make([]byte, 0) 
-		textAsm = ReadFile(curFileNameNotepad)
+		textAsm = ReadFileUTF8(curFileNameNotepad)
 		textAsm = strings.Replace(textAsm, string(0x0D)+string(0x0A), string(10), -1)
 		InitNameTable()
 		Assemble()
 	
 		fmt.Println(RAMasm)
 	
-		tmp = ""
+		tmp = string(RAMasm)
+		var by []byte
+		by = []byte(tmp)
+		
+		fmt.Println(by)
+		/*tmp = ""
 		for i := uint32(0); i < PC; i++ {
 			tmp += string(RAMasm[i])
-		}
-		WriteFile(curFileNameNotepad[:len(curFileNameNotepad) - 4] + ".dor", tmp)
+		}*/
+		WriteFile(curFileNameNotepad[:len(curFileNameNotepad) - 4] + ".dor", tmp, fBIN)
 	case 1:
 		var tmp string = memNotepad.obj.(*tMemo).list[0]
 		for i := 1; i < len(memNotepad.obj.(*tMemo).list); i++ {
 			tmp += string(0x0D)+string(0x0A) + memNotepad.obj.(*tMemo).list[i] 
 		}
-		WriteFile(curFileNameNotepad, tmp)
+		WriteFile(curFileNameNotepad, tmp, fUTF8)
 
 		RAMasm = make([]byte, 0) 
 		textAsm = strings.Replace(tmp, string(0x0D)+string(0x0A), string(10), -1)
@@ -139,9 +144,9 @@ func menuRunNotepadClick(node *Node, x int, y int){
 		for i := uint32(0); i < PC; i++ {
 			tmp += string(RAMasm[i])
 		}
-		WriteFile(curFileNameNotepad[:len(curFileNameNotepad) - 4] + ".dor", tmp)
+		WriteFile(curFileNameNotepad[:len(curFileNameNotepad) - 4] + ".dor", tmp, fBIN)
 		
-		loadOVM(tmp)
+		loadOVM(RAMasm)
 		runVM()
 		fmt.Println("Run")
 	}
@@ -176,7 +181,7 @@ var keyWordsC2 = []string{"double", "float", "int", "short", "unsigned", "long",
 var keyWordsGo1 = []string{"break", "case", "const", "continue", "default", "defer", "else", "fallthrough", "for", "func", "go", "goto", "if", "import", "interface", "package", "range", "return", "select", "struct", "switch", "type", "var"}
 var keyWordsGo2 = []string{"chan", "map", "bool", "string", "int", "int8", "int16", "int32", "int64", "uint", "uint8", "uint16", "uint32", "uint64", "uintptr", "byte", "rune", "float32", "float64", "complex64", "complex128"}
     
-var keyWordsAsm1 = []string{"hlt", "out", "outln",	"in", "add", "sub", "mul", "div", "mod", "neg", "dup", "pop",	"swap",	"over",	"load",	"save",	"jmp",	"je",	"jne",	"jle",	"jl",	"jge",	"jg",	"syscall", "push", "pushw", "pushd"}
+var keyWordsAsm1 = []string{"hlt", "out", "outln",	"in", "add", "sub", "mul", "div", "mod", "neg", "dup", "pop",	"swap",	"over",	"load",	"save",	"jmp",	"je",	"jne",	"jle",	"jl",	"jge",	"jg",	"syscall", "push", "pushw", "pushd", "outw", "outd", "addw", "addd", "subw", "subd", "mulw", "muld", "divw", "divd", "modw", "modd", "negw", "negd", "popw", "popd", "stw", "std", "ldw", "ldd"}
 var keyWordsAsm2 = []string{"db", "dw", "dd", "dq"}
 
 

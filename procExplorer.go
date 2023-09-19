@@ -38,7 +38,7 @@ func lsfExplorerClick(node *Node, x int, y int){
 	switch node.obj.(*tListFileBox).list[node.obj.(*tListFileBox).selected].typ {
 	case "F":
 		execProcess(1)  // Run Notepad
-		result := ReadFile(edtExplorerPath.obj.(*tEdit).text + node.obj.(*tListFileBox).list[node.obj.(*tListFileBox).selected].name)
+		result := ReadFileUTF8(edtExplorerPath.obj.(*tEdit).text + node.obj.(*tListFileBox).list[node.obj.(*tListFileBox).selected].name)
 		memNotepad.obj.(*tMemo).list = strings.Split(result, string(0x0D)+string(0x0A))
 		curFileNameNotepad = edtExplorerPath.obj.(*tEdit).text + node.obj.(*tListFileBox).list[node.obj.(*tListFileBox).selected].name
 		memNotepad.obj.(*tMemo).curX = 0
@@ -59,7 +59,7 @@ func lsfExplorerClick(node *Node, x int, y int){
 		edtExplorerPath.obj.(*tEdit).text += node.obj.(*tListFileBox).list[node.obj.(*tListFileBox).selected].name + "/"
 		lsfExplorer.obj.(*tListFileBox).list = GetCatalogList(edtExplorerPath.obj.(*tEdit).text)
 	case "B":
-		result := ReadFile(edtExplorerPath.obj.(*tEdit).text + node.obj.(*tListFileBox).list[node.obj.(*tListFileBox).selected].name)
+		result := ReadFileByte(edtExplorerPath.obj.(*tEdit).text + node.obj.(*tListFileBox).list[node.obj.(*tListFileBox).selected].name)
 		loadOVM(result)
 		runVM()
 	}

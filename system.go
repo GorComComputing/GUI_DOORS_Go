@@ -1,22 +1,61 @@
 package main
 
 import (
-	//"fmt"
+	"fmt"
     "syscall/js"
     "strings"
+    "strconv"
 )
 
 
-func WriteFile(name string, str string) string {
-	result := js.Global().Call("HttpRequest", "http://"+ServerIP+":8081/save?name=" + name, str).Get("response").String() 
+type tFileType int
+const (
+	fBIN tFileType = iota
+    fUTF8 	
+)
+
+func WriteFile(name string, str string, fileType tFileType) string {
+	var result string = ""
+	//fmt.Println("Before: ", []byte(str))
+	switch fileType {
+	case fBIN:
+		var tmp string = ""
+		for i := 0; i < len(str); i++ {
+			tmp += strconv.Itoa(int(str[i])) + " "
+		}
+		result = js.Global().Call("HttpRequest", "http://"+ServerIP+":8081/savebyte?name=" + name, tmp).Get("response").String()
+	case fUTF8:
+		result = js.Global().Call("HttpRequest", "http://"+ServerIP+":8081/saveutf8?name=" + name, str).Get("response").String()
+	} 
 	//fmt.Println("Responsed: ", result)
+	//fmt.Println("Responsed: ", []byte(result))
 	return result
 }
 
 
 
-func ReadFile(name string) string {
-	result := js.Global().Call("HttpRequest", "http://"+ServerIP+":8081/api?cmd=read " + name, "").Get("response").String() 
+func ReadFileByte(name string) []byte {
+	result := js.Global().Call("HttpRequest", "http://"+ServerIP+":8081/api?cmd=read_byte " + name, "").Get("response").String() 
+		
+	//fmt.Println(result)
+	
+	strArr := strings.Split(result, " ")
+	
+	tmp := make([]byte, 0)
+	for i := 0; i < len(strArr); i++ {
+		asci,_ := strconv.Atoi(strArr[i]) 
+		tmp = append(tmp, byte(asci)) 
+	}
+
+	//fmt.Println(tmp)
+
+	//fmt.Println("Responsed: ", result)
+	return tmp
+}
+
+
+func ReadFileUTF8(name string) string {
+	result := js.Global().Call("HttpRequest", "http://"+ServerIP+":8081/api?cmd=read_utf8 " + name, "").Get("response").String()
 	//fmt.Println("Responsed: ", result)
 	return result
 }

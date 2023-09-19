@@ -5,6 +5,7 @@ main: *.go deps
 
 .PHONY:deps
 deps:
+#	go get github.com/djimenez/iconv-go
 #	go get github.com/gorilla/sessions
 #	go get github.com/kabukky/httpscerts
 #	go get github.com/lib/pq

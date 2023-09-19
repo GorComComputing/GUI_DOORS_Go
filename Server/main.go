@@ -139,8 +139,13 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if strings.Trim(r.URL.Path, "/") == "save" {
-		save(w, r)
+	if strings.Trim(r.URL.Path, "/") == "savebyte" {
+		savebyte(w, r)
+		return
+	}
+	
+	if strings.Trim(r.URL.Path, "/") == "saveutf8" {
+		saveutf8(w, r)
 		return
 	}
 	

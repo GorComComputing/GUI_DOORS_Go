@@ -9,7 +9,7 @@ import (
 // Work
 var ServerIP string = "192.168.63.60" 
 var RootDir string = "/home/gor/WORK/Go/projects/DOORS/Server/" 
-var DesktopDir string = "/home/gor/WORK/Go/projects/" 
+var DesktopDir string = "/home/gor/WORK/Go/projects/DOORS/Server/files/" // "/home/gor/WORK/Go/projects/" 
 
 // Remote
 //var ServerIP string = "172.18.0.1" 

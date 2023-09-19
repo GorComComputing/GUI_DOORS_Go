@@ -3,7 +3,7 @@ package main
 import (
     "fmt"
     "os/exec"
-    //"strings"
+    "strings"
     "net/http"
     "io/ioutil"
     //"unicode"
@@ -12,7 +12,10 @@ import (
     
     "bytes"
     "encoding/json"
-    //"strconv"
+    "strconv"
+    //"unicode/utf8"
+    //iconv "github.com/djimenez/iconv-go"
+    //"golang.org/x/text/encoding/charmap"
 )
 
 
@@ -247,8 +250,8 @@ func cmd_curl_get(words []string) string {
 
 
 
-// Read file handler
-func cmd_read(words []string) string{
+// Read file handler utf8
+func cmd_read_utf8(words []string) string{
 	/*var output string
 	
 	// open the file
@@ -262,16 +265,35 @@ func cmd_read(words []string) string{
 	fileScanner := bufio.NewScanner(file)*/
 	
 	dat, _ := os.ReadFile(words[1])
+	
+	fmt.Println([]byte(dat))
+	
 	return string(dat)
 }
 
 
-// handle Сохраняет файл
-func save(w http.ResponseWriter, r *http.Request) {
+// Read file handler (binary)
+func cmd_read_byte(words []string) string{
+	dat, _ := os.ReadFile(words[1])
+	var tmp string = ""
+	for i := 0; i < len(dat); i++ {
+		tmp += strconv.Itoa(int(dat[i])) + " "
+	}
+	
+	fmt.Println(tmp)
+	
+	return tmp
+}
+
+
+// handle Сохраняет файл (бинарный) 
+func savebyte(w http.ResponseWriter, r *http.Request) {
 	name := r.FormValue("name")
 	//var output string
-	fmt.Println(r)
-	fmt.Println(r.Body)
+	//fmt.Println(r)
+	//fmt.Println(r.Body)
+	
+	
 	text, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		fmt.Fprintf(w, "Err body")
@@ -280,6 +302,92 @@ func save(w http.ResponseWriter, r *http.Request) {
     	}
 	//strings.SplitAfter(words[1], "=")[1]
 	fmt.Println(string(text))	
+	
+	strArr := strings.Split(string(text), " ")
+	
+	tmp := make([]byte, 0)
+	for i := 0; i < len(strArr); i++ {
+		asci,_ := strconv.Atoi(strArr[i]) 
+		tmp = append(tmp, byte(asci)) 
+	}
+
+
+	fmt.Println(tmp)
+
+				
+    	file, err := os.OpenFile(name, os.O_TRUNC | os.O_CREATE | os.O_WRONLY, 0644)
+    	if err != nil {
+    		fmt.Fprintf(w, "Err")
+        	//output = "Unable to open file: " + err.Error() + "\n"
+        	return //output
+    	}
+    	defer file.Close()
+
+
+
+	if tmp != nil { 
+		if _, err := file.Write(tmp); err != nil {
+    	//if _, err = file.WriteString(strTmp); err != nil {
+    		fmt.Fprintf(w, "Err body")
+    		//output = "Unable to write string: " + err.Error() + "\n"
+    		return //output
+    	}
+    	}
+    	
+
+    	/*
+    	// перенести из tmp в основной файл
+    	cmd := exec.Command("cp", "./files/tmp.conf", "/etc/pzg-chrony.conf")
+	_, err = cmd.Output()
+	if err != nil {
+		output = "Could not back copy: " + err.Error() + "\n"
+    		return output
+	}
+    	//fmt.Println("Saved OK")
+    	cmd_restart(words)
+    	
+    	_ , File := scan()
+    	
+    	//fmt.Fprintf(w, File)
+    	//fmt.Println(File)
+    	//messages <- string("Config-файл Chrony сохранен<br/>Chrony запущен")
+    	File = fmt.Sprintf("%s%s", File, "\n")
+    	*/
+    	//output += "Saved OK"
+    	fmt.Fprintf(w, "Saved OK")
+    	
+    	
+    	//return output //File
+}
+
+
+// handle Сохраняет файл (UTF8) 
+func saveutf8(w http.ResponseWriter, r *http.Request) {
+	name := r.FormValue("name")
+	//var output string
+	//fmt.Println(r)
+	//fmt.Println(r.Body)
+	
+	
+	text, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		fmt.Fprintf(w, "Err body")
+        	//output = "Unable to open file: " + err.Error() + "\n"
+        	return //output
+    	}
+	//strings.SplitAfter(words[1], "=")[1]
+	fmt.Println(string(text))	
+	
+	/*strArr := strings.Split(string(text), " ")
+	
+	tmp := make([]byte, 0)
+	for i := 0; i < len(strArr); i++ {
+		asci,_ := strconv.Atoi(strArr[i]) 
+		tmp = append(tmp, byte(asci)) 
+	}
+
+
+	fmt.Println(tmp)*/
 
 				
     	file, err := os.OpenFile(name, os.O_TRUNC | os.O_CREATE | os.O_WRONLY, 0644)
@@ -293,6 +401,7 @@ func save(w http.ResponseWriter, r *http.Request) {
 
 
 	if string(text) != "" { 
+		//if _, err := file.Write(tmp); err != nil {
     	if _, err = file.WriteString(string(text)); err != nil {
     		fmt.Fprintf(w, "Err body")
     		//output = "Unable to write string: " + err.Error() + "\n"

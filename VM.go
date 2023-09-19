@@ -5,43 +5,67 @@ import (
 	"fmt"
 )
 
+
+var frmVM *Node
+
+
 const (
    MemSize = 4096 
 
-   cmStop   = 1
+   cmHLT   = 1
 
-   cmAdd    = 2
-   cmSub    = 3
-   cmMult   = 4
-   cmDiv    = 5
-   cmMod    = 6
-   cmNeg    = 7
+   cmADD    = 2
+   cmSUB    = 3
+   cmMUL   = 4
+   cmDIV    = 5
+   cmMOD    = 6
+   cmNEG    = 7
 
-   cmLoad   = 8
-   cmSave  = 9
+   cmLD   = 8
+   cmST  = 9
 
-   cmDup    = 10
-   cmDrop   = 11
-   cmSwap   = 12
-   cmOver   = 13
+   cmDUP    = 10
+   cmPOP   = 11
+   cmSWAP   = 12
+   cmOVER   = 13
 
    cmJMP   = 14
-   cmIfEQ   = 15
-   cmIfNE   = 16
-   cmIfLE   = 17
-   cmIfLT   = 18
-   cmIfGE   = 19
-   cmIfGT   = 20
+   cmJE   = 15
+   cmJNE   = 16
+   cmJLE   = 17
+   cmJL   = 18
+   cmJGE   = 19
+   cmJG   = 20
 
-   cmIn     = 21
-   cmOut    = 22
-   cmOutLn  = 23
+   cmIN     = 21
+   cmOUT    = 22
+   cmOUTLN  = 23
    
    cmSYSCALL  = 24
    
    cmPUSH = 25
    cmPUSHW = 26
    cmPUSHD = 27
+   cmOUTW  = 28
+   cmOUTD  = 29
+   cmADDW  = 30
+   cmADDD  = 31
+   cmSUBW  = 32
+   cmSUBD  = 33
+   cmMULW  = 34
+   cmMULD  = 35
+   cmDIVW  = 36
+   cmDIVD  = 37
+   cmMODW  = 38
+   cmMODD  = 39
+   cmNEGW  = 40
+   cmNEGD  = 41
+   cmPOPW  = 42
+   cmPOPD  = 43
+   cmSTW  = 44
+   cmSTD  = 45
+   cmLDW  = 46
+   cmLDD  = 47
    
 )
 
@@ -77,84 +101,100 @@ func StepOVM(){
     	RAM[SP-4] = RAM[IP+4]
     	SP -= 4
     	IP += 4
-    case cmStop:
+    case cmHLT:
     	isRun = false;
-    	lblIsRun.obj.(*tLabel).caption = "STOP"
-    case cmAdd:
+    case cmADD:
+    	RAM[SP+1] = RAM[SP] + RAM[SP+1]
     	SP++
-    	RAM[SP] = RAM[SP] + RAM[SP-1];
-    case cmSub:
+  	case cmADDW:
+    	//RAM[SP+1] = RAM[SP] + RAM[SP+1]
+    	//SP--
+    case cmADDD:
+    	//RAM[SP+1] = RAM[SP] + RAM[SP+1]
+    	//SP--
+    case cmSUB:
+    	RAM[SP+1] = RAM[SP+1] - RAM[SP]
     	SP++
-    	RAM[SP] = RAM[SP] - RAM[SP-1];
-    case cmMult:
+    case cmMUL:
+    	RAM[SP+1] = RAM[SP+1] * RAM[SP]
     	SP++
-    	RAM[SP] = RAM[SP]*RAM[SP-1];
-    case cmDiv:
+    case cmDIV:
+    	RAM[SP+1] = RAM[SP+1] / RAM[SP]
     	SP++
-    	RAM[SP] = RAM[SP] / RAM[SP-1];
-    case cmMod:
+    case cmMOD:
+    	RAM[SP+1] = RAM[SP+1] % RAM[SP]
     	SP++
-    	RAM[SP] = RAM[SP] % RAM[SP-1];
-    case cmNeg:
-    	RAM[SP] = -RAM[SP];
-    case cmLoad:
-    	RAM[SP] = RAM[RAM[SP]];
-    case cmSave:
-    	RAM[RAM[SP+1]] = RAM[SP];
-    	SP += 2
-    case cmDup:
+    case cmNEG:
+    	RAM[SP] = -RAM[SP]
+    case cmLD:
+    	RAM[SP+3] = RAM[int((uint32(RAM[SP]) << 24) + (uint32(RAM[SP+1]) << 16) + (uint32(RAM[SP+2]) << 8) + uint32(RAM[SP+3]))]
+    	SP += 3
+    case cmST:
+    	RAM[int((uint32(RAM[SP+1]) << 24) + (uint32(RAM[SP+2]) << 16) + (uint32(RAM[SP+3]) << 8) + uint32(RAM[SP+4]))] = RAM[SP]
+    	SP += 4
+    case cmDUP:
     	SP--
     	RAM[SP] = RAM[SP+1];
-    case cmDrop:
+    case cmPOP:
     	SP++
-    case cmSwap:
+    case cmPOPW:
+    	SP += 2
+    case cmPOPD:
+    	SP += 4
+    case cmSWAP:
     	Buf = RAM[SP];
     	RAM[SP] = RAM[SP+1];
     	RAM[SP+1] = Buf;
-    case cmOver:
+    case cmOVER:
     	SP--
     	RAM[SP] = RAM[SP+2];
     case cmJMP:
     	IP = uint32(RAM[IP+1]) + uint32(RAM[IP+2])*0xFF + uint32(RAM[IP+3])*0xFFFF + uint32(RAM[IP+4])*0xFFFFFF - 1
-    case cmIfEQ:
+    case cmJE:
     	if RAM[SP+2] == RAM[SP+1] {
         	IP = uint32(RAM[SP])
         }
         SP += 3
-    case cmIfNE:
+    case cmJNE:
     	if RAM[SP+2] != RAM[SP+1] {
         	IP = uint32(RAM[SP])
         }
         SP += 3
-    case cmIfLE:
+    case cmJLE:
     	if RAM[SP+2] <= RAM[SP+1] {
         	IP = uint32(RAM[SP])
         }
         SP += 3
-    case cmIfLT:
+    case cmJL:
     	if RAM[SP+2] < RAM[SP+1] {
         	IP = uint32(RAM[SP])
         }
         SP += 3
-    case cmIfGE:
+    case cmJGE:
     	if RAM[SP+2] >= RAM[SP+1] {
         	IP = uint32(RAM[SP])
         }
         SP += 3
-    case cmIfGT:
+    case cmJG:
     	if RAM[SP+2] > RAM[SP+1] {
         	IP = uint32(RAM[SP])
         }
         SP += 3
-    case cmIn:
+    case cmIN:
     	SP--
         isRun = false
         lblIsRun.obj.(*tLabel).caption = "STOP"
         printTerminal("?")
-    case cmOut:
-        printTerminal(strconv.Itoa(int(uint32(RAM[IP+1]) + uint32(RAM[IP+2])*0xFF + uint32(RAM[IP+3])*0xFFFF + uint32(RAM[IP+4])*0xFFFFFF)))
-        IP += 4
-    case cmOutLn:
+    case cmOUT:
+        printTerminal(strconv.Itoa(int(uint32(RAM[SP]))))
+        SP++
+    case cmOUTW:
+        printTerminal(strconv.Itoa(int((uint32(RAM[SP]) << 8) + uint32(RAM[SP+1]))))
+        SP += 2
+    case cmOUTD:
+        printTerminal(strconv.Itoa(int((uint32(RAM[SP]) << 24) + (uint32(RAM[SP+1]) << 16) + (uint32(RAM[SP+2]) << 8) + uint32(RAM[SP+3]))))
+        SP += 4
+    case cmOUTLN:
     	printTerminal("\n")
     case cmSYSCALL:
     	IP++
@@ -165,31 +205,68 @@ func StepOVM(){
         case 1:		// CreateForm
         	var caption string = "" 
         	var i uint32
-        	for i = uint32(RAM[SP+13])*0xFFFFFF + uint32(RAM[SP+14])*0xFFFF + uint32(RAM[SP+15])*0xFF + uint32(RAM[SP+16]); RAM[i] != 0; i++ {caption += string(RAM[i])}
-        	//fmt.Println("Caption: " + caption)
-        	//fmt.Println("i: " + strconv.Itoa(int(i)))
-        	//fmt.Println(RAM)
+        	for i = (uint32(RAM[SP+13]) << 24) + (uint32(RAM[SP+14]) << 16) + (uint32(RAM[SP+15]) << 8) + uint32(RAM[SP+16]); RAM[i] != 0; i++ {caption += string(RAM[i])}
         	var mode tMode
         	switch RAM[SP+12] {
         	case 1:
         		mode = WIN
         	}
-         	CreateForm(&layout, "frm", nil, int(RAM[SP])*0xFF+int(RAM[SP+1]), int(RAM[SP+2])*0xFF+int(RAM[SP+3]), int(RAM[SP+4])*0xFF+int(RAM[SP+5]), int(RAM[SP+6])*0xFF+int(RAM[SP+7]), int(RAM[SP+8])*0xFFFFFF+int(RAM[SP+9])*0xFFFF+int(RAM[SP+10])*0xFF+int(RAM[SP+11]), mode, caption, (RAM[SP+17] != 0), nil)
+         	frmVM = CreateForm(&layout, "frm", nil, int(RAM[SP])*0xFF+int(RAM[SP+1]), int(RAM[SP+2])*0xFF+int(RAM[SP+3]), int(RAM[SP+4])*0xFF+int(RAM[SP+5]), int(RAM[SP+6])*0xFF+int(RAM[SP+7]), int((uint32(RAM[SP+8]) << 24)+(uint32(RAM[SP+9]) << 16)+(uint32(RAM[SP+10]) << 8)+uint32(RAM[SP+11])), mode, caption, (RAM[SP+17] != 0), nil)
          	SP += 17
+         case 2:		// CreateLabel
+         	//fmt.Println("SYSCALL LABEL:")
+         	var caption string = "" 
+        	var i uint32
+        	
+        	/*fmt.Println(int(RAM[SP])*0xFF+int(RAM[SP+1]))
+        	fmt.Println(int(RAM[SP+2])*0xFF+int(RAM[SP+3]))
+        	fmt.Println(int(RAM[SP+4])*0xFF+int(RAM[SP+5]))
+        	fmt.Println(int(RAM[SP+6])*0xFF+int(RAM[SP+7]))
+        	fmt.Println(int(RAM[SP+8])*0xFFFFFF+int(RAM[SP+9])*0xFFFF+int(RAM[SP+10])*0xFF+int(RAM[SP+11]))
+        	fmt.Println(int(RAM[SP+12])*0xFFFFFF+int(RAM[SP+13])*0xFFFF+int(RAM[SP+14])*0xFF+int(RAM[SP+15]))
+        	fmt.Println((uint32(RAM[SP+16]) << 24) + (uint32(RAM[SP+17]) << 16) + (uint32(RAM[SP+18]) << 8) + uint32(RAM[SP+19]))*/
+        	for i = (uint32(RAM[SP+16]) << 24) + (uint32(RAM[SP+17]) << 16) + (uint32(RAM[SP+18]) << 8) + uint32(RAM[SP+19]); RAM[i] != 0; i++ {caption += string(RAM[i])}
+        	
+        	//fmt.Println(caption)
+        	//fmt.Println(RAM)
+        	
+        	CreateLabel(frmVM, "lbl", int(RAM[SP])*0xFF+int(RAM[SP+1]), int(RAM[SP+2])*0xFF+int(RAM[SP+3]), int(RAM[SP+4])*0xFF+int(RAM[SP+5]), int(RAM[SP+6])*0xFF+int(RAM[SP+7]), int((uint32(RAM[SP+8]) << 24)+(uint32(RAM[SP+9]) << 16)+(uint32(RAM[SP+10]) << 8)+uint32(RAM[SP+11])), int((uint32(RAM[SP+12]) << 24)+(uint32(RAM[SP+13]) << 16)+(uint32(RAM[SP+14]) << 8)+uint32(RAM[SP+15])), caption, nil)
+         	SP += 19
+         case 3:		// CreateBtn
+         	var caption string = "" 
+        	var i uint32
+        	for i = (uint32(RAM[SP+16]) << 24) + (uint32(RAM[SP+17]) << 16) + (uint32(RAM[SP+18]) << 8) + uint32(RAM[SP+19]); RAM[i] != 0; i++ {caption += string(RAM[i])}
+        	CreateBtn(frmVM, "btn", int(RAM[SP])*0xFF+int(RAM[SP+1]), int(RAM[SP+2])*0xFF+int(RAM[SP+3]), int(RAM[SP+4])*0xFF+int(RAM[SP+5]), int(RAM[SP+6])*0xFF+int(RAM[SP+7]), int((uint32(RAM[SP+8]) << 24)+(uint32(RAM[SP+9]) << 16)+(uint32(RAM[SP+10]) << 8)+uint32(RAM[SP+11])), int((uint32(RAM[SP+12]) << 24)+(uint32(RAM[SP+13]) << 16)+(uint32(RAM[SP+14]) << 8)+uint32(RAM[SP+15])), caption, nil)
+         	SP += 19
+         case 4:		// CreateEdit
+         	var text string = "" 
+        	var i uint32
+        	for i = (uint32(RAM[SP+16]) << 24) + (uint32(RAM[SP+17]) << 16) + (uint32(RAM[SP+18]) << 8) + uint32(RAM[SP+19]); RAM[i] != 0; i++ {text += string(RAM[i])}
+        	CreateEdit(frmVM, "edt", int(RAM[SP])*0xFF+int(RAM[SP+1]), int(RAM[SP+2])*0xFF+int(RAM[SP+3]), int(RAM[SP+4])*0xFF+int(RAM[SP+5]), int(RAM[SP+6])*0xFF+int(RAM[SP+7]), int((uint32(RAM[SP+8]) << 24)+(uint32(RAM[SP+9]) << 16)+(uint32(RAM[SP+10]) << 8)+uint32(RAM[SP+11])), int((uint32(RAM[SP+12]) << 24)+(uint32(RAM[SP+13]) << 16)+(uint32(RAM[SP+14]) << 8)+uint32(RAM[SP+15])), text, nil, nil)
+         	SP += 19
+         case 5:		// CreateCheckBox
+         	var caption string = "" 
+        	var i uint32
+        	for i = (uint32(RAM[SP+16]) << 24) + (uint32(RAM[SP+17]) << 16) + (uint32(RAM[SP+18]) << 8) + uint32(RAM[SP+19]); RAM[i] != 0; i++ {caption += string(RAM[i])}
+        	CreateCheckBox(frmVM, "cbx", int(RAM[SP])*0xFF+int(RAM[SP+1]), int(RAM[SP+2])*0xFF+int(RAM[SP+3]), int(RAM[SP+4])*0xFF+int(RAM[SP+5]), int(RAM[SP+6])*0xFF+int(RAM[SP+7]), int((uint32(RAM[SP+8]) << 24)+(uint32(RAM[SP+9]) << 16)+(uint32(RAM[SP+10]) << 8)+uint32(RAM[SP+11])), int((uint32(RAM[SP+12]) << 24)+(uint32(RAM[SP+13]) << 16)+(uint32(RAM[SP+14]) << 8)+uint32(RAM[SP+15])), caption, (RAM[SP+20] != 0), nil)
+         	SP += 20
+         case 6:		// CreateMemo
+        	CreateMemo(frmVM, "mem", int(RAM[SP])*0xFF+int(RAM[SP+1]), int(RAM[SP+2])*0xFF+int(RAM[SP+3]), int(RAM[SP+4])*0xFF+int(RAM[SP+5]), int(RAM[SP+6])*0xFF+int(RAM[SP+7]), int((uint32(RAM[SP+8]) << 24)+(uint32(RAM[SP+9]) << 16)+(uint32(RAM[SP+10]) << 8)+uint32(RAM[SP+11])), int((uint32(RAM[SP+12]) << 24)+(uint32(RAM[SP+13]) << 16)+(uint32(RAM[SP+14]) << 8)+uint32(RAM[SP+15])), nil)
+         	SP += 15
          }
     default: 
          printTerminal("Error run time VM: Unrecognized command " + strconv.Itoa(int(RAM[IP])))
          fmt.Println(RAM)
-         RAM[IP+1] = cmStop;
+         RAM[IP+1] = cmHLT;
     }
     IP++	
 }
 
 
-func loadOVM(result string) {
+func loadOVM(result []byte) {
 	RAM = make([]byte, 0)
 	for i := 0; i < len(result); i++ {
-		RAM = append(RAM, byte(result[i]))
+		RAM = append(RAM, result[i])
 	}
 	for i := 0; i < 4096; i++ {
 		RAM = append(RAM, 0)
@@ -212,3 +289,4 @@ func resetVM() {
 	IP = 0
 	SP = uint32(len(RAM))
 }
+

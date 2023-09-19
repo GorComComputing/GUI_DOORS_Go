@@ -56,34 +56,54 @@ type tOpCode struct{
     Len int
 }
 
-var Code = [44]tOpCode{
-	{cmStop, "HLT", 0},
-	{cmOut, "OUT", 4},
-	{cmOutLn, "OUTLN", 0},
-	{cmIn, "IN", 0},
-	{cmAdd, "ADD", 0},
-	{cmSub, "SUB", 0},
-	{cmMult, "MUL", 0},
-	{cmDiv, "DIV", 0},
-	{cmMod, "MOD", 0},
-	{cmNeg, "NEG", 0},
-	{cmDup, "DUP", 0},
-	{cmDrop, "POP", 0},
-	{cmSwap, "SWAP", 0},
-	{cmOver, "OVER", 0},
-	{cmLoad, "LOAD", 0},
-	{cmSave, "SAVE", 0},
+var Code = [47]tOpCode{
+	{cmHLT, "HLT", 0},
+	{cmOUT, "OUT", 0},
+	{cmOUTLN, "OUTLN", 0},
+	{cmIN, "IN", 0},
+	{cmADD, "ADD", 0},
+	{cmSUB, "SUB", 0},
+	{cmMUL, "MUL", 0},
+	{cmDIV, "DIV", 0},
+	{cmMOD, "MOD", 0},
+	{cmNEG, "NEG", 0},
+	{cmDUP, "DUP", 0},
+	{cmPOP, "POP", 0},
+	{cmSWAP, "SWAP", 0},
+	{cmOVER, "OVER", 0},
+	{cmLD, "LOAD", 0},
+	{cmST, "SAVE", 0},
 	{cmJMP, "JMP", 4},
-	{cmIfEQ, "JE", 4},
-	{cmIfNE, "JNE", 4},
-	{cmIfLE, "JLE", 4},
-	{cmIfLT, "JL", 4},
-	{cmIfGE, "JGE", 4},
-	{cmIfGT, "JG", 4},
+	{cmJE, "JE", 4},
+	{cmJNE, "JNE", 4},
+	{cmJLE, "JLE", 4},
+	{cmJL, "JL", 4},
+	{cmJGE, "JGE", 4},
+	{cmJG, "JG", 4},
 	{cmSYSCALL, "SYSCALL", 1},
 	{cmPUSH, "PUSH", 1},
 	{cmPUSHW, "PUSHW", 2},
 	{cmPUSHD, "PUSHD", 4},
+	{cmOUTW, "OUTW", 0},
+	{cmOUTD, "OUTD", 0},
+	{cmADDW, "ADDW", 0},
+	{cmADDD, "ADDD", 0},
+	{cmSUBW, "SUBW", 0},
+	{cmSUBD, "SUBD", 0},
+	{cmMULW, "MULW", 0},
+	{cmMULD, "MULD", 0},
+	{cmDIVW, "DIVW", 0},
+	{cmDIVD, "DIVD", 0},
+	{cmMODW, "MODW", 0},
+	{cmMODD, "MODD", 0},
+	{cmNEGW, "NEGW", 0},
+	{cmNEGD, "NEGD", 0},
+	{cmPOPW, "POPW", 0},
+	{cmPOPD, "POPD", 0},
+	{cmSTW, "STW", 0},
+	{cmSTD, "STD", 0},
+	{cmLDW, "LDW", 0},
+	{cmLDD, "LDD", 0},
 }
 
 	
@@ -269,12 +289,12 @@ func LineSecond(){
 				Gen(byte(Num))
 			case 2:
 				Gen(byte(Num))
-				Gen(byte(Num/0xFF))
+				Gen(byte(Num >> 8))
 			case 4:
 				Gen(byte(Num))
-				Gen(byte(Num/0xFF))
-				Gen(byte(Num/0xFFFF))
-				Gen(byte(Num/0xFFFFFF))
+				Gen(byte(Num >> 8))
+				Gen(byte(Num >> 16))
+				Gen(byte(Num >> 24))
 			}
 			NextLex()
 		case lexOpCode:

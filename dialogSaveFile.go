@@ -56,7 +56,7 @@ func btnSaveDialogSaveClick(node *Node){
 		for i := 1; i < len(FROM); i++ {
 			tmp += string(0x0D)+string(0x0A) + FROM[i] 
 		}
-		WriteFile(edtSaveDialogPath.obj.(*tEdit).text + edtSaveDialogFile.obj.(*tEdit).text, tmp)
+		WriteFile(edtSaveDialogPath.obj.(*tEdit).text + edtSaveDialogFile.obj.(*tEdit).text, tmp, fUTF8)
 		curFileNameNotepad = edtSaveDialogPath.obj.(*tEdit).text + edtSaveDialogFile.obj.(*tEdit).text
 		
 		// Удаляет форму

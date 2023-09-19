@@ -54,7 +54,7 @@ func lsfOpenDialogClick(node *Node, x int, y int){
 
 func btnOpenDialogOpenClick(node *Node){
 	if edtOpenDialogFile.obj.(*tEdit).text != "" {
-		result := ReadFile(edtOpenDialogPath.obj.(*tEdit).text + edtOpenDialogFile.obj.(*tEdit).text)
+		result := ReadFileUTF8(edtOpenDialogPath.obj.(*tEdit).text + edtOpenDialogFile.obj.(*tEdit).text)
 		//result = strings.Replace(result, "\r\n", string(10), -1)
 		//result = strings.Replace(result, string(0x0A)+string(0x0D), string(0x0D)+string(0x0A), -1)
 		//result = strings.Replace(result, string(0x0D)+string(0x0A), string(0x0D), -1)

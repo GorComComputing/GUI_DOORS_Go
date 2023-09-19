@@ -27,7 +27,8 @@ var cmd =  map[string]Cmd{
 	".quit": Cmd{addr: cmd_quit, descr: "Exit from this program"},
 	".help": Cmd{addr: cmd_help, descr: "Print this Help"},
 	
-	"read": Cmd{addr: cmd_read, descr: "Read file"},
+	"read_byte": Cmd{addr: cmd_read_byte, descr: "Read file binary"},
+	"read_utf8": Cmd{addr: cmd_read_utf8, descr: "Read file UTF-8"},
 }
 
 
