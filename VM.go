@@ -3,11 +3,10 @@ package main
 import (
 	"strconv"
 	"fmt"
+	//"unsafe"
 )
 
-
 var frmVM *Node
-
 
 const (
    MemSize = 4096 
@@ -212,7 +211,33 @@ func StepOVM(){
         		mode = WIN
         	}
          	frmVM = CreateForm(&layout, "frm", nil, int(RAM[SP])*0xFF+int(RAM[SP+1]), int(RAM[SP+2])*0xFF+int(RAM[SP+3]), int(RAM[SP+4])*0xFF+int(RAM[SP+5]), int(RAM[SP+6])*0xFF+int(RAM[SP+7]), int((uint32(RAM[SP+8]) << 24)+(uint32(RAM[SP+9]) << 16)+(uint32(RAM[SP+10]) << 8)+uint32(RAM[SP+11])), mode, caption, (RAM[SP+17] != 0), nil)
-         	SP += 17
+         	
+
+         	/*RAM[SP+17] = byte(uint32(unsafe.Pointer(frmVM)))
+			RAM[SP+16] = byte(uint32(unsafe.Pointer(frmVM)) >> 8)
+			RAM[SP+15] = byte(uint32(unsafe.Pointer(frmVM)) >> 16)
+			RAM[SP+14] = byte(uint32(unsafe.Pointer(frmVM)) >> 24)*/
+			
+		//	fmt.Println("Pointer:")
+		//	s := fmt.Sprintf("%d", unsafe.Pointer(frmVM))
+		//	fmt.Println(s)
+		//	fmt.Println(frmVM)
+		//	a,_ := strconv.Atoi(s)
+			
+		//	frmVM = (*Node)(unsafe.Pointer(a))
+			//frmVM = uintptr(a)
+			//frmVM = (*Node)(unsafe.Pointer(frmVM))
+			//out := (*two)(unsafe.Pointer(&in))
+			
+			//uintptr(unsafe.Pointer(frmVM))
+			
+			/*var tmp [4]byte
+    		f := 123 
+    		binary.LittleEndian.PutUint32(tmp[:], math.Int32bits(f))
+    		i := int32(binary.LittleEndian.Uint32(tmp[:]))
+    		fmt.Println(f, i)*/
+				
+         	SP += 17 //13
          case 2:		// CreateLabel
          	//fmt.Println("SYSCALL LABEL:")
          	var caption string = "" 

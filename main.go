@@ -4,6 +4,8 @@ import (
 	//"fmt"
 	"syscall/js"
 	//"strings"
+	//"unsafe"
+	//"strconv"
 )
 
 // Work

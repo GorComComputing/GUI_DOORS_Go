@@ -98,8 +98,16 @@ func (obj *tListFileBox) Draw(parX int, parY int, parSizeX int, parSizeY int){
     		showBMP(nil, bmpFile_small, parX+obj.x + 4, parY+obj.y + 4 + i*20)
     	case "X":
     		showBMP(nil, bmpProgram, parX+obj.x + 4, parY+obj.y + 4 + i*20)
-    	case "B":
+    	case ".dor":
     		showBMP(nil, bmpProgram, parX+obj.x + 4, parY+obj.y + 4 + i*20)
+    	case ".go":
+    		showBMP(nil, bmpFile_small, parX+obj.x + 4, parY+obj.y + 4 + i*20)
+    	case ".c":
+    		showBMP(nil, bmpFile_small, parX+obj.x + 4, parY+obj.y + 4 + i*20)
+    	case ".html":
+    		showBMP(nil, bmpFile_small, parX+obj.x + 4, parY+obj.y + 4 + i*20)
+    	case ".asm":
+    		showBMP(nil, bmpFile_small, parX+obj.x + 4, parY+obj.y + 4 + i*20)
     	}   	
     }
     } else if obj.mode == BIGICON {
@@ -144,8 +152,16 @@ func (obj *tListFileBox) Draw(parX int, parY int, parSizeX int, parSizeY int){
     			showBMP(nil, bmpFile, parX+obj.x + 4 + 30 + (col)*100, parY+obj.y + 4 + row*70)
     		case "X":
     			showBMP(nil, bmpProgram, parX+obj.x + 4 + 30 + (col)*100, parY+obj.y + 4 + row*70)
-    		case "B":
-    			showBMP(nil, bmpProgram, parX+obj.x + 4 + 30 + (col)*100, parY+obj.y + 4 + row*70)
+    		case ".dor":
+    			showBMP(nil, bmpDorFile, parX+obj.x + 4 + 30 + (col)*100, parY+obj.y + 4 + row*70)
+    		case ".go":
+    			showBMP(nil, bmpGoFile, parX+obj.x + 4 + 30 + (col)*100, parY+obj.y + 4 + row*70)
+    		case ".c":
+    			showBMP(nil, bmpGoFile, parX+obj.x + 4 + 30 + (col)*100, parY+obj.y + 4 + row*70)
+    		case ".html":
+    			showBMP(nil, bmpGoFile, parX+obj.x + 4 + 30 + (col)*100, parY+obj.y + 4 + row*70)
+    		case ".asm":
+    			showBMP(nil, bmpGoFile, parX+obj.x + 4 + 30 + (col)*100, parY+obj.y + 4 + row*70)
     		}
     		col++
     	}

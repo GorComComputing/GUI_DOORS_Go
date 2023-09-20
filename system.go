@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	//"fmt"
     "syscall/js"
     "strings"
     "strconv"
@@ -82,7 +82,15 @@ func GetCatalogList(name string) []Catalog {
 		} else if row[0][0] == byte('-') && row[0][9] == byte('x') {
 			typCat = "X"
 		} else if strings.HasSuffix(row[8], ".dor") && row[0][0] != byte('d') {
-			typCat = "B"
+			typCat = ".dor"
+		} else if strings.HasSuffix(row[8], ".go") && row[0][0] != byte('d') {
+			typCat = ".go"
+		} else if strings.HasSuffix(row[8], ".c") && row[0][0] != byte('d') {
+			typCat = ".c"
+		} else if (strings.HasSuffix(row[8], ".html") || strings.HasSuffix(row[8], ".htm")) && row[0][0] != byte('d') {
+			typCat = ".html"
+		} else if strings.HasSuffix(row[8], ".asm") && row[0][0] != byte('d') {
+			typCat = ".asm"
 		} else if row[0][0] == byte('-') && row[0][9] == byte('-') {
 			typCat = "F"
 		} 

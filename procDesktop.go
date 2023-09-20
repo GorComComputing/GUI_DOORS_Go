@@ -85,24 +85,54 @@ func lsfDesktopClick(node *Node, x int, y int){
 		memNotepad.obj.(*tMemo).curY = 0
 		memNotepad.obj.(*tMemo).curXR = 0
 		memNotepad.obj.(*tMemo).curYR = 0
-		if strings.HasSuffix(curFileNameNotepad, ".asm"){
-			syntax(langASM)
-		} else if strings.HasSuffix(curFileNameNotepad, ".c") || 
-				  strings.HasSuffix(curFileNameNotepad, ".cpp") {
-			syntax(langC)
-		} else if strings.HasSuffix(curFileNameNotepad, ".go") {
-			syntax(langGO)
-		} else {
-			memNotepad.obj.(*tMemo).color = nil
-		}
+		memNotepad.obj.(*tMemo).color = nil
 	case "D":
 		execProcess(0)  // Run Explorer
 		edtExplorerPath.obj.(*tEdit).text = DesktopDir + node.obj.(*tListFileBox).list[node.obj.(*tListFileBox).selected].name + "/"
 		lsfExplorer.obj.(*tListFileBox).list = GetCatalogList(edtExplorerPath.obj.(*tEdit).text)
-	case "B":
+	case ".dor":
 		result := ReadFileByte(DesktopDir + node.obj.(*tListFileBox).list[node.obj.(*tListFileBox).selected].name)
 		loadOVM(result)
 		runVM()
+	case ".go":
+		execProcess(1)  // Run Notepad
+		result := ReadFileUTF8(DesktopDir + node.obj.(*tListFileBox).list[node.obj.(*tListFileBox).selected].name)
+		memNotepad.obj.(*tMemo).list = strings.Split(result, string(0x0D)+string(0x0A))
+		curFileNameNotepad = edtExplorerPath.obj.(*tEdit).text + node.obj.(*tListFileBox).list[node.obj.(*tListFileBox).selected].name
+		memNotepad.obj.(*tMemo).curX = 0
+		memNotepad.obj.(*tMemo).curY = 0
+		memNotepad.obj.(*tMemo).curXR = 0
+		memNotepad.obj.(*tMemo).curYR = 0
+		syntax(langGO)
+	case ".c":
+		execProcess(1)  // Run Notepad
+		result := ReadFileUTF8(DesktopDir + node.obj.(*tListFileBox).list[node.obj.(*tListFileBox).selected].name)
+		memNotepad.obj.(*tMemo).list = strings.Split(result, string(0x0D)+string(0x0A))
+		curFileNameNotepad = edtExplorerPath.obj.(*tEdit).text + node.obj.(*tListFileBox).list[node.obj.(*tListFileBox).selected].name
+		memNotepad.obj.(*tMemo).curX = 0
+		memNotepad.obj.(*tMemo).curY = 0
+		memNotepad.obj.(*tMemo).curXR = 0
+		memNotepad.obj.(*tMemo).curYR = 0
+		syntax(langC)
+	case ".asm":
+		execProcess(1)  // Run Notepad
+		result := ReadFileUTF8(DesktopDir + node.obj.(*tListFileBox).list[node.obj.(*tListFileBox).selected].name)
+		memNotepad.obj.(*tMemo).list = strings.Split(result, string(0x0D)+string(0x0A))
+		curFileNameNotepad = edtExplorerPath.obj.(*tEdit).text + node.obj.(*tListFileBox).list[node.obj.(*tListFileBox).selected].name
+		memNotepad.obj.(*tMemo).curX = 0
+		memNotepad.obj.(*tMemo).curY = 0
+		memNotepad.obj.(*tMemo).curXR = 0
+		memNotepad.obj.(*tMemo).curYR = 0
+		syntax(langASM)
+	case ".html":
+		execProcess(2)  // Run Browser
+		result := ReadFileUTF8(DesktopDir + node.obj.(*tListFileBox).list[node.obj.(*tListFileBox).selected].name)
+		memWebPage.obj.(*tMemo).list = strings.Split(result, string(0x0D)+string(0x0A))
+		//curFileNameNotepad = edtExplorerPath.obj.(*tEdit).text + node.obj.(*tListFileBox).list[node.obj.(*tListFileBox).selected].name
+		memWebPage.obj.(*tMemo).curX = 0
+		memWebPage.obj.(*tMemo).curY = 0
+		memWebPage.obj.(*tMemo).curXR = 0
+		memWebPage.obj.(*tMemo).curYR = 0
 	}
 }
 

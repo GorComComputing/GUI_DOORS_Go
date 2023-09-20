@@ -65,6 +65,11 @@ func initDOORS(programs []*tProgram) {
   	bmpAdd, _ = base64.StdEncoding.DecodeString(b64Add)
   	bmpAdd2, _ = base64.StdEncoding.DecodeString(b64Add2)
   	bmpRefresh, _ = base64.StdEncoding.DecodeString(b64Refresh)
+  	bmpDorFile, _ = base64.StdEncoding.DecodeString(b64DorFile)
+  	bmpGoFile, _ = base64.StdEncoding.DecodeString(b64GoFile)
+  	bmpCFile, _ = base64.StdEncoding.DecodeString(b64CFile)
+  	bmpHTMLFile, _ = base64.StdEncoding.DecodeString(b64HTMLFile)
+  	bmpASMFile, _ = base64.StdEncoding.DecodeString(b64ASMFile)
   	
 	startDesktop()
 	startRAD()
