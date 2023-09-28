@@ -15,9 +15,7 @@ var SIZE int = BITMAP_WIDTH*BITMAP_HEIGHT
 var GETMAX_X int = BITMAP_WIDTH - 1 
 var GETMAX_Y int = BITMAP_HEIGHT - 1
 
-
 var BUFFER_SIZE int = SIZE * 4
-//var graphicsBuffer [BUFFER_SIZE]uint8
 var graphicsBuffer []uint8 = make([]uint8, BUFFER_SIZE, BUFFER_SIZE)
 
 

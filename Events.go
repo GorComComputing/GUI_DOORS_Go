@@ -99,10 +99,6 @@ func eventResizeWindow(width int, height int) {
 	//SetViewPort(0, 0, GETMAX_X, GETMAX_Y)
 	//SetLocalViewPort(0, 0, GETMAX_X, GETMAX_Y)
 	
-	eventDraw()
-	
-	
-	
 	//graphicsBuffer = make([]uint8, BUFFER_SIZE, BUFFER_SIZE)
 }
       
@@ -119,6 +115,8 @@ func eventDraw() {
 		//FillCircle(nil, 0, 100, 30)
 		//Circle(nil, 0, 200, 30)
 	onTimer()
+	
+	drawDo()
 	
 	t := time.Now()
 	lblFPS.obj.(*tLabel).caption = t.Sub(start).String()

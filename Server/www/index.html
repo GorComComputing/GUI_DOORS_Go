@@ -22,6 +22,15 @@
 <script>
   document.querySelector("canvas").width = window.innerWidth;
   document.querySelector("canvas").height = window.innerHeight;
+  
+  let wasmByteMemoryArray;
+  let graphicsBufferPointer;
+  let graphicsBufferSize;
+  let imageDataArray;
+  
+  let canvasElement = document.querySelector("canvas");
+  let canvasContext = canvasElement.getContext("2d");
+  let canvasImageData = canvasContext.createImageData(canvasElement.width, canvasElement.height);
   	
   const go = new Go();
 
@@ -30,25 +39,16 @@
   const wasmModule = await wasmBrowserInstantiate("DOORS.wasm", importObject);
   go.run(wasmModule.instance);
 
-  // Get our exports object, with all of our exported Wasm Properties
   let exports = wasmModule.instance.exports;
-
-  // Get our memory object from the exports
   let memory = exports.memory;
 
-  // Create a Uint8Array to give us access to Wasm Memory
-  let wasmByteMemoryArray = new Uint8Array(memory.buffer);
+  wasmByteMemoryArray = new Uint8Array(memory.buffer);
 
-  // Get the pointer (index) to where our graphics buffer is located in wasm linear memory
-  let graphicsBufferPointer = exports.getGraphicsBufferPointer();
-  let graphicsBufferSize = exports.getGraphicsBufferSize();
+  graphicsBufferPointer = exports.getGraphicsBufferPointer();
+  graphicsBufferSize = exports.getGraphicsBufferSize();
   
   console.log(graphicsBufferPointer)
   console.log(graphicsBufferSize)
-
-  let canvasElement = document.querySelector("canvas");
-  let canvasContext = canvasElement.getContext("2d");
-  //let canvasImageData = canvasContext.createImageData(canvasElement.width, canvasElement.height);
   
   canvasElement.onclick = function() {
   		exports.eventClick(event.offsetX, event.offsetY);
@@ -65,19 +65,6 @@
   canvasElement.onmousemove = function() {
   		exports.eventMouseMove(event.offsetX, event.offsetY);
 	}
-
-  // Clear the canvas
-  canvasContext.clearRect(0, 0, canvasElement.width, canvasElement.height);
-
-  const draw = () => {   
-    let canvasImageData = canvasContext.createImageData(canvasElement.width, canvasElement.height);
-
-    let imageDataArray = wasmByteMemoryArray.slice(graphicsBufferPointer, graphicsBufferPointer + graphicsBufferSize);
-    canvasImageData.data.set(imageDataArray);
-
-    canvasContext.clearRect(0, 0, canvasElement.width, canvasElement.height);
-    canvasContext.putImageData(canvasImageData, 0, 0);
-  };
   
    const eventKeyDown = (e) => {
    	console.log(e.key);
@@ -94,23 +81,15 @@
   	
   	graphicsBufferPointer = exports.getGraphicsBufferPointer();
   	graphicsBufferSize = exports.getGraphicsBufferSize();
-  	
+  	 	
   	canvasElement.width = window.innerWidth;
   	canvasElement.height = window.innerHeight;
   	
-  	let canvasImageData = canvasContext.createImageData(canvasElement.width, canvasElement.height);
-  	
-  	let imageDataArray = wasmByteMemoryArray.slice(graphicsBufferPointer, graphicsBufferPointer + window.innerWidth*4*window.innerWidth ); //graphicsBufferSize
-    canvasImageData.data.set(imageDataArray);
-
-    canvasContext.clearRect(0, 0, canvasElement.width, canvasElement.height);
-    canvasContext.putImageData(canvasImageData, 0, 0);	
+  	canvasImageData = canvasContext.createImageData(canvasElement.width, canvasElement.height);
+    
+    exports.eventDraw();
    }
-
-  setInterval(() => {
-    draw();
-  }, 5); // 25
-  
+ 
   addEventListener("keydown",  eventKeyDown);
   addEventListener("keyup",  eventKeyUp);
   addEventListener("resize", resizeWindow);

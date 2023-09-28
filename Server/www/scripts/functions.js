@@ -19,6 +19,13 @@ function  HttpRequest(s, body) {
 }
 
 
+function drawDo() {   
+    let imageDataArray = wasmByteMemoryArray.slice(graphicsBufferPointer, graphicsBufferPointer + graphicsBufferSize);
+    canvasImageData.data.set(imageDataArray);
+    canvasContext.putImageData(canvasImageData, 0, 0);
+}
+
+
 
 
 		

@@ -110,3 +110,8 @@ func Get(url string, s string, body string) string {
 	//fmt.Println("Responsed: ", result)
 	return result
 }
+
+
+func drawDo() {
+	js.Global().Call("drawDo")
+}
