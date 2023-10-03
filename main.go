@@ -9,9 +9,9 @@ import (
 )
 
 // Work
-var ServerIP string = "192.168.63.60" 
-var RootDir string = "/home/gor/WORK/Go/projects/DOORS/Server/" 
-var DesktopDir string = "/home/gor/WORK/Go/projects/DOORS/Server/files/" // "/home/gor/WORK/Go/projects/" 
+//var ServerIP string = "192.168.63.60" 
+//var RootDir string = "/home/gor/WORK/Go/projects/DOORS/Server/" 
+//var DesktopDir string = "/home/gor/WORK/Go/projects/DOORS/Server/files/" // "/home/gor/WORK/Go/projects/" 
 
 // Remote
 //var ServerIP string = "172.18.0.1" 
@@ -23,6 +23,11 @@ var DesktopDir string = "/home/gor/WORK/Go/projects/DOORS/Server/files/" // "/ho
 //var RootDir string = "/home/jon/IT/WORK/Go/projects/DOORS/Server/"
 //var DesktopDir string = "/home/jon/IT/WORK/Go/projects/"
 
+// STV
+var ServerIP string = "192.168.1.136"
+var RootDir string = "/root/DOORS/"
+var DesktopDir string = "/root/DOORS/files/"
+
 // Список программ
 var programs = []*tProgram{
 	{"Files", startExplorer, &bmpFolder_small},
@@ -33,15 +38,16 @@ var programs = []*tProgram{
 	{"Dispatcher", startDispatch, &bmpProgram},
 	{"Terminal", startTerminal, &bmpProgram},
 	{"Virtual Machine", startVM, &bmpProgram},
-	}
+	{"Chrony", startChrony, &bmpProgram},
+}
 	
 
 func main() {
 
   	BITMAP_WIDTH = js.Global().Get("innerWidth").Int()
-    	BITMAP_HEIGHT = js.Global().Get("innerHeight").Int()
+    BITMAP_HEIGHT = js.Global().Get("innerHeight").Int()
     	
-    	SIZE = BITMAP_WIDTH*BITMAP_HEIGHT 
+    SIZE = BITMAP_WIDTH*BITMAP_HEIGHT 
 	GETMAX_X = BITMAP_WIDTH - 1 
 	GETMAX_Y = BITMAP_HEIGHT - 1
 	BUFFER_SIZE = BITMAP_WIDTH*BITMAP_HEIGHT * 4
