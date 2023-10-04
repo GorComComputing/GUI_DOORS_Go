@@ -1,13 +1,13 @@
 package main
 
 import (
-    //"fmt"
+    "fmt"
     //"math/rand"
     //"math"
     //"syscall/js"
     //"time"
     //"strconv"
-    //"strings"
+    "strings"
     //"net/http"
     //"io"
     //"bytes"
@@ -22,6 +22,7 @@ var pnlSNMPChrony *Node
 var pnlSystemChrony *Node
 var pnlWebChrony *Node
 var pnlWorkChrony *Node
+var pnlGNSSChrony *Node
 var tabChrony *Node
 
 // pnlSystemChrony
@@ -75,6 +76,10 @@ var edtMakestep2 *Node
 var edtLogdir *Node
 var edtLocalstratum *Node
 
+// pnlGNSSChrony
+var memGNSSChrony *Node
+var btnGNSS *Node
+
 
 func startChrony(frmMain *Node){
 	setSize(frmMain, 934, 600)
@@ -82,7 +87,7 @@ func startChrony(frmMain *Node){
 	frmMain.obj.(*tForm).y = BITMAP_HEIGHT/2 - frmMain.obj.(*tForm).sizeY/2
 	
 	
-	listTabChrony := []string{"Chrony", "STV", "SNMP", "System", "Web & SSH", "Working"} 
+	listTabChrony := []string{"Chrony", "STV", "SNMP", "System", "Web & SSH", "Working", "GNSS"} 
 	pnlChrony = CreatePanel(frmMain, "pnlChrony", 2, 41, 930, 557, 0xd8dcc0, NONE, nil)
     pnlSTVChrony = CreatePanel(frmMain, "pnlSTVChrony", 2, 41, 930, 557, 0xd8dcc0, NONE, nil)
     pnlSTVChrony.obj.(*tPanel).visible = false
@@ -94,10 +99,12 @@ func startChrony(frmMain *Node){
     pnlWebChrony.obj.(*tPanel).visible = false
     pnlWorkChrony = CreatePanel(frmMain, "pnlWorkChrony", 2, 41, 930, 557, 0xd8dcc0, NONE, nil)
     pnlWorkChrony.obj.(*tPanel).visible = false
+    pnlGNSSChrony = CreatePanel(frmMain, "pnlGNSSChrony", 2, 41, 930, 557, 0xd8dcc0, NONE, nil)
+    pnlGNSSChrony.obj.(*tPanel).visible = false
 	tabChrony = CreateTab(frmMain, "tabChrony", 2, 20, 90, 20, 0xd8dcc0, 0x0, listTabChrony, tabChronyClick, nil)
 	
 	// pnlSystemChrony
-	memSystemChrony = CreateMemo(pnlSystemChrony, "memSystemChrony", 7, 8, 800, 430, 0x2A242D, 0x000000, nil)
+	memSystemChrony = CreateMemo(pnlSystemChrony, "memSystemChrony", 7, 8, 800, 430, 0x2A242D, 0xCCCCCC, nil)
 	
 	lblPID = CreateLabel(pnlSystemChrony, "lblPID", 16, 457, 90, 20, 0xd8dcc0, 0x0, "PID process", nil)
 	lblNameProc = CreateLabel(pnlSystemChrony, "lblNameProc", 16, 485, 90, 20, 0xd8dcc0, 0x0, "Name process", nil)
@@ -114,9 +121,10 @@ func startChrony(frmMain *Node){
 	btnMonitor = CreateBtn(pnlSystemChrony, "btnMonitor", 818, 9, 100, 24, 0xd8dcc0, 0x0, "Monitor", btnMonitorClick)
 	btnNetstat = CreateBtn(pnlSystemChrony, "btnNetstat", 818, 45, 100, 24, 0xd8dcc0, 0x0, "Netstat -a", btnNetstatClick)
 	btnNtpq = CreateBtn(pnlSystemChrony, "btnNtpq", 818, 81, 100, 24, 0xd8dcc0, 0x0, "ntpq -p", btnNtpqClick)
+	btnNtpq.obj.(*tBtn).enabled = false
 	
 	// pnlChrony
-	memChrony = CreateMemo(pnlChrony, "memChrony", 405, 9, 400, 544, 0x2A242D, 0x000000, nil)
+	memChrony = CreateMemo(pnlChrony, "memChrony", 405, 9, 400, 544, 0x2A242D, 0xCCCCCC, nil)
 	
 	lblServer = CreateLabel(pnlChrony, "lblServer", 16, 54, 90, 20, 0xd8dcc0, 0x0, "server", nil)
 	lblAllow = CreateLabel(pnlChrony, "lblAllow", 16, 82, 90, 20, 0xd8dcc0, 0x0, "allow", nil)
@@ -145,9 +153,6 @@ func startChrony(frmMain *Node){
 	edtLogdir = CreateEdit(pnlChrony, "edtLogdir", 112, 250, 200, 20, 0xf8fcf8, 0x0, "/var/log/chrony", nil, nil)
 	edtLocalstratum = CreateEdit(pnlChrony, "edtLocalstratum", 217, 278, 96, 20, 0xf8fcf8, 0x0, "8", nil, nil)
 	
-	
-	
-	
 	btnStartChrony = CreateBtn(pnlChrony, "btnStartChrony", 70, 11, 70, 24, 0xd8dcc0, 0x0, "Start", btnStartChronyClick)
 	btnStopChrony = CreateBtn(pnlChrony, "btnStopChrony", 160, 11, 70, 24, 0xd8dcc0, 0x0, "Stop", btnStopChronyClick)
 	btnRestartChrony = CreateBtn(pnlChrony, "btnRestartChrony", 250, 11, 70, 24, 0xd8dcc0, 0x0, "Restart", btnRestartChronyClick)
@@ -160,8 +165,33 @@ func startChrony(frmMain *Node){
 	btnConfig = CreateBtn(pnlChrony, "btnConfig", 818, 189, 100, 24, 0xd8dcc0, 0x0, "Config", btnConfigClick)
 	btnSaveConfig = CreateBtn(pnlChrony, "btnSaveConfig", 818, 225, 100, 24, 0xd8dcc0, 0x0, "Save Config", btnSaveConfigClick)
 	btnRestore = CreateBtn(pnlChrony, "btnRestore", 818, 261, 100, 24, 0xd8dcc0, 0x0, "Restore", btnRestoreClick)
-
+	
+	
+	// pnlGNSSChrony
+	memGNSSChrony = CreateMemo(pnlGNSSChrony, "memGNSSChrony", 7, 8, 800, 430, 0x2A242D, 0xCCCCCC, nil)
+	btnGNSS = CreateBtn(pnlGNSSChrony, "btnGNSS", 818, 9, 100, 24, 0xd8dcc0, 0x0, "GNSS", btnGNSSClick)
 }
+
+
+func printGNSSTerminal(str string) {
+	arr := strings.Split(str, string(10))
+	
+	memGNSSChrony.obj.(*tMemo).list[memGNSSChrony.obj.(*tMemo).curYR + memGNSSChrony.obj.(*tMemo).curY] += arr[0]
+	if len(arr) > 0 {
+		var i int 
+		for i = 0; i < len(arr)-1; i++ {
+			memGNSSChrony.obj.(*tMemo).list = append(memGNSSChrony.obj.(*tMemo).list, "")
+		}
+		copy(memGNSSChrony.obj.(*tMemo).list[memGNSSChrony.obj.(*tMemo).curYR + memGNSSChrony.obj.(*tMemo).curY+1:], arr[1:])
+		memGNSSChrony.obj.(*tMemo).curY += i
+	}
+	
+	if memGNSSChrony.obj.(*tMemo).curY > memGNSSChrony.obj.(*tMemo).sizeY/14-1 {
+		memGNSSChrony.obj.(*tMemo).curYR += memGNSSChrony.obj.(*tMemo).curY - memGNSSChrony.obj.(*tMemo).sizeY/14
+		memGNSSChrony.obj.(*tMemo).curY -= memGNSSChrony.obj.(*tMemo).curY - memGNSSChrony.obj.(*tMemo).sizeY/14
+	}
+}
+
 
 
 func tabChronyClick(node *Node, x int, y int) {
@@ -172,6 +202,7 @@ func tabChronyClick(node *Node, x int, y int) {
 		pnlSystemChrony.obj.(*tPanel).visible = false
 		pnlWebChrony.obj.(*tPanel).visible = false
 		pnlWorkChrony.obj.(*tPanel).visible = false
+		pnlGNSSChrony.obj.(*tPanel).visible = false
 	} else if node.obj.(*tTab).selected == 1 {
 		pnlChrony.obj.(*tPanel).visible = false
 		pnlSTVChrony.obj.(*tPanel).visible = true
@@ -179,6 +210,7 @@ func tabChronyClick(node *Node, x int, y int) {
 		pnlSystemChrony.obj.(*tPanel).visible = false
 		pnlWebChrony.obj.(*tPanel).visible = false
 		pnlWorkChrony.obj.(*tPanel).visible = false
+		pnlGNSSChrony.obj.(*tPanel).visible = false
 	} else if node.obj.(*tTab).selected == 2 {
 		pnlChrony.obj.(*tPanel).visible = false
 		pnlSTVChrony.obj.(*tPanel).visible = false
@@ -186,6 +218,7 @@ func tabChronyClick(node *Node, x int, y int) {
 		pnlSystemChrony.obj.(*tPanel).visible = false
 		pnlWebChrony.obj.(*tPanel).visible = false
 		pnlWorkChrony.obj.(*tPanel).visible = false
+		pnlGNSSChrony.obj.(*tPanel).visible = false
 	} else if node.obj.(*tTab).selected == 3 {
 		pnlChrony.obj.(*tPanel).visible = false
 		pnlSTVChrony.obj.(*tPanel).visible = false
@@ -193,6 +226,7 @@ func tabChronyClick(node *Node, x int, y int) {
 		pnlSystemChrony.obj.(*tPanel).visible = true
 		pnlWebChrony.obj.(*tPanel).visible = false
 		pnlWorkChrony.obj.(*tPanel).visible = false
+		pnlGNSSChrony.obj.(*tPanel).visible = false
 	} else if node.obj.(*tTab).selected == 4 {
 		pnlChrony.obj.(*tPanel).visible = false
 		pnlSTVChrony.obj.(*tPanel).visible = false
@@ -200,6 +234,7 @@ func tabChronyClick(node *Node, x int, y int) {
 		pnlSystemChrony.obj.(*tPanel).visible = false
 		pnlWebChrony.obj.(*tPanel).visible = true
 		pnlWorkChrony.obj.(*tPanel).visible = false
+		pnlGNSSChrony.obj.(*tPanel).visible = false
 	} else if node.obj.(*tTab).selected == 5 {
 		pnlChrony.obj.(*tPanel).visible = false
 		pnlSTVChrony.obj.(*tPanel).visible = false
@@ -207,27 +242,130 @@ func tabChronyClick(node *Node, x int, y int) {
 		pnlSystemChrony.obj.(*tPanel).visible = false
 		pnlWebChrony.obj.(*tPanel).visible = false
 		pnlWorkChrony.obj.(*tPanel).visible = true
+		pnlGNSSChrony.obj.(*tPanel).visible = false
+	} else if node.obj.(*tTab).selected == 6 {
+		pnlChrony.obj.(*tPanel).visible = false
+		pnlSTVChrony.obj.(*tPanel).visible = false
+		pnlSNMPChrony.obj.(*tPanel).visible = false
+		pnlSystemChrony.obj.(*tPanel).visible = false
+		pnlWebChrony.obj.(*tPanel).visible = false
+		pnlWorkChrony.obj.(*tPanel).visible = false
+		pnlGNSSChrony.obj.(*tPanel).visible = true
 	}
 }
 
 
 func btnPIDKillClick(node *Node){
+	if edtPID.obj.(*tEdit).text != "" {
+		//edtCommand.obj.(*tEdit).text = strings.ToLower(edtCommand.obj.(*tEdit).text)
+		result := Get("http://"+ServerIP+":8084/api", "cmd=kill " + edtPID.obj.(*tEdit).text, "")	
+		arr := strings.Split(result, string(10))
+	
+		memSystemChrony.obj.(*tMemo).list = nil
+		memSystemChrony.obj.(*tMemo).curY = 0
+		memSystemChrony.obj.(*tMemo).curX = 0
+		memSystemChrony.obj.(*tMemo).curXR = 0
+		memSystemChrony.obj.(*tMemo).curXR = 0
+	
+		if len(arr) > 0 {
+			var i int 
+			for i = 0; i < len(arr)-1; i++ {
+				memSystemChrony.obj.(*tMemo).list = append(memSystemChrony.obj.(*tMemo).list, "")
+			}
+			copy(memSystemChrony.obj.(*tMemo).list[memSystemChrony.obj.(*tMemo).curYR + memGNSSChrony.obj.(*tMemo).curY+1:], arr[1:])
+			memSystemChrony.obj.(*tMemo).curY += i
+		}
+	}
 }
 
 
 func btnNameKillClick(node *Node){
+	if edtNameProc.obj.(*tEdit).text != "" {
+		edtNameProc.obj.(*tEdit).text = strings.ToLower(edtNameProc.obj.(*tEdit).text)
+		result := Get("http://"+ServerIP+":8084/api", "cmd=killall " + edtNameProc.obj.(*tEdit).text, "")	
+		arr := strings.Split(result, string(10))
+	
+		memSystemChrony.obj.(*tMemo).list = nil
+		memSystemChrony.obj.(*tMemo).curY = 0
+		memSystemChrony.obj.(*tMemo).curX = 0
+		memSystemChrony.obj.(*tMemo).curXR = 0
+		memSystemChrony.obj.(*tMemo).curXR = 0
+	
+		if len(arr) > 0 {
+			var i int 
+			for i = 0; i < len(arr)-1; i++ {
+				memSystemChrony.obj.(*tMemo).list = append(memSystemChrony.obj.(*tMemo).list, "")
+			}
+			copy(memSystemChrony.obj.(*tMemo).list[memSystemChrony.obj.(*tMemo).curYR + memGNSSChrony.obj.(*tMemo).curY+1:], arr[1:])
+			memSystemChrony.obj.(*tMemo).curY += i
+		}
+	}
 }
 
 
 func btnRunCmdClick(node *Node){
+	if edtCommand.obj.(*tEdit).text != "" {
+		edtCommand.obj.(*tEdit).text = strings.ToLower(edtCommand.obj.(*tEdit).text)
+		result := Get("http://"+ServerIP+":8084/api", "cmd=run " + edtCommand.obj.(*tEdit).text, "")	
+		arr := strings.Split(result, string(10))
+	
+		memSystemChrony.obj.(*tMemo).list = nil
+		memSystemChrony.obj.(*tMemo).curY = 0
+		memSystemChrony.obj.(*tMemo).curX = 0
+		memSystemChrony.obj.(*tMemo).curXR = 0
+		memSystemChrony.obj.(*tMemo).curXR = 0
+	
+		if len(arr) > 0 {
+			var i int 
+			for i = 0; i < len(arr)-1; i++ {
+				memSystemChrony.obj.(*tMemo).list = append(memSystemChrony.obj.(*tMemo).list, "")
+			}
+			copy(memSystemChrony.obj.(*tMemo).list[memSystemChrony.obj.(*tMemo).curYR + memSystemChrony.obj.(*tMemo).curY+1:], arr[1:])
+			memSystemChrony.obj.(*tMemo).curY += i
+		}
+	}
 }
 
 
 func btnMonitorClick(node *Node){
+	result := Get("http://"+ServerIP+":8084/api", "cmd=top", "")	
+	arr := strings.Split(result, string(10))
+	
+	memSystemChrony.obj.(*tMemo).list = nil
+	memSystemChrony.obj.(*tMemo).curY = 0
+	memSystemChrony.obj.(*tMemo).curX = 0
+	memSystemChrony.obj.(*tMemo).curXR = 0
+	memSystemChrony.obj.(*tMemo).curXR = 0
+	
+	if len(arr) > 0 {
+		var i int 
+		for i = 0; i < len(arr)-1; i++ {
+			memSystemChrony.obj.(*tMemo).list = append(memSystemChrony.obj.(*tMemo).list, "")
+		}
+		copy(memSystemChrony.obj.(*tMemo).list[memSystemChrony.obj.(*tMemo).curYR + memGNSSChrony.obj.(*tMemo).curY+1:], arr[1:])
+		memSystemChrony.obj.(*tMemo).curY += i
+	}
 }
 
 
 func btnNetstatClick(node *Node){
+	result := Get("http://"+ServerIP+":8084/api", "cmd=netstat", "")	
+	arr := strings.Split(result, string(10))
+	
+	memSystemChrony.obj.(*tMemo).list = nil
+	memSystemChrony.obj.(*tMemo).curY = 0
+	memSystemChrony.obj.(*tMemo).curX = 0
+	memSystemChrony.obj.(*tMemo).curXR = 0
+	memSystemChrony.obj.(*tMemo).curXR = 0
+	
+	if len(arr) > 0 {
+		var i int 
+		for i = 0; i < len(arr)-1; i++ {
+			memSystemChrony.obj.(*tMemo).list = append(memSystemChrony.obj.(*tMemo).list, "")
+		}
+		copy(memSystemChrony.obj.(*tMemo).list[memSystemChrony.obj.(*tMemo).curYR + memGNSSChrony.obj.(*tMemo).curY+1:], arr[1:])
+		memSystemChrony.obj.(*tMemo).curY += i
+	}
 }
 
 
@@ -248,18 +386,40 @@ func cbxAllDenyClick(node *Node){
 
 
 func btnStartChronyClick(node *Node){
+	Get("http://"+ServerIP+":8084/api", "cmd=start", "")	
 }
 
 
 func btnStopChronyClick(node *Node){
+	Get("http://"+ServerIP+":8084/api", "cmd=stop", "")	
 }
 
 
 func btnRestartChronyClick(node *Node){
+	Get("http://"+ServerIP+":8084/api", "cmd=restart", "")	
 }
 
 
 func btnActivityClick(node *Node){
+	result := Get("http://"+ServerIP+":8084/api", "cmd=activity", "")	
+	fmt.Println("RESULT: " + result)
+	arr := strings.Split(result, string(10))
+	fmt.Println(arr)
+	
+	memChrony.obj.(*tMemo).list = nil
+	memChrony.obj.(*tMemo).curY = 0
+	memChrony.obj.(*tMemo).curX = 0
+	memChrony.obj.(*tMemo).curXR = 0
+	memChrony.obj.(*tMemo).curXR = 0
+	
+	if len(arr) > 0 {
+		var i int 
+		for i = 0; i < len(arr)-1; i++ {
+			memChrony.obj.(*tMemo).list = append(memChrony.obj.(*tMemo).list, "")
+		}
+		copy(memChrony.obj.(*tMemo).list[memChrony.obj.(*tMemo).curYR + memChrony.obj.(*tMemo).curY+1:], arr[1:])
+		memChrony.obj.(*tMemo).curY += i
+	}
 }
 
 
@@ -292,5 +452,11 @@ func btnRestoreClick(node *Node){
 
 
 func cbxRTCsyncClick(node *Node){
+}
+
+
+func btnGNSSClick(node *Node){
+	result := Get("http://"+ServerIP+":8084/api", "cmd=gnss", "")
+	printGNSSTerminal(result)
 }
 
