@@ -48,7 +48,7 @@ func main() {
 
 	// start web server
 	fmt.Println("Server DOORS started OK")
-	fmt.Println("Try http://localhost:8081")
+	fmt.Println("Port: 8081")
 	//fmt.Println("or https://localhost:443")
 	//go http.ListenAndServeTLS(":443", "cert.pem", "key.pem", nil)
 	//http.ListenAndServe(":8085", nil)

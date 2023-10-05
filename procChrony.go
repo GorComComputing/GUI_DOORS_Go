@@ -265,15 +265,13 @@ func btnPIDKillClick(node *Node){
 		memSystemChrony.obj.(*tMemo).curY = 0
 		memSystemChrony.obj.(*tMemo).curX = 0
 		memSystemChrony.obj.(*tMemo).curXR = 0
-		memSystemChrony.obj.(*tMemo).curXR = 0
+		memSystemChrony.obj.(*tMemo).curYR = 0
 	
 		if len(arr) > 0 {
-			var i int 
-			for i = 0; i < len(arr)-1; i++ {
+			for i := 0; i < len(arr); i++ {
 				memSystemChrony.obj.(*tMemo).list = append(memSystemChrony.obj.(*tMemo).list, "")
 			}
-			copy(memSystemChrony.obj.(*tMemo).list[memSystemChrony.obj.(*tMemo).curYR + memGNSSChrony.obj.(*tMemo).curY+1:], arr[1:])
-			memSystemChrony.obj.(*tMemo).curY += i
+			copy(memSystemChrony.obj.(*tMemo).list, arr)
 		}
 	}
 }
@@ -289,15 +287,13 @@ func btnNameKillClick(node *Node){
 		memSystemChrony.obj.(*tMemo).curY = 0
 		memSystemChrony.obj.(*tMemo).curX = 0
 		memSystemChrony.obj.(*tMemo).curXR = 0
-		memSystemChrony.obj.(*tMemo).curXR = 0
+		memSystemChrony.obj.(*tMemo).curYR = 0
 	
 		if len(arr) > 0 {
-			var i int 
-			for i = 0; i < len(arr)-1; i++ {
+			for i := 0; i < len(arr); i++ {
 				memSystemChrony.obj.(*tMemo).list = append(memSystemChrony.obj.(*tMemo).list, "")
 			}
-			copy(memSystemChrony.obj.(*tMemo).list[memSystemChrony.obj.(*tMemo).curYR + memGNSSChrony.obj.(*tMemo).curY+1:], arr[1:])
-			memSystemChrony.obj.(*tMemo).curY += i
+			copy(memSystemChrony.obj.(*tMemo).list, arr)
 		}
 	}
 }
@@ -313,15 +309,13 @@ func btnRunCmdClick(node *Node){
 		memSystemChrony.obj.(*tMemo).curY = 0
 		memSystemChrony.obj.(*tMemo).curX = 0
 		memSystemChrony.obj.(*tMemo).curXR = 0
-		memSystemChrony.obj.(*tMemo).curXR = 0
+		memSystemChrony.obj.(*tMemo).curYR = 0
 	
 		if len(arr) > 0 {
-			var i int 
-			for i = 0; i < len(arr)-1; i++ {
+			for i := 0; i < len(arr); i++ {
 				memSystemChrony.obj.(*tMemo).list = append(memSystemChrony.obj.(*tMemo).list, "")
 			}
-			copy(memSystemChrony.obj.(*tMemo).list[memSystemChrony.obj.(*tMemo).curYR + memSystemChrony.obj.(*tMemo).curY+1:], arr[1:])
-			memSystemChrony.obj.(*tMemo).curY += i
+			copy(memSystemChrony.obj.(*tMemo).list, arr)
 		}
 	}
 }
@@ -335,15 +329,13 @@ func btnMonitorClick(node *Node){
 	memSystemChrony.obj.(*tMemo).curY = 0
 	memSystemChrony.obj.(*tMemo).curX = 0
 	memSystemChrony.obj.(*tMemo).curXR = 0
-	memSystemChrony.obj.(*tMemo).curXR = 0
+	memSystemChrony.obj.(*tMemo).curYR = 0
 	
 	if len(arr) > 0 {
-		var i int 
-		for i = 0; i < len(arr)-1; i++ {
+		for i := 0; i < len(arr); i++ {
 			memSystemChrony.obj.(*tMemo).list = append(memSystemChrony.obj.(*tMemo).list, "")
 		}
-		copy(memSystemChrony.obj.(*tMemo).list[memSystemChrony.obj.(*tMemo).curYR + memGNSSChrony.obj.(*tMemo).curY+1:], arr[1:])
-		memSystemChrony.obj.(*tMemo).curY += i
+		copy(memSystemChrony.obj.(*tMemo).list, arr)
 	}
 }
 
@@ -356,15 +348,13 @@ func btnNetstatClick(node *Node){
 	memSystemChrony.obj.(*tMemo).curY = 0
 	memSystemChrony.obj.(*tMemo).curX = 0
 	memSystemChrony.obj.(*tMemo).curXR = 0
-	memSystemChrony.obj.(*tMemo).curXR = 0
+	memSystemChrony.obj.(*tMemo).curYR = 0
 	
 	if len(arr) > 0 {
-		var i int 
-		for i = 0; i < len(arr)-1; i++ {
+		for i := 0; i < len(arr); i++ {
 			memSystemChrony.obj.(*tMemo).list = append(memSystemChrony.obj.(*tMemo).list, "")
 		}
-		copy(memSystemChrony.obj.(*tMemo).list[memSystemChrony.obj.(*tMemo).curYR + memGNSSChrony.obj.(*tMemo).curY+1:], arr[1:])
-		memSystemChrony.obj.(*tMemo).curY += i
+		copy(memSystemChrony.obj.(*tMemo).list, arr)
 	}
 }
 
@@ -404,42 +394,119 @@ func btnActivityClick(node *Node){
 	result := Get("http://"+ServerIP+":8084/api", "cmd=activity", "")	
 	fmt.Println("RESULT: " + result)
 	arr := strings.Split(result, string(10))
-	fmt.Println(arr)
 	
 	memChrony.obj.(*tMemo).list = nil
 	memChrony.obj.(*tMemo).curY = 0
 	memChrony.obj.(*tMemo).curX = 0
 	memChrony.obj.(*tMemo).curXR = 0
-	memChrony.obj.(*tMemo).curXR = 0
+	memChrony.obj.(*tMemo).curYR = 0
 	
 	if len(arr) > 0 {
-		var i int 
-		for i = 0; i < len(arr)-1; i++ {
+		for i := 0; i < len(arr); i++ {
 			memChrony.obj.(*tMemo).list = append(memChrony.obj.(*tMemo).list, "")
 		}
-		copy(memChrony.obj.(*tMemo).list[memChrony.obj.(*tMemo).curYR + memChrony.obj.(*tMemo).curY+1:], arr[1:])
-		memChrony.obj.(*tMemo).curY += i
+		copy(memChrony.obj.(*tMemo).list, arr)
 	}
 }
 
 
 func btnTrackingClick(node *Node){
+	result := Get("http://"+ServerIP+":8084/api", "cmd=tracking", "")	
+	fmt.Println("RESULT: " + result)
+	arr := strings.Split(result, string(10))
+	
+	memChrony.obj.(*tMemo).list = nil
+	memChrony.obj.(*tMemo).curY = 0
+	memChrony.obj.(*tMemo).curX = 0
+	memChrony.obj.(*tMemo).curXR = 0
+	memChrony.obj.(*tMemo).curYR = 0
+	
+	if len(arr) > 0 {
+		for i := 0; i < len(arr); i++ {
+			memChrony.obj.(*tMemo).list = append(memChrony.obj.(*tMemo).list, "")
+		}
+		copy(memChrony.obj.(*tMemo).list, arr)
+	}
 }
 
 
 func btnSourcesClick(node *Node){
+	result := Get("http://"+ServerIP+":8084/api", "cmd=sources", "")	
+	fmt.Println("RESULT: " + result)
+	arr := strings.Split(result, string(10))
+	
+	memChrony.obj.(*tMemo).list = nil
+	memChrony.obj.(*tMemo).curY = 0
+	memChrony.obj.(*tMemo).curX = 0
+	memChrony.obj.(*tMemo).curXR = 0
+	memChrony.obj.(*tMemo).curYR = 0
+	
+	if len(arr) > 0 {
+		for i := 0; i < len(arr); i++ {
+			memChrony.obj.(*tMemo).list = append(memChrony.obj.(*tMemo).list, "")
+		}
+		copy(memChrony.obj.(*tMemo).list, arr)
+	}
 }
 
 
 func btnSourceStatsClick(node *Node){
+	result := Get("http://"+ServerIP+":8084/api", "cmd=sourcestats", "")	
+	fmt.Println("RESULT: " + result)
+	arr := strings.Split(result, string(10))
+	
+	memChrony.obj.(*tMemo).list = nil
+	memChrony.obj.(*tMemo).curY = 0
+	memChrony.obj.(*tMemo).curX = 0
+	memChrony.obj.(*tMemo).curXR = 0
+	memChrony.obj.(*tMemo).curYR = 0
+	
+	if len(arr) > 0 {
+		for i := 0; i < len(arr); i++ {
+			memChrony.obj.(*tMemo).list = append(memChrony.obj.(*tMemo).list, "")
+		}
+		copy(memChrony.obj.(*tMemo).list, arr)
+	}
 }
 
 
 func btnClientsClick(node *Node){
+	result := Get("http://"+ServerIP+":8084/api", "cmd=clients", "")	
+	fmt.Println("RESULT: " + result)
+	arr := strings.Split(result, string(10))
+	
+	memChrony.obj.(*tMemo).list = nil
+	memChrony.obj.(*tMemo).curY = 0
+	memChrony.obj.(*tMemo).curX = 0
+	memChrony.obj.(*tMemo).curXR = 0
+	memChrony.obj.(*tMemo).curYR = 0
+	
+	if len(arr) > 0 {
+		for i := 0; i < len(arr); i++ {
+			memChrony.obj.(*tMemo).list = append(memChrony.obj.(*tMemo).list, "")
+		}
+		copy(memChrony.obj.(*tMemo).list, arr)
+	}
 }
 
 
 func btnConfigClick(node *Node){
+	result := Get("http://"+ServerIP+":8084/api", "cmd=config", "")	
+	fmt.Println("RESULT: " + result)
+	arr := strings.Split(result, string(10))
+	
+	memChrony.obj.(*tMemo).list = nil
+	memChrony.obj.(*tMemo).curY = 0
+	memChrony.obj.(*tMemo).curX = 0
+	memChrony.obj.(*tMemo).curXR = 0
+	memChrony.obj.(*tMemo).curYR = 0
+	
+	if len(arr) > 0 {
+		for i := 0; i < len(arr); i++ {
+			memChrony.obj.(*tMemo).list = append(memChrony.obj.(*tMemo).list, "")
+		}
+		copy(memChrony.obj.(*tMemo).list, arr)
+	}
 }
 
 
@@ -448,10 +515,31 @@ func btnSaveConfigClick(node *Node){
 
 
 func btnRestoreClick(node *Node){
+	result := Get("http://"+ServerIP+":8084/api", "cmd=restore", "")	
+	fmt.Println("RESULT: " + result)
+	arr := strings.Split(result, string(10))
+	
+	memChrony.obj.(*tMemo).list = nil
+	memChrony.obj.(*tMemo).curY = 0
+	memChrony.obj.(*tMemo).curX = 0
+	memChrony.obj.(*tMemo).curXR = 0
+	memChrony.obj.(*tMemo).curYR = 0
+	
+	if len(arr) > 0 {
+		for i := 0; i < len(arr); i++ {
+			memChrony.obj.(*tMemo).list = append(memChrony.obj.(*tMemo).list, "")
+		}
+		copy(memChrony.obj.(*tMemo).list, arr)
+	}
 }
 
 
 func cbxRTCsyncClick(node *Node){
+	if node.obj.(*tCheckBox).checked {
+		node.obj.(*tCheckBox).checked = false
+	} else {
+		node.obj.(*tCheckBox).checked = true
+	}
 }
 
 
