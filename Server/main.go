@@ -7,8 +7,8 @@ import (
 	"strings"
 	//"encoding/gob"
 	
-    	"os"
-    	"bufio"
+    "os"
+    "bufio"
 )
 
 
@@ -31,13 +31,13 @@ func main() {
 
 		// TUI mode
 		if os.Args[1] == "-w"{
-                        fmt.Println("Window")
-                        os.Exit(0)
-                }
+        	fmt.Println("Window")
+            os.Exit(0)
+        }
 
-        	copy(words[0:], os.Args[1:])
+        copy(words[0:], os.Args[1:])
                 
-        	out := interpretator(words)
+        out := interpretator(words)
 		if len(out) > 0 {
 			fmt.Print(out)
 		}
@@ -49,11 +49,6 @@ func main() {
 	// start web server
 	fmt.Println("Server DOORS started OK")
 	fmt.Println("Port: 8081")
-	//fmt.Println("or https://localhost:443")
-	//go http.ListenAndServeTLS(":443", "cert.pem", "key.pem", nil)
-	//http.ListenAndServe(":8085", nil)
-	// for redirect http to https
-	//http.ListenAndServe(":8080", http.HandlerFunc(redirectToHttps))
 	
 	go http.ListenAndServe(":8081", &Handler{
 		fileServer: http.FileServer(http.Dir("www")),
@@ -63,47 +58,45 @@ func main() {
 	for {  // exit_status
 		fmt.Print("DOORS> ")
 		// ввод строки с пробелами
-    		scanner := bufio.NewScanner(os.Stdin)
-    		scanner.Scan()
-    		cmd_line = scanner.Text()
-    		// разбиение на подстроки по пробелу
-    		words = strings.Fields(cmd_line)
+    	scanner := bufio.NewScanner(os.Stdin)
+    	scanner.Scan()
+    	cmd_line = scanner.Text()
+    	// разбиение на подстроки по пробелу
+    	words = strings.Fields(cmd_line)
     		
-    		isUnion := false
-    		union := ""
-    		var count []int
-    		var length []int
-    		var Unions []string
-    		for i, val := range words {
-    			if (val[0] == '"' && val[len(val)-1] != '"') || (val[0] == '"' && len(val) == 1) && isUnion != true {
-    				isUnion = true
-    				union += val + " "
-    				count = append(count, i)
-    				continue
-    			}
-    			if val[len(val)-1] != '"' && isUnion == true {
-    				union += val + " "
-    				//count = append(count, i)
-    				continue
-    			}
-    			if val[len(val)-1] == '"' {
-    				isUnion = false
-    				union += val
-    				//count = append(count, i)
-    				length = append(length, i - count[len(count)-1])
-    				
-    				Unions = append(Unions, union)
-    				union = ""
-    				continue
-    			}
+    	isUnion := false
+    	union := ""
+    	var count []int
+    	var length []int
+    	var Unions []string
+    	for i, val := range words {
+    		if (val[0] == '"' && val[len(val)-1] != '"') || (val[0] == '"' && len(val) == 1) && isUnion != true {
+    			isUnion = true
+    			union += val + " "
+    			count = append(count, i)
+    			continue
     		}
+    		if val[len(val)-1] != '"' && isUnion == true {
+    			union += val + " "
+    			continue
+    		}
+    		if val[len(val)-1] == '"' {
+    			isUnion = false
+    			union += val
+    			length = append(length, i - count[len(count)-1])
+    				
+    			Unions = append(Unions, union)
+    			union = ""
+    			continue
+    		}
+    	}
     		
     		
-    		x := 0
-    		for i, val := range count {
-    			words[val+x] = Unions[i] 
-    			copy(words[val+x+1:], words[val+length[i]+1:])
-    			x -= length[i]
+    	x := 0
+    	for i, val := range count {
+    		words[val+x] = Unions[i] 
+    		copy(words[val+x+1:], words[val+length[i]+1:])
+    		x -= length[i]
 		}
 		words = words[:len(words)+x]
 	   		
@@ -149,7 +142,6 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	
-		
 	// serve static assets from 'static' dir:
 	h.fileServer.ServeHTTP(w, r)
 }

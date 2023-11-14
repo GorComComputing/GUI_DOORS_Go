@@ -20,20 +20,19 @@ var graphicsBuffer []uint8 = make([]uint8, BUFFER_SIZE, BUFFER_SIZE)
 
 
 func FillLB(buffer []uint8, start int, count int, value int){
-	
 	if buffer == nil {
     	for i := start*4; i <= start*4 + count*4 - 1; i+=4 {
       		graphicsBuffer[i + 0] = uint8(255 & (value >> 16)); 	// Red
-      		graphicsBuffer[i + 1] = uint8(255 & (value >> 8)); 	// Green
-      		graphicsBuffer[i + 2] = uint8(255 & (value)); 		// Blue
-      		graphicsBuffer[i + 3] = 255 				// Alpha
+      		graphicsBuffer[i + 1] = uint8(255 & (value >> 8)); 		// Green
+      		graphicsBuffer[i + 2] = uint8(255 & (value)); 			// Blue
+      		graphicsBuffer[i + 3] = 255 							// Alpha
     	}
     } else {
     	for i := start*4; i <= start*4 + count*4 - 1; i+=4 {
       		buffer[i + 0] = uint8(255 & (value >> 16)); 	// Red
-      		buffer[i + 1] = uint8(255 & (value >> 8)); 	// Green
-      		buffer[i + 2] = uint8(255 & (value)); 		// Blue
-      		buffer[i + 3] = 255 				// Alpha
+      		buffer[i + 1] = uint8(255 & (value >> 8)); 		// Green
+      		buffer[i + 2] = uint8(255 & (value)); 			// Blue
+      		buffer[i + 3] = 255 							// Alpha
     	}
     }
 }

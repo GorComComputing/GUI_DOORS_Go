@@ -19,14 +19,14 @@ import (
 //var DesktopDir string = "/home/user/WORK/"
 
 // Home
-//var ServerIP string = "192.168.0.104"
-//var RootDir string = "/home/jon/IT/WORK/Go/projects/DOORS/Server/"
-//var DesktopDir string = "/home/jon/IT/WORK/Go/projects/"
+var ServerIP string = "192.168.0.102"
+var RootDir string = "/home/jon/IT/WORK/Go/projects/DOORS/Server/"
+var DesktopDir string = "/home/jon/IT/WORK/Go/projects/"
 
 // STV
-var ServerIP string = "192.168.1.136"
-var RootDir string = "/root/DOORS/"
-var DesktopDir string = "/root/DOORS/files/"
+//var ServerIP string = "192.168.1.136"
+//var RootDir string = "/root/DOORS/"
+//var DesktopDir string = "/root/DOORS/files/"
 
 // Список программ
 var programs = []*tProgram{
@@ -43,7 +43,6 @@ var programs = []*tProgram{
 	
 
 func main() {
-
   	BITMAP_WIDTH = js.Global().Get("innerWidth").Int()
     BITMAP_HEIGHT = js.Global().Get("innerHeight").Int()
     	
