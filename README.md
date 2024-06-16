@@ -1,15 +1,16 @@
 # Операционная система Doors в браузере
 
-![img/Screenshot1.png](img/Screenshot1.png)
-![img/Screenshot2.png](img/Screenshot2.png)
-![img/Screenshot3.png](img/Screenshot3.png)
+![img/Screenshot5.png](img/Screenshot5.png)
+![img/Screenshot4.png](img/Screenshot4.png)
 
-Оконный графический интерфейс для операционной системы. Версия для WebAssembly, запускается в браузере.
+Оконный графический интерфейс операционной системы Doors. Версия для WebAssembly, запускается в браузере.
 
 Содержит:
 - базовую графическую библиотеку
 - невытесняющий планировщик задач
 - набор графических приложений
+
+Из операционной системы Doors можно управлять Умным домом и простматривать IP-камеры.
 
 Написан на Go для WebAssembly.
 
@@ -37,6 +38,10 @@
 	Справочно: Компилятор TinyGo применен в проекте, потому что он создает бинарные файлы меньшего размера.  
 			   Исходный код можно компилировать обычным компилятором Go с указанием цели компиляции Wasm.  
 
+![img/Screenshot1.png](img/Screenshot1.png)
+![img/Screenshot2.png](img/Screenshot2.png)
+![img/Screenshot3.png](img/Screenshot3.png)
+
 ```
 // Логин и пароль хранятся во внешнем файле secret.go в переменных:
 var loginAdmin = "********"
@@ -46,6 +51,18 @@ var passwordUser = "********"
 ```
 
 ```
+# Для сборки и загрузки на сервер WASM
+$ ./make.py wasm
+# Для сборки и загрузки на сервер Web-сервера DOORS
+$ ./make.py srv
+
+# Остановить Web-сервер DOORS
+$ ./make.py stop
+# Запустить Web-сервер DOORS
+$ ./make.py start
+# Узнать запущен ли Web-сервер DOORS
+$ ./make.py stat
+
 # Для автоматческого добавление на GitHub
 $ ./make.py git "Комментарий"
 
