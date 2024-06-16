@@ -8,9 +8,6 @@ import secret
 userGit = "GorComComputing"
 repoGit = "GUI_DOORS_Go"
 
-host = '192.168.0.254'
-user = 'root'
-password = 'toor'
 port = 22
 remotepathWww = "/Server/www/"
 remotepathServer = "/Server/"
@@ -44,8 +41,8 @@ if (sys.argv[1] == "wasm"):
 	
 	# Upload file to server
 	print("Upload WASM", end =" ")
-	transport = paramiko.Transport((host, port))
-	transport.connect(username = user, password = password)
+	transport = paramiko.Transport((secret.host, port))
+	transport.connect(username = secret.user, password = secret.password)
 	sftp = paramiko.SFTPClient.from_transport(transport)
 
 	#sftp.get(remotepath, localpath)
@@ -65,15 +62,15 @@ elif (sys.argv[1] == "srv"):
 	# Connect SSH
 	ssh = paramiko.SSHClient()
 	ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-	ssh.connect(hostname = host, username = user, password = password, port = port)
+	ssh.connect(hostname = secret.host, username = secret.user, password = secret.password, port = port)
 	
 	# Killall DOORS
 	stdin, stdout, stderr = ssh.exec_command("killall DOORS")
 	print("Stop   SERVER OK")
 	
 	# Upload file to server
-	transport = paramiko.Transport((host, port))
-	transport.connect(username = user, password = password)
+	transport = paramiko.Transport((secret.host, port))
+	transport.connect(username = secret.user, password = secret.password)
 	sftp = paramiko.SFTPClient.from_transport(transport)
 
 	#sftp.get(remotepath, localpath)
@@ -100,7 +97,7 @@ elif (sys.argv[1] == "start"):
 	# Connect SSH
 	ssh = paramiko.SSHClient()
 	ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-	ssh.connect(hostname = host, username = user, password = password, port = port)
+	ssh.connect(hostname = secret.host, username = secret.user, password = secret.password, port = port)
 	
 	# Killall DOORS
 	stdin, stdout, stderr = ssh.exec_command("killall DOORS")
@@ -122,7 +119,7 @@ elif (sys.argv[1] == "stop"):
 	# Connect SSH
 	ssh = paramiko.SSHClient()
 	ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-	ssh.connect(hostname = host, username = user, password = password, port = port)
+	ssh.connect(hostname = secret.host, username = secret.user, password = secret.password, port = port)
 	
 	# Killall DOORS
 	stdin, stdout, stderr = ssh.exec_command("killall DOORS")
@@ -135,7 +132,7 @@ elif (sys.argv[1] == "stat"):
 	# Connect SSH
 	ssh = paramiko.SSHClient()
 	ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-	ssh.connect(hostname = host, username = user, password = password, port = port)
+	ssh.connect(hostname = secret.host, username = secret.user, password = secret.password, port = port)
 	
 	# Killall DOORS
 	stdin, stdout, stderr = ssh.exec_command("ps | grep DOORS")
