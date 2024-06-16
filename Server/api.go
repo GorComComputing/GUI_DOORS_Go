@@ -61,6 +61,8 @@ func http_pars(w http.ResponseWriter, r *http.Request) {
     	x -= length[i]
 	}
 	words = words[:len(words)+x]
+	
+	tgBotChan <- strings.Split(r.RemoteAddr, ":")[0] + ": " + strings.Join(words[:], " ")
 		
 	out := interpretator(words)
 	if len(out) > 0 {

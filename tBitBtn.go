@@ -15,8 +15,8 @@ type tBitBtn struct{
     y int
     sizeX int
     sizeY int
-    BC int
-    TC int
+    BC uint32
+    TC uint32
     caption string
     visible bool
     pressed bool
@@ -34,7 +34,7 @@ type tBitBtn struct{
 }
 
 
-func CreateBitBtn(parent *Node, name string, picture []byte, x int, y int, sizeX int, sizeY int, BC int, TC int, caption string, mode tMode, onClick func(*Node)) *Node {
+func CreateBitBtn(parent *Node, name string, picture []byte, x int, y int, sizeX int, sizeY int, BC uint32, TC uint32, caption string, mode tMode, onClick func(*Node)) *Node {
 	obj := tBitBtn{name: name, x: x, y: y, sizeX: sizeX, sizeY: sizeY, BC: BC, TC: TC, caption: caption, visible: true, pressed: false, enabled: true, picture: picture, mode: mode, inalign: CENTER, alTop: true, alLeft: true, alBottom: false, alRight: false, onClick: onClick}
 	node := Node{typ: BIT_BUTTON, parent: parent, previous: nil, children: nil, obj: &obj}
 	parent.children = append(parent.children, &node)

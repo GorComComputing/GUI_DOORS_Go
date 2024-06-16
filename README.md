@@ -1,8 +1,8 @@
-# Оконный графический интерфейс (для операционной системы Doors)
+# Операционная система Doors в браузере
 
-![Screenshot1.png](Screenshot1.png)
-![Screenshot2.png](Screenshot2.png)
-![Screenshot3.png](Screenshot3.png)
+![img/Screenshot1.png](img/Screenshot1.png)
+![img/Screenshot2.png](img/Screenshot2.png)
+![img/Screenshot3.png](img/Screenshot3.png)
 
 Оконный графический интерфейс для операционной системы. Версия для WebAssembly, запускается в браузере.
 
@@ -13,7 +13,7 @@
 
 Написан на Go для WebAssembly.
 
-Статус проекта: Завершен.
+Статус проекта: Разрабатывается.
 
 
 ### Приложение состоит из двух частей:
@@ -37,8 +37,23 @@
 	Справочно: Компилятор TinyGo применен в проекте, потому что он создает бинарные файлы меньшего размера.  
 			   Исходный код можно компилировать обычным компилятором Go с указанием цели компиляции Wasm.  
 
+```
+// Логин и пароль хранятся во внешнем файле secret.go в переменных:
+var loginAdmin = "********"
+var passwordAdmin = "********"
+var loginUser = "********"
+var passwordUser = "********"
+```
 
-2023 Evgeny Goryachev    
+```
+# Для автоматческого добавление на GitHub
+$ ./make.py git "Комментарий"
+
+# Токен GitHub хранится во внешнем файле secret.py в переменной:
+# tokenGit = "********"
+```
+
+2023-2024 Evgeny Goryachev    
 Gor.Com 
 
 

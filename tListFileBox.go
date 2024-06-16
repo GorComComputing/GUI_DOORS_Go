@@ -15,8 +15,8 @@ type tListFileBox struct{
     y int
     sizeX int
     sizeY int
-    BC int
-    TC int
+    BC uint32
+    TC uint32
     visible bool
     focused bool
     enabled bool
@@ -31,7 +31,7 @@ type tListFileBox struct{
 }
 
 
-func CreateListFileBox(parent *Node, name string, x int, y int, sizeX int, sizeY int, BC int, TC int, list []Catalog, mode tMode, onClick func(*Node, int, int), onEnter func(*Node)) *Node {
+func CreateListFileBox(parent *Node, name string, x int, y int, sizeX int, sizeY int, BC uint32, TC uint32, list []Catalog, mode tMode, onClick func(*Node, int, int), onEnter func(*Node)) *Node {
 	obj := tListFileBox{name: name, x: x, y: y, sizeX: sizeX, sizeY: sizeY, BC: BC, TC: TC, visible: true, enabled: true, list: list, selected: 0, mode: mode, onClick: onClick, onEnter: onEnter}
 	node := Node{typ: LISTFILEBOX, parent: parent, previous: nil, children: nil, obj: &obj}
 	parent.children = append(parent.children, &node)
@@ -41,6 +41,8 @@ func CreateListFileBox(parent *Node, name string, x int, y int, sizeX int, sizeY
 
 func (obj *tListFileBox) Draw(parX int, parY int, parSizeX int, parSizeY int){
 	SetLocalViewPort(parX + obj.x, parY + obj.y, parX + obj.x + obj.sizeX, parY + obj.y + obj.sizeY)
+    
+    if uint8(255 & (obj.BC >> 24)) != 0xFF {
     
     if obj.enabled {
     	SetColor(obj.BC);
@@ -62,6 +64,8 @@ func (obj *tListFileBox) Draw(parX int, parY int, parSizeX int, parSizeY int){
 	p = append(p, p4)
 
     FillPoly(nil, 4, p);
+    
+    }
 
 
     SetColor(obj.TC);

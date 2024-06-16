@@ -1,0 +1,8 @@
+#!/bin/sh /etc/rc.common
+# DOORS autorun
+
+START=50
+start() {
+  	#/Server/DOORS &
+	/root/startDOORS.sh
+} 

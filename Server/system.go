@@ -15,14 +15,51 @@ import (
     //"unicode/utf8"
     //iconv "github.com/djimenez/iconv-go"
     //"golang.org/x/text/encoding/charmap"
+    //"github.com/Syfaro/telegram-bot-api"
+    "log"
+    //"time"
+    //"image/png"
+	"golang.org/x/image/bmp"
+	"image/jpeg"
+	"image"
 )
 
 
-func cmd_tst(words []string) string {
-	for idx, word := range words {
-		fmt.Printf("Word %d is: %s\n", idx, word)
+func cmd_get_cam(words []string) string {
+	var output string
+	url := "http://192.168.0.11:8800/USB2.0%20HD%20UVC%20AF%20Camera/poll.php?httpbasicauth=no&dummy=" + words[1]
+fmt.Println("Time: " + words[1])
+    response, e := http.Get(url)
+    if e != nil {
+        log.Fatal(e)
+    }
+    defer response.Body.Close()
+    
+    var src image.Image
+	src, err := jpeg.Decode(response.Body)
+	if err != nil {
+		panic(err.Error())
 	}
-	return ""
+    
+
+    file, err := os.Create("/Server/www/img/pic.bmp")
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer file.Close()
+    
+    err = bmp.Encode(file, src)
+	if err != nil {
+		panic(err.Error())
+	}
+    
+    /*
+    _, err = io.Copy(file, response.Body)
+    if err != nil {
+        log.Fatal(err)
+    }*/
+    output ="Cam OK"
+	return output
 }
 
 
@@ -31,7 +68,8 @@ func cmd_ls(words []string) string {
 	if len(words) < 2 {
 		fmt.Println("Too little parameters")
 	} else {
-		cmd := exec.Command(words[0], words[1], words[2])
+		//cmd := exec.Command(words[0], words[1], words[2])
+		cmd := exec.Command("ls", words[1], words[2])
 		out, err := cmd.Output()
 		if err != nil {
 			fmt.Println("could not run command: ", err)
@@ -40,24 +78,6 @@ func cmd_ls(words []string) string {
 		fmt.Println(string(out))
 	}
 	return output
-}
-
-
-// Выполнить команду
-func cmd_run(words []string) string {
-	run_cmd := words[1]
-	if len(words) > 2 {
-		copy(words[0:], words[2:])
-		words = words[:len(words)-2]
-		
-		cmd := exec.Command(run_cmd, words...)
-		out, _ := cmd.Output()
-		return string(out)
-	} else {
-		cmd := exec.Command(run_cmd)
-		out, _ := cmd.Output()
-		return string(out)
-	}
 }
 
 
@@ -165,7 +185,7 @@ func cmd_curl_get(words []string) string {
 		}
 	}
 
-	req, err := http.NewRequest("GET", words[1], nil)
+	req, err := http.NewRequest("GET", words[1], nil)		////////////// GET
 	if err != nil {
 		output = "Request FAIL\n"
 		return output
@@ -201,9 +221,11 @@ func cmd_read_utf8(words []string) string{
 // Read file handler (binary)
 func cmd_read_byte(words []string) string{
 	dat, _ := os.ReadFile(words[1])
+	fmt.Println(words[1])
 	var tmp string = ""
-	for i := 0; i < len(dat); i++ {
+	for i := int64(0); i < int64(len(dat)); i++ {
 		tmp += strconv.Itoa(int(dat[i])) + " "
+		//fmt.Printf("%d from %d", i, len(dat))
 	}
 	fmt.Println(tmp)
 	return tmp

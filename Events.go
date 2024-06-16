@@ -5,9 +5,10 @@ import (
     //"syscall/js"
     //"math/rand"
     "strconv"
-    //"strings"
+    "strings"
     //"reflect"
 	"time"
+	//"math"
 )
 
 
@@ -39,6 +40,8 @@ const (
     LISTFILEBOX
     TABLE
     IMAGE
+    PASSEDIT
+    TRACKBAR
 )
 
 type tWinComponents interface {
@@ -62,8 +65,8 @@ type Node struct {
 
 //export eventResizeWindow
 func eventResizeWindow(width int, height int) {
-	fmt.Println("Width: "+strconv.Itoa(width))
-	fmt.Println("Height: "+strconv.Itoa(height))
+	fmt.Println("Width: " + strconv.Itoa(width))
+	fmt.Println("Height: " + strconv.Itoa(height))
 	
 	//SetBackColor(0xFFFF00)
 	//ClearDevice(nil)
@@ -71,25 +74,44 @@ func eventResizeWindow(width int, height int) {
 	BITMAP_WIDTH = width   
 	BITMAP_HEIGHT = height
 	
-	
-	
 	SIZE = width*height 
 	GETMAX_X = width - 1 
 	GETMAX_Y = height - 1
 	BUFFER_SIZE = width*height * 4
 	
-	fmt.Println("BITMAP_WIDTH: "+strconv.Itoa(BITMAP_WIDTH))
-	fmt.Println("BITMAP_HEIGHT: "+strconv.Itoa(BITMAP_HEIGHT))
-	fmt.Println("SIZE: "+strconv.Itoa(SIZE))
+	fmt.Println("BITMAP_WIDTH: " + strconv.Itoa(BITMAP_WIDTH))
+	fmt.Println("BITMAP_HEIGHT: " + strconv.Itoa(BITMAP_HEIGHT))
+	fmt.Println("SIZE: " + strconv.Itoa(SIZE))
 	
-	
-	
-	frmDesktop.obj.(*tForm).sizeY = BITMAP_HEIGHT-2
-	frmDesktop.obj.(*tForm).sizeX = BITMAP_WIDTH-1
-	pnlTask.obj.(*tPanel).y = frmDesktop.obj.(*tForm).sizeY - 28
+	// Desktop & Task Bar & Menu Start
+	frmDesktop.obj.(*tForm).sizeY = BITMAP_HEIGHT - 2
+	frmDesktop.obj.(*tForm).sizeX = BITMAP_WIDTH - 1
+	pnlTask.obj.(*tPanel).y = frmDesktop.obj.(*tForm).sizeY - 27
 	pnlTask.obj.(*tPanel).sizeX = BITMAP_WIDTH - 1
 	lblTime.obj.(*tLabel).x = pnlTask.obj.(*tPanel).sizeX - 45
-	frmMenuStart.obj.(*tForm).y = BITMAP_HEIGHT-len(menuStart.obj.(*tMenu).list)*20-20-37-50+2
+	frmMenuStart.obj.(*tForm).y = BITMAP_HEIGHT-len(menuStart.obj.(*tMenu).list)*20-20-37-50+2-29
+	
+	// Desktop Wallpaper
+	if (frmDesktop.obj.(*tForm).sizeX/2 - 640) < 0 {
+		imgFieldDesktop.obj.(*tImage).x = 0
+	} else {
+		imgFieldDesktop.obj.(*tImage).x = (frmDesktop.obj.(*tForm).sizeX/2 - 640)
+	}
+	if (frmDesktop.obj.(*tForm).sizeY/2 - 400) < 0 {
+		imgFieldDesktop.obj.(*tImage).y = 0
+	} else {
+		imgFieldDesktop.obj.(*tImage).y = (frmDesktop.obj.(*tForm).sizeY/2 - 400)
+	}
+	
+	// Log In Window
+	pnlFlag1.obj.(*tPanel).sizeX = frmDesktop.obj.(*tForm).sizeX+1
+	pnlFlag1.obj.(*tPanel).sizeY = frmDesktop.obj.(*tForm).sizeY+1
+	pnlFlag2.obj.(*tPanel).x = pnlFlag1.obj.(*tPanel).sizeX/2 - 166
+	pnlFlag2.obj.(*tPanel).y = BITMAP_HEIGHT - pnlFlag1.obj.(*tPanel).sizeY/2 - pnlFlag1.obj.(*tPanel).sizeY/4
+	//cnvFlag.obj.(*tCanvas).sizeX = pnlFlag2.obj.(*tPanel).sizeX
+	//cnvFlag.obj.(*tCanvas).sizeY = pnlFlag2.obj.(*tPanel).sizeY
+	pnlFlag3.obj.(*tPanel).x = pnlFlag1.obj.(*tPanel).sizeX/2 - 120
+	pnlFlag3.obj.(*tPanel).y = BITMAP_HEIGHT - pnlFlag1.obj.(*tPanel).sizeY/3
 	
 	//SetBackColor(0xFF0000)
 	//FillLB(nil, 0, SIZE, BC)
@@ -116,11 +138,23 @@ func eventDraw() {
 		//Circle(nil, 0, 200, 30)
 	onTimer()
 	
+	
 	drawDo()
 	
+	
 	t := time.Now()
-	lblFPS.obj.(*tLabel).caption = t.Sub(start).String()
+	lblFPS.obj.(*tLabel).caption = strings.Split(strings.Split(t.Sub(start).String(), ".")[0], "ms")[0]
 }
+
+
+// Округление до целого
+/*func Round(x float64) float64 {
+	t := math.Trunc(x)
+	if math.Abs(x-t) >= 0.5 {
+		return t + math.Copysign(1, x)
+	}
+	return t
+}*/
 
 
 func DrawNode(node *Node, x int, y int){
@@ -135,6 +169,10 @@ func DrawNode(node *Node, x int, y int){
 		case *tPanel:
 			visible = obj.visible
 		case *tEdit:
+			visible = obj.visible
+		case *tPassEdit:
+			visible = obj.visible
+		case *tTrackBar:
 			visible = obj.visible
 		case *tLabel:
 			visible = obj.visible
@@ -185,6 +223,16 @@ func DrawNode(node *Node, x int, y int){
 			parSizeX = obj.sizeX
 			parSizeY = obj.sizeY
 		case *tEdit:
+			parX = obj.x + x
+			parY = obj.y + y
+			parSizeX = obj.sizeX
+			parSizeY = obj.sizeY
+		case *tPassEdit:
+			parX = obj.x + x
+			parY = obj.y + y
+			parSizeX = obj.sizeX
+			parSizeY = obj.sizeY
+		case *tTrackBar:
 			parX = obj.x + x
 			parY = obj.y + y
 			parSizeX = obj.sizeX
@@ -281,6 +329,10 @@ func eventClick(x int, y int)  {
 			obj.Click(x-X, y-Y)
 		case *tEdit:
 			obj.Click(x-X, y-Y)
+		case *tPassEdit:
+			obj.Click(x-X, y-Y)
+		case *tTrackBar:
+			obj.Click(x-X, y-Y)
 		case *tComboBox:
 			obj.Click(x-X, y-Y)
 		case *tListBox:
@@ -294,6 +346,8 @@ func eventClick(x int, y int)  {
 		case *tTable:
 			obj.Click(x-X, y-Y)
 		case *tImage:
+			obj.Click(x-X, y-Y)
+		case *tLabel:
 			obj.Click(x-X, y-Y)
 		}
 	}
@@ -315,6 +369,10 @@ func ClickRecurs(node *Node, x int, y int, parX int, parY int) {
 		case *tPanel:
 			visible = obj.visible
 		case *tEdit:
+			visible = obj.visible
+		case *tTrackBar:
+			visible = obj.visible
+		case *tPassEdit:
 			visible = obj.visible
 		case *tLabel:
 			visible = obj.visible
@@ -355,6 +413,12 @@ func ClickRecurs(node *Node, x int, y int, parX int, parY int) {
 			parX += obj.x
 			parY += obj.y
 		case *tEdit:
+			parX += obj.x
+			parY += obj.y
+		case *tPassEdit:
+			parX += obj.x
+			parY += obj.y
+		case *tTrackBar:
 			parX += obj.x
 			parY += obj.y
 		case *tLabel:
@@ -417,6 +481,24 @@ func ClickRecurs(node *Node, x int, y int, parX int, parY int) {
 				Y = parY+node.obj.(*tForm).y
 			}
 		case *tEdit:
+			if (parX+node.obj.(*tEdit).x) < x && 
+			(parX+node.obj.(*tEdit).x + node.obj.(*tEdit).sizeX) > x && 
+			(parY+node.obj.(*tEdit).y) < y && 
+			(parY+node.obj.(*tEdit).y + node.obj.(*tEdit).sizeY) > y {
+				list = append(list, node)
+				X = parX+node.obj.(*tEdit).x
+				Y = parY+node.obj.(*tEdit).y
+			}
+		case *tPassEdit:
+			if (parX+node.obj.(*tPassEdit).x) < x && 
+			(parX+node.obj.(*tPassEdit).x + node.obj.(*tPassEdit).sizeX) > x && 
+			(parY+node.obj.(*tPassEdit).y) < y && 
+			(parY+node.obj.(*tPassEdit).y + node.obj.(*tPassEdit).sizeY) > y {
+				list = append(list, node)
+				X = parX+node.obj.(*tPassEdit).x
+				Y = parY+node.obj.(*tPassEdit).y
+			}
+		case *tTrackBar:
 			if (parX+node.obj.(*tEdit).x) < x && 
 			(parX+node.obj.(*tEdit).x + node.obj.(*tEdit).sizeX) > x && 
 			(parY+node.obj.(*tEdit).y) < y && 
@@ -604,6 +686,10 @@ func SetFocus(node *Node) {
 		switch obj := layout.children[len(layout.children)-1].obj.(*tForm).focus.obj.(type) {
     	case *tEdit:
 			obj.focused = false
+		case *tPassEdit:
+			obj.focused = false
+		case *tTrackBar:
+			obj.focused = false
 		case *tMemo:
 			obj.focused = false
 		case *tComboBox:
@@ -674,6 +760,10 @@ func eventMouseDown(x int, y int) {
 		obj.MouseDown(x, y)
 	case *tEdit:
 		obj.MouseDown(x, y)
+	case *tPassEdit:
+		obj.MouseDown(x, y)
+	case *tTrackBar:
+		obj.MouseDown(x, y)
 	case *tBitBtn:
 		obj.MouseDown(x, y)
 	case *tMemo:
@@ -738,6 +828,10 @@ func eventMouseMove(x int, y int)  {
     case *tLabel:
     	obj.MouseMove(x, y, x-X, y-Y)
     case *tEdit:
+    	obj.MouseMove(x, y, x-X, y-Y)
+    case *tPassEdit:
+    	obj.MouseMove(x, y, x-X, y-Y)
+    case *tTrackBar:
     	obj.MouseMove(x, y, x-X, y-Y)
     case *tMemo:
     	obj.MouseMove(x, y, x-X, y-Y)
@@ -804,6 +898,10 @@ func eventKeyDown(key int){
 	if layout.children[len(layout.children)-1].obj.(*tForm).focus != nil {
 		switch obj := layout.children[len(layout.children)-1].obj.(*tForm).focus.obj.(type) {
     	case *tEdit:
+    		obj.KeyDown(key)
+    	case *tPassEdit:
+    		obj.KeyDown(key)
+    	case *tTrackBar:
     		obj.KeyDown(key)
 		case *tMemo:
 			obj.KeyDown(key)
@@ -883,6 +981,18 @@ func setSize(node *Node, sizeX int, sizeY int){
 				setSize(node.children[i], sizeX - obj.x - 2, sizeY - obj.y - 2)
 			} 
 		case *tEdit:
+			switch obj.align {
+			case RIGHT_TOP:
+				deltaX := sizeXpar - obj.x
+				obj.x = sizeX - deltaX 
+			} 
+		case *tPassEdit:
+			switch obj.align {
+			case RIGHT_TOP:
+				deltaX := sizeXpar - obj.x
+				obj.x = sizeX - deltaX 
+			}
+		case *tTrackBar:
 			switch obj.align {
 			case RIGHT_TOP:
 				deltaX := sizeXpar - obj.x

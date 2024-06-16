@@ -15,8 +15,8 @@ type tListBox struct{
     y int
     sizeX int
     sizeY int
-    BC int
-    TC int
+    BC uint32
+    TC uint32
     visible bool
     focused bool
     enabled bool
@@ -30,7 +30,7 @@ type tListBox struct{
 }
 
 
-func CreateListBox(parent *Node, name string, x int, y int, sizeX int, sizeY int, BC int, TC int, list []string, onClick func(*Node, int, int), onEnter func(*Node)) *Node {
+func CreateListBox(parent *Node, name string, x int, y int, sizeX int, sizeY int, BC uint32, TC uint32, list []string, onClick func(*Node, int, int), onEnter func(*Node)) *Node {
 	obj := tListBox{name: name, x: x, y: y, sizeX: sizeX, sizeY: sizeY, BC: BC, TC: TC, visible: true, enabled: true, list: list, selected: 0, onClick: onClick, onEnter: onEnter}
 	node := Node{typ: LISTBOX, parent: parent, previous: nil, children: nil, obj: &obj}
 	parent.children = append(parent.children, &node)

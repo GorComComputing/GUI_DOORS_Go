@@ -3,3 +3,6 @@
 DOORS.wasm
 /WebServer/DOORS
 /WebServer/files
+__pycache__
+secret.py
+secret.go

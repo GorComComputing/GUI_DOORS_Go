@@ -8,25 +8,25 @@ import (
 )
 
 
-var CC int 
-var BC int 
+var CC uint32 
+var BC uint32 
 
-var Black int = 0x000000
-var White int = 0xFFFFFF
-var Red int = 0xFF0000
-var Green int = 0x00FF00
-var Blue int = 0x0000FF
-var Yellow int = 0xFFFF00
-var Magenta int = 0xFF00FF
-var Cyan int = 0x00FFFF
+var Black uint32 = 0x000000
+var White uint32 = 0xFFFFFF
+var Red uint32 = 0xFF0000
+var Green uint32 = 0x00FF00
+var Blue uint32 = 0x0000FF
+var Yellow uint32 = 0xFFFF00
+var Magenta uint32 = 0xFF00FF
+var Cyan uint32 = 0x00FFFF
 
 
-func SetColor(Color int){
+func SetColor(Color uint32){
     CC = Color
 }
 
 
-func SetBackColor(Color int){
+func SetBackColor(Color uint32){
     BC = Color
 }
 
@@ -36,7 +36,7 @@ func ClearDevice(buffer []uint8){
 }
 
 
-func DrawPutPixel(buffer []uint8, x int, y int, Color int){
+func DrawPutPixel(buffer []uint8, x int, y int, Color uint32){
     FillLB(buffer, (BITMAP_WIDTH*y + x), 1, Color);
 }
 
@@ -221,7 +221,7 @@ func Pixel8(buffer []uint8, xc int, yc int, x int, y int){
 }
 
 
-func FloodFillgl(buffer []uint8, x int, y int, bord int){
+func FloodFillgl(buffer []uint8, x int, y int, bord uint32){
     var xl int = x;
     var xr int = x;
     var yy int;
@@ -555,7 +555,7 @@ func SetLocalViewPort(xl int, yt int, xr int, yb int){
 }
 
 
-func PutPixel(buffer []uint8, x int, y int, C int){
+func PutPixel(buffer []uint8, x int, y int, C uint32){
 	x += xleft	// Переход к абсолютным координатам
 	y += ytop
 	if x >= xleft && x <= xright && y >= ytop && y <= ybottom {
@@ -1955,9 +1955,9 @@ func showBMP(buffer []uint8, Wall []byte, x int, y int){
 		height := 0x1000000*int(Wall[0x19]) + 0x10000*int(Wall[0x18]) + 0x100*int(Wall[0x17]) + int(Wall[0x16])
     	for i := 0; i < height; i++ {
         	for j := 0; j < width; j++ {
-        		if 0x10000*int(Wall[pos+2]) + 0x100*int(Wall[pos+1]) + int(Wall[pos]) != 0xFEFEFE {
+        		if 0x10000*uint32(Wall[pos+2]) + 0x100*uint32(Wall[pos+1]) + uint32(Wall[pos]) != 0xFEFEFE {
         			if x + j >= xleft_loc && x + j <= xright_loc && y + i >= ytop_loc && y + i <= ybottom_loc {
-						PutPixel(nil, x + j, y + height - i, 0x10000*int(Wall[pos+2]) + 0x100*int(Wall[pos+1]) + int(Wall[pos])) 
+						PutPixel(nil, x + j, y + height - i, 0x10000*uint32(Wall[pos+2]) + 0x100*uint32(Wall[pos+1]) + uint32(Wall[pos])) 
 					}	
 				}
 				pos += 3

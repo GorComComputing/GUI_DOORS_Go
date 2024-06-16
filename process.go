@@ -2,7 +2,7 @@ package main
 
 import (
     "fmt"
-    //"math/rand"
+    "math/rand"
     //"math"
     //"syscall/js"
     //"time"
@@ -14,8 +14,12 @@ import (
     //"io/ioutil"
     //"encoding/json"
     "time"
-    "encoding/base64"
+    //"encoding/base64"
     //"encoding/hex"
+    //_ "github.com/stealthrocket/net/http"
+    //"github.com/Nigel2392/requester"
+    //"encoding/ascii85"
+    //"unicode/utf8"
 )
 
 
@@ -43,34 +47,48 @@ func initDOORS(programs []*tProgram) {
 	fmt.Println("👋 DOORS started OK! 🌍")
 	
 	//Декодируем base64 в bmp
-  	bmpFolder, _ = base64.StdEncoding.DecodeString(b64Folder)
-  	bmpFile, _ = base64.StdEncoding.DecodeString(b64File)
-  	bmpFolder_small, _ = base64.StdEncoding.DecodeString(b64Folder_small)
-  	bmpFile_small, _ = base64.StdEncoding.DecodeString(b64File_small)
-  	bmpProgram, _ = base64.StdEncoding.DecodeString(b64Program)
-  	bmpNotepad, _ = base64.StdEncoding.DecodeString(b64Notepad)
-  	bmpForm_close, _ = base64.StdEncoding.DecodeString(b64Form_close)
-  	bmpComboBox, _ = base64.StdEncoding.DecodeString(b64ComboBox)
-  	bmpLogo_menu, _ = base64.StdEncoding.DecodeString(b64Logo_menu)
-  	bmpNew_file, _ = base64.StdEncoding.DecodeString(b64New_file)
-  	bmpOpen_file, _ = base64.StdEncoding.DecodeString(b64Open_file)
-  	bmpSave_file, _ = base64.StdEncoding.DecodeString(b64Save_file)
-  	bmpUp, _ = base64.StdEncoding.DecodeString(b64Up)
-  	bmpHelp, _ = base64.StdEncoding.DecodeString(b64Help)
-  	bmpBrowser, _ = base64.StdEncoding.DecodeString(b64Browser)
-  	bmpPrograms, _ = base64.StdEncoding.DecodeString(b64Programs)
-  	bmpSettings, _ = base64.StdEncoding.DecodeString(b64Settings)
-  	bmpBack, _ = base64.StdEncoding.DecodeString(b64Back)
-  	bmpNext, _ = base64.StdEncoding.DecodeString(b64Next)
-  	bmpAdd, _ = base64.StdEncoding.DecodeString(b64Add)
-  	bmpAdd2, _ = base64.StdEncoding.DecodeString(b64Add2)
-  	bmpRefresh, _ = base64.StdEncoding.DecodeString(b64Refresh)
-  	bmpDorFile, _ = base64.StdEncoding.DecodeString(b64DorFile)
-  	bmpGoFile, _ = base64.StdEncoding.DecodeString(b64GoFile)
-  	bmpCFile, _ = base64.StdEncoding.DecodeString(b64CFile)
-  	bmpHTMLFile, _ = base64.StdEncoding.DecodeString(b64HTMLFile)
-  	bmpASMFile, _ = base64.StdEncoding.DecodeString(b64ASMFile)
-  	
+  	bmpFolder = fetchFile("http://" + ServerIP + "/img/Folder.bmp?rnd=" + strconv.Itoa(rand.Intn(999999)))//base64.StdEncoding.DecodeString(b64Folder)
+  	bmpFile = fetchFile("http://" + ServerIP + "/img/File.bmp?rnd=" + strconv.Itoa(rand.Intn(999999)))//base64.StdEncoding.DecodeString(b64File)
+  	bmpFolder_small = fetchFile("http://" + ServerIP + "/img/Folder_small.bmp?rnd=" + strconv.Itoa(rand.Intn(999999)))//base64.StdEncoding.DecodeString(b64Folder_small)
+  	bmpFile_small = fetchFile("http://" + ServerIP + "/img/File_small.bmp?rnd=" + strconv.Itoa(rand.Intn(999999)))//base64.StdEncoding.DecodeString(b64File_small)
+  	bmpProgram = fetchFile("http://" + ServerIP + "/img/Program.bmp?rnd=" + strconv.Itoa(rand.Intn(999999)))//base64.StdEncoding.DecodeString(b64Program)
+	bmpNotepad = fetchFile("http://" + ServerIP + "/img/Notepad.bmp?rnd=" + strconv.Itoa(rand.Intn(999999)))//base64.StdEncoding.DecodeString(b64Notepad)
+  	bmpForm_close = fetchFile("http://" + ServerIP + "/img/Form_close.bmp?rnd=" + strconv.Itoa(rand.Intn(999999)))//base64.StdEncoding.DecodeString(b64Form_close)
+  	bmpComboBox = fetchFile("http://" + ServerIP + "/img/ComboBox.bmp?rnd=" + strconv.Itoa(rand.Intn(999999)))//base64.StdEncoding.DecodeString(b64ComboBox)
+  	bmpLogo_menu = fetchFile("http://" + ServerIP + "/img/Logo_menu.bmp?rnd=" + strconv.Itoa(rand.Intn(999999)))//base64.StdEncoding.DecodeString(b64Logo_menu)
+  	bmpNew_file = fetchFile("http://" + ServerIP + "/img/New_file.bmp?rnd=" + strconv.Itoa(rand.Intn(999999)))//base64.StdEncoding.DecodeString(b64New_file)
+  	bmpOpen_file = fetchFile("http://" + ServerIP + "/img/Open_file.bmp?rnd=" + strconv.Itoa(rand.Intn(999999)))//base64.StdEncoding.DecodeString(b64Open_file)
+  	bmpSave_file = fetchFile("http://" + ServerIP + "/img/Save_file.bmp?rnd=" + strconv.Itoa(rand.Intn(999999)))//base64.StdEncoding.DecodeString(b64Save_file)
+  	bmpUp = fetchFile("http://" + ServerIP + "/img/Up.bmp?rnd=" + strconv.Itoa(rand.Intn(999999)))//base64.StdEncoding.DecodeString(b64Up)
+  	bmpHelp = fetchFile("http://" + ServerIP + "/img/Help.bmp?rnd=" + strconv.Itoa(rand.Intn(999999)))//base64.StdEncoding.DecodeString(b64Help)
+  	bmpBrowser = fetchFile("http://" + ServerIP + "/img/Browser.bmp?rnd=" + strconv.Itoa(rand.Intn(999999)))//base64.StdEncoding.DecodeString(b64Browser)
+  	bmpPrograms = fetchFile("http://" + ServerIP + "/img/Programs.bmp?rnd=" + strconv.Itoa(rand.Intn(999999)))//base64.StdEncoding.DecodeString(b64Programs)
+  	bmpSettings = fetchFile("http://" + ServerIP + "/img/Settings.bmp?rnd=" + strconv.Itoa(rand.Intn(999999)))//base64.StdEncoding.DecodeString(b64Settings)
+  	bmpBack = fetchFile("http://" + ServerIP + "/img/Back.bmp?rnd=" + strconv.Itoa(rand.Intn(999999)))//base64.StdEncoding.DecodeString(b64Back)
+  	bmpNext = fetchFile("http://" + ServerIP + "/img/Next.bmp?rnd=" + strconv.Itoa(rand.Intn(999999)))//base64.StdEncoding.DecodeString(b64Next)
+  	bmpAdd = fetchFile("http://" + ServerIP + "/img/Add.bmp?rnd=" + strconv.Itoa(rand.Intn(999999)))//base64.StdEncoding.DecodeString(b64Add)
+  	bmpAdd2 = fetchFile("http://" + ServerIP + "/img/Add2.bmp?rnd=" + strconv.Itoa(rand.Intn(999999)))//base64.StdEncoding.DecodeString(b64Add2)
+  	bmpRefresh = fetchFile("http://" + ServerIP + "/img/Refresh.bmp?rnd=" + strconv.Itoa(rand.Intn(999999)))//base64.StdEncoding.DecodeString(b64Refresh)
+  	bmpDorFile = fetchFile("http://" + ServerIP + "/img/dor.bmp?rnd=" + strconv.Itoa(rand.Intn(999999)))//base64.StdEncoding.DecodeString(b64DorFile)
+  	bmpGoFile = fetchFile("http://" + ServerIP + "/img/go.bmp?rnd=" + strconv.Itoa(rand.Intn(999999)))
+  	bmpCFile = fetchFile("http://" + ServerIP + "/img/c.bmp?rnd=" + strconv.Itoa(rand.Intn(999999)))//base64.StdEncoding.DecodeString(b64CFile)
+  	bmpHTMLFile = fetchFile("http://" + ServerIP + "/img/html.bmp?rnd=" + strconv.Itoa(rand.Intn(999999)))//base64.StdEncoding.DecodeString(b64HTMLFile)
+  	bmpASMFile = fetchFile("http://" + ServerIP + "/img/asm.bmp?rnd=" + strconv.Itoa(rand.Intn(999999)))//base64.StdEncoding.DecodeString(b64ASMFile)
+	bmpWebCam1 = fetchFile("http://" + ServerIP + "/img/pic2.bmp?rnd=" + strconv.Itoa(rand.Intn(999999)))
+	bmpWebCam2 = fetchFile("http://" + ServerIP + "/img/poll.bmp?rnd=" + strconv.Itoa(rand.Intn(999999)))
+	bmpFieldDesktop = fetchFile("http://" + ServerIP + "/img/windows.bmp?rnd=" + strconv.Itoa(rand.Intn(999999)))
+	//bmpSkyFlag = fetchFile("http://www.gorcom.online/img/Sky3.bmp")
+	bmpCamera = fetchFile("http://" + ServerIP + "/img/Camera.bmp?rnd=" + strconv.Itoa(rand.Intn(999999)))
+	bmpKey = fetchFile("http://" + ServerIP + "/img/Key.bmp?rnd=" + strconv.Itoa(rand.Intn(999999)))
+	//bmpKey = fetchFileJPEG("http://www.gorcom.online/img/Key.jpg?rnd=" + strconv.Itoa(rand.Intn(999999)))
+	
+
+	
+	
+	/*fmt.Println("HERE 1")
+	testJPEG("http://www.gorcom.online/img/Key.jpg?rnd=" + strconv.Itoa(rand.Intn(999999)))
+	fmt.Println("HERE 2")*/
+	
 	startDesktop()
 	startRAD()
 	// Запуск программ
@@ -127,7 +145,9 @@ func onTimer() {
 	t := time.Now()
 	lblTime.obj.(*tLabel).caption = strconv.Itoa(t.Hour()) + ":" + fmt.Sprintf("%02d", t.Minute())
 	
+	//getPhoto()
 
+	
 	
 	//SetColor(0xFFFF00)
 	//LinePP(cnvFlag.obj, 10, 10, 100, 100)

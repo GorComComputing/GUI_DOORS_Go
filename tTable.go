@@ -15,8 +15,8 @@ type tTable struct{
     y int
     sizeX int
     sizeY int
-    BC int
-    TC int
+    BC uint32
+    TC uint32
     visible bool
     focused bool
     enabled bool
@@ -36,7 +36,7 @@ type tTable struct{
 }
 
 
-func CreateTable(parent *Node, name string, x int, y int, sizeX int, sizeY int, BC int, TC int, cols []string, sizeCols []int, rows []string, list [][]string, cellX int, cellY int, onClick func(*Node, int, int), onEnter func(*Node)) *Node {
+func CreateTable(parent *Node, name string, x int, y int, sizeX int, sizeY int, BC uint32, TC uint32, cols []string, sizeCols []int, rows []string, list [][]string, cellX int, cellY int, onClick func(*Node, int, int), onEnter func(*Node)) *Node {
 	obj := tTable{name: name, x: x, y: y, sizeX: sizeX, sizeY: sizeY, BC: BC, TC: TC, visible: true, enabled: true, cols: cols, sizeCols: sizeCols, rows: rows, list: list, selectedX: 0, selectedY: 0, cellX: cellX, cellY: cellY, onClick: onClick, onEnter: onEnter}
 	node := Node{typ: TABLE, parent: parent, previous: nil, children: nil, obj: &obj}
 	parent.children = append(parent.children, &node)

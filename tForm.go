@@ -15,7 +15,7 @@ type tForm struct{
     y int
     sizeX int
     sizeY int
-    BC int
+    BC uint32
     mode tMode
     caption string
     visible bool
@@ -61,7 +61,7 @@ const (
 )
 
 
-func CreateForm(parent *Node, name string, picture []byte, x int, y int, sizeX int, sizeY int, BC int, mode tMode, caption string, visible bool, onClick func(*Node)) *Node {
+func CreateForm(parent *Node, name string, picture []byte, x int, y int, sizeX int, sizeY int, BC uint32, mode tMode, caption string, visible bool, onClick func(*Node)) *Node {
 	obj := tForm{name: name, picture: picture, x: x, y: y, sizeX: sizeX, sizeY: sizeY, BC: BC, mode: mode, caption: caption, visible: visible, focus: nil, isRAD: false, isMaximized: false, onClick: onClick}
 	node := Node{typ: FORM, parent: parent, previous: nil, children: nil, obj: &obj}
 	parent.children = append(parent.children, &node)

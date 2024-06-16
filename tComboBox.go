@@ -15,8 +15,8 @@ type tComboBox struct{
     y int
     sizeX int
     sizeY int
-    BC int
-    TC int
+    BC uint32
+    TC uint32
     text string
     visible bool
     focused bool
@@ -32,7 +32,7 @@ type tComboBox struct{
 }
 
 
-func CreateComboBox(parent *Node, name string, x int, y int, sizeX int, sizeY int, BC int, TC int, text string, list []string, onClick func(*Node), onEnter func(*Node)) *Node {
+func CreateComboBox(parent *Node, name string, x int, y int, sizeX int, sizeY int, BC uint32, TC uint32, text string, list []string, onClick func(*Node), onEnter func(*Node)) *Node {
 	obj := tComboBox{name: name, x: x, y: y, sizeX: sizeX, sizeY: sizeY, BC: BC, TC: TC, text: text, visible: true, enabled: true, curX: 0, list: list, onClick: onClick, onEnter: onEnter}
 	node := Node{typ: COMBOBOX, parent: parent, previous: nil, children: nil, obj: &obj}
 	parent.children = append(parent.children, &node)

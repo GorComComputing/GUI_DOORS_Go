@@ -1,0 +1,14 @@
+github.com/Nigel2392/requester v1.0.0 h1:985FziiPyVhfIcP1PE5iqsypvH9AiXD9XFzFiPOSf68=
+github.com/Nigel2392/requester v1.0.0/go.mod h1:tL7WlKebn8XwOWqbW4hIZsylL4oiQazsFtvad4Gr4Cg=
+github.com/Syfaro/telegram-bot-api v4.6.4+incompatible h1:O30CgxZ/BuHpWfONoGirTIU7XUWhz6NPelk80FxipDI=
+github.com/Syfaro/telegram-bot-api v4.6.4+incompatible/go.mod h1:eC/lEGT3gOB9RowMYsLx0YH1U8a/dEjceHY3M//ej88=
+github.com/go-telegram-bot-api/telegram-bot-api/v5 v5.5.1 h1:wG8n/XJQ07TmjbITcGiUaOtXxdrINDz1b0J1w0SzqDc=
+github.com/go-telegram-bot-api/telegram-bot-api/v5 v5.5.1/go.mod h1:A2S0CWkNylc2phvKXWBBdD3K0iGnDBGbzRpISP2zBl8=
+github.com/stealthrocket/net v0.1.4 h1:Wy0bAeu5Y3iiQM1fgsjZOES9AsB0nsXuDK21A3JfPIk=
+github.com/stealthrocket/net v0.1.4/go.mod h1:VvoFod9pYC9mo+bEg2NQB/D+KVOjxfhZjZ5zyvozq7M=
+github.com/technoweenie/multipartstreamer v1.0.1 h1:XRztA5MXiR1TIRHxH2uNxXxaIkKQDeX7m2XsSOlQEnM=
+github.com/technoweenie/multipartstreamer v1.0.1/go.mod h1:jNVxdtShOxzAsukZwTSw6MDx5eUJoiEBsSvzDU9uzog=
+golang.org/x/image v0.16.0 h1:9kloLAKhUufZhA12l5fwnx2NZW39/we1UhBesW433jw=
+golang.org/x/image v0.16.0/go.mod h1:ugSZItdV4nOxyqp56HmXwH0Ry0nBCpjnZdpDaIHdoPs=
+marwan.io/wasm-fetch v0.1.0 h1:0kKeCsry7IQfPmxj78FUWtO6qwXIaQqMmZbzbZz2rkw=
+marwan.io/wasm-fetch v0.1.0/go.mod h1:PlaZmevjPJGIy/BaqMtVjUKvrA8CgrDh+aomnuhmTO8=

@@ -428,33 +428,33 @@ func editPropBCEnter(node *Node){
 	val, _ := strconv.ParseInt(node.obj.(*tEdit).text, 16, 32)
 	switch obj := RADElement.obj.(type) {
 	case *tForm:
-		obj.BC = int(val)
+		obj.BC = uint32(val)
 	case *tBtn:
-		obj.BC = int(val)
+		obj.BC = uint32(val)
 	case *tEdit:
-		obj.BC = int(val)
+		obj.BC = uint32(val)
 	case *tLabel:
-		obj.BC = int(val)
+		obj.BC = uint32(val)
 	case *tPanel:
-		obj.BC = int(val)
+		obj.BC = uint32(val)
 	case *tMemo:
-		obj.BC = int(val)
+		obj.BC = uint32(val)
 	case *tBitBtn:
-		obj.BC = int(val)
+		obj.BC = uint32(val)
 	case *tCheckBox:
-		obj.BC = int(val)
+		obj.BC = uint32(val)
 	case *tComboBox:
-		obj.BC = int(val)
+		obj.BC = uint32(val)
 	case *tListBox:
-		obj.BC = int(val)
+		obj.BC = uint32(val)
 	case *tTab:
-		obj.BC = int(val)
+		obj.BC = uint32(val)
 	case *tTable:
-		obj.BC = int(val)
+		obj.BC = uint32(val)
 	case *tMenu:
-		obj.BC = int(val)
+		obj.BC = uint32(val)
 	case *tListFileBox:
-		obj.BC = int(val)
+		obj.BC = uint32(val)
 	}
 }
 
@@ -463,29 +463,29 @@ func editPropTCEnter(node *Node){
 	val, _ := strconv.ParseInt(node.obj.(*tEdit).text, 16, 32)
 	switch obj := RADElement.obj.(type) {
 	case *tBtn:
-		obj.TC = int(val)
+		obj.TC = uint32(val)
 	case *tEdit:
-		obj.TC = int(val)
+		obj.TC = uint32(val)
 	case *tLabel:
-		obj.TC = int(val)
+		obj.TC = uint32(val)
 	case *tMemo:
-		obj.TC = int(val)
+		obj.TC = uint32(val)
 	case *tBitBtn:
-		obj.TC = int(val)
+		obj.TC = uint32(val)
 	case *tCheckBox:
-		obj.TC = int(val)
+		obj.TC = uint32(val)
 	case *tComboBox:
-		obj.TC = int(val)
+		obj.TC = uint32(val)
 	case *tListBox:
-		obj.TC = int(val)
+		obj.TC = uint32(val)
 	case *tTab:
-		obj.TC = int(val)
+		obj.TC = uint32(val)
 	case *tTable:
-		obj.TC = int(val)
+		obj.TC = uint32(val)
 	case *tMenu:
-		obj.TC = int(val)
+		obj.TC = uint32(val)
 	case *tListFileBox:
-		obj.TC = int(val)
+		obj.TC = uint32(val)
 	}
 }
 

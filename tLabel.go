@@ -15,8 +15,8 @@ type tLabel struct{
     y int
     sizeX int
     sizeY int
-    BC int
-    TC int
+    BC uint32
+    TC uint32
     caption string
     visible bool
     align tAlign
@@ -25,7 +25,7 @@ type tLabel struct{
 }
 
 
-func CreateLabel(parent *Node, name string, x int, y int, sizeX int, sizeY int, BC int, TC int, caption string, onClick func(*Node)) *Node {
+func CreateLabel(parent *Node, name string, x int, y int, sizeX int, sizeY int, BC uint32, TC uint32, caption string, onClick func(*Node)) *Node {
 	obj := tLabel{name: name, x: x, y: y, sizeX: sizeX, sizeY: sizeY, BC: BC, TC: TC, caption: caption, visible: true, onClick: onClick}
 	node := Node{typ: LABEL, parent: parent, previous: nil, children: nil, obj: &obj}
 	parent.children = append(parent.children, &node)
@@ -35,6 +35,8 @@ func CreateLabel(parent *Node, name string, x int, y int, sizeX int, sizeY int, 
 
 func (obj *tLabel) Draw(parX int, parY int, parSizeX int, parSizeY int){
 	SetLocalViewPort(parX + obj.x, parY + obj.y, parX + obj.x + obj.sizeX, parY + obj.y + obj.sizeY)
+
+	if uint8(255 & (obj.BC >> 24)) != 0xFF {
 
     SetColor(obj.BC);
     var p []tPoint
@@ -52,6 +54,8 @@ func (obj *tLabel) Draw(parX int, parY int, parSizeX int, parSizeY int){
 	p = append(p, p4)
 
     FillPoly(nil, 4, p);
+    
+    }
 
     SetColor(obj.TC);
     SetBackColor(obj.BC);
@@ -101,7 +105,10 @@ func (obj *tLabel) KeyDown(key int){
 
 
 func (obj *tLabel) Click(x int, y int){
-
+	fmt.Println("CLICKED: " + obj.caption)
+	if obj.onClick != nil {
+		obj.onClick(list[len(list)-1])
+	}
 }
 
 

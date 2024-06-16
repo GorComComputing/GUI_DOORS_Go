@@ -21,8 +21,8 @@ type tMenu struct{
     y int
     sizeX int
     sizeY int
-    BC int
-    TC int
+    BC uint32
+    TC uint32
     mode tMode
     visible bool
     focused bool
@@ -38,7 +38,7 @@ type tMenu struct{
 }
 
 
-func CreateMenu(parent *Node, name string, x int, y int, sizeX int, sizeY int, BC int, TC int, mode tMode, list []tMenuList, onClick func(*Node, int, int), onEnter func(*Node)) *Node {
+func CreateMenu(parent *Node, name string, x int, y int, sizeX int, sizeY int, BC uint32, TC uint32, mode tMode, list []tMenuList, onClick func(*Node, int, int), onEnter func(*Node)) *Node {
 	obj := tMenu{name: name, x: x, y: y, sizeX: sizeX, sizeY: sizeY, BC: BC, TC: TC, mode: mode, visible: true, enabled: true, list: list, selected: 0, cellY: 20, onClick: onClick, onEnter: onEnter}
 	node := Node{typ: MENU, parent: parent, previous: nil, children: nil, obj: &obj}
 	parent.children = append(parent.children, &node)

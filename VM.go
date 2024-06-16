@@ -210,7 +210,7 @@ func StepOVM(){
         	case 1:
         		mode = WIN
         	}
-         	frmVM = CreateForm(&layout, "frm", nil, int(RAM[SP])*0xFF+int(RAM[SP+1]), int(RAM[SP+2])*0xFF+int(RAM[SP+3]), int(RAM[SP+4])*0xFF+int(RAM[SP+5]), int(RAM[SP+6])*0xFF+int(RAM[SP+7]), int((uint32(RAM[SP+8]) << 24)+(uint32(RAM[SP+9]) << 16)+(uint32(RAM[SP+10]) << 8)+uint32(RAM[SP+11])), mode, caption, (RAM[SP+17] != 0), nil)
+         	frmVM = CreateForm(&layout, "frm", nil, int(RAM[SP])*0xFF+int(RAM[SP+1]), int(RAM[SP+2])*0xFF+int(RAM[SP+3]), int(RAM[SP+4])*0xFF+int(RAM[SP+5]), int(RAM[SP+6])*0xFF+int(RAM[SP+7]), uint32((uint32(RAM[SP+8]) << 24)+(uint32(RAM[SP+9]) << 16)+(uint32(RAM[SP+10]) << 8)+uint32(RAM[SP+11])), mode, caption, (RAM[SP+17] != 0), nil)
          	
 
          	/*RAM[SP+17] = byte(uint32(unsafe.Pointer(frmVM)))
@@ -255,28 +255,28 @@ func StepOVM(){
         	//fmt.Println(caption)
         	//fmt.Println(RAM)
         	
-        	CreateLabel(frmVM, "lbl", int(RAM[SP])*0xFF+int(RAM[SP+1]), int(RAM[SP+2])*0xFF+int(RAM[SP+3]), int(RAM[SP+4])*0xFF+int(RAM[SP+5]), int(RAM[SP+6])*0xFF+int(RAM[SP+7]), int((uint32(RAM[SP+8]) << 24)+(uint32(RAM[SP+9]) << 16)+(uint32(RAM[SP+10]) << 8)+uint32(RAM[SP+11])), int((uint32(RAM[SP+12]) << 24)+(uint32(RAM[SP+13]) << 16)+(uint32(RAM[SP+14]) << 8)+uint32(RAM[SP+15])), caption, nil)
+        	CreateLabel(frmVM, "lbl", int(RAM[SP])*0xFF+int(RAM[SP+1]), int(RAM[SP+2])*0xFF+int(RAM[SP+3]), int(RAM[SP+4])*0xFF+int(RAM[SP+5]), int(RAM[SP+6])*0xFF+int(RAM[SP+7]), uint32((uint32(RAM[SP+8]) << 24)+(uint32(RAM[SP+9]) << 16)+(uint32(RAM[SP+10]) << 8)+uint32(RAM[SP+11])), uint32((uint32(RAM[SP+12]) << 24)+(uint32(RAM[SP+13]) << 16)+(uint32(RAM[SP+14]) << 8)+uint32(RAM[SP+15])), caption, nil)
          	SP += 19
          case 3:		// CreateBtn
          	var caption string = "" 
         	var i uint32
         	for i = (uint32(RAM[SP+16]) << 24) + (uint32(RAM[SP+17]) << 16) + (uint32(RAM[SP+18]) << 8) + uint32(RAM[SP+19]); RAM[i] != 0; i++ {caption += string(RAM[i])}
-        	CreateBtn(frmVM, "btn", int(RAM[SP])*0xFF+int(RAM[SP+1]), int(RAM[SP+2])*0xFF+int(RAM[SP+3]), int(RAM[SP+4])*0xFF+int(RAM[SP+5]), int(RAM[SP+6])*0xFF+int(RAM[SP+7]), int((uint32(RAM[SP+8]) << 24)+(uint32(RAM[SP+9]) << 16)+(uint32(RAM[SP+10]) << 8)+uint32(RAM[SP+11])), int((uint32(RAM[SP+12]) << 24)+(uint32(RAM[SP+13]) << 16)+(uint32(RAM[SP+14]) << 8)+uint32(RAM[SP+15])), caption, nil)
+        	CreateBtn(frmVM, "btn", int(RAM[SP])*0xFF+int(RAM[SP+1]), int(RAM[SP+2])*0xFF+int(RAM[SP+3]), int(RAM[SP+4])*0xFF+int(RAM[SP+5]), int(RAM[SP+6])*0xFF+int(RAM[SP+7]), uint32((uint32(RAM[SP+8]) << 24)+(uint32(RAM[SP+9]) << 16)+(uint32(RAM[SP+10]) << 8)+uint32(RAM[SP+11])), uint32((uint32(RAM[SP+12]) << 24)+(uint32(RAM[SP+13]) << 16)+(uint32(RAM[SP+14]) << 8)+uint32(RAM[SP+15])), caption, nil)
          	SP += 19
          case 4:		// CreateEdit
          	var text string = "" 
         	var i uint32
         	for i = (uint32(RAM[SP+16]) << 24) + (uint32(RAM[SP+17]) << 16) + (uint32(RAM[SP+18]) << 8) + uint32(RAM[SP+19]); RAM[i] != 0; i++ {text += string(RAM[i])}
-        	CreateEdit(frmVM, "edt", int(RAM[SP])*0xFF+int(RAM[SP+1]), int(RAM[SP+2])*0xFF+int(RAM[SP+3]), int(RAM[SP+4])*0xFF+int(RAM[SP+5]), int(RAM[SP+6])*0xFF+int(RAM[SP+7]), int((uint32(RAM[SP+8]) << 24)+(uint32(RAM[SP+9]) << 16)+(uint32(RAM[SP+10]) << 8)+uint32(RAM[SP+11])), int((uint32(RAM[SP+12]) << 24)+(uint32(RAM[SP+13]) << 16)+(uint32(RAM[SP+14]) << 8)+uint32(RAM[SP+15])), text, nil, nil)
+        	CreateEdit(frmVM, "edt", int(RAM[SP])*0xFF+int(RAM[SP+1]), int(RAM[SP+2])*0xFF+int(RAM[SP+3]), int(RAM[SP+4])*0xFF+int(RAM[SP+5]), int(RAM[SP+6])*0xFF+int(RAM[SP+7]), uint32((uint32(RAM[SP+8]) << 24)+(uint32(RAM[SP+9]) << 16)+(uint32(RAM[SP+10]) << 8)+uint32(RAM[SP+11])), uint32((uint32(RAM[SP+12]) << 24)+(uint32(RAM[SP+13]) << 16)+(uint32(RAM[SP+14]) << 8)+uint32(RAM[SP+15])), text, nil, nil)
          	SP += 19
          case 5:		// CreateCheckBox
          	var caption string = "" 
         	var i uint32
         	for i = (uint32(RAM[SP+16]) << 24) + (uint32(RAM[SP+17]) << 16) + (uint32(RAM[SP+18]) << 8) + uint32(RAM[SP+19]); RAM[i] != 0; i++ {caption += string(RAM[i])}
-        	CreateCheckBox(frmVM, "cbx", int(RAM[SP])*0xFF+int(RAM[SP+1]), int(RAM[SP+2])*0xFF+int(RAM[SP+3]), int(RAM[SP+4])*0xFF+int(RAM[SP+5]), int(RAM[SP+6])*0xFF+int(RAM[SP+7]), int((uint32(RAM[SP+8]) << 24)+(uint32(RAM[SP+9]) << 16)+(uint32(RAM[SP+10]) << 8)+uint32(RAM[SP+11])), int((uint32(RAM[SP+12]) << 24)+(uint32(RAM[SP+13]) << 16)+(uint32(RAM[SP+14]) << 8)+uint32(RAM[SP+15])), caption, (RAM[SP+20] != 0), nil)
+        	CreateCheckBox(frmVM, "cbx", int(RAM[SP])*0xFF+int(RAM[SP+1]), int(RAM[SP+2])*0xFF+int(RAM[SP+3]), int(RAM[SP+4])*0xFF+int(RAM[SP+5]), int(RAM[SP+6])*0xFF+int(RAM[SP+7]), uint32((uint32(RAM[SP+8]) << 24)+(uint32(RAM[SP+9]) << 16)+(uint32(RAM[SP+10]) << 8)+uint32(RAM[SP+11])), uint32((uint32(RAM[SP+12]) << 24)+(uint32(RAM[SP+13]) << 16)+(uint32(RAM[SP+14]) << 8)+uint32(RAM[SP+15])), caption, (RAM[SP+20] != 0), nil)
          	SP += 20
          case 6:		// CreateMemo
-        	CreateMemo(frmVM, "mem", int(RAM[SP])*0xFF+int(RAM[SP+1]), int(RAM[SP+2])*0xFF+int(RAM[SP+3]), int(RAM[SP+4])*0xFF+int(RAM[SP+5]), int(RAM[SP+6])*0xFF+int(RAM[SP+7]), int((uint32(RAM[SP+8]) << 24)+(uint32(RAM[SP+9]) << 16)+(uint32(RAM[SP+10]) << 8)+uint32(RAM[SP+11])), int((uint32(RAM[SP+12]) << 24)+(uint32(RAM[SP+13]) << 16)+(uint32(RAM[SP+14]) << 8)+uint32(RAM[SP+15])), nil)
+        	CreateMemo(frmVM, "mem", int(RAM[SP])*0xFF+int(RAM[SP+1]), int(RAM[SP+2])*0xFF+int(RAM[SP+3]), int(RAM[SP+4])*0xFF+int(RAM[SP+5]), int(RAM[SP+6])*0xFF+int(RAM[SP+7]), uint32((uint32(RAM[SP+8]) << 24)+(uint32(RAM[SP+9]) << 16)+(uint32(RAM[SP+10]) << 8)+uint32(RAM[SP+11])), uint32((uint32(RAM[SP+12]) << 24)+(uint32(RAM[SP+13]) << 16)+(uint32(RAM[SP+14]) << 8)+uint32(RAM[SP+15])), nil)
          	SP += 15
          }
     default: 

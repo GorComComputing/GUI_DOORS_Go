@@ -15,8 +15,8 @@ type tBtn struct{
     y int
     sizeX int
     sizeY int
-    BC int
-    TC int
+    BC uint32
+    TC uint32
     caption string
     visible bool
     pressed bool
@@ -27,7 +27,7 @@ type tBtn struct{
 }
 
 
-func CreateBtn(parent *Node, name string, x int, y int, sizeX int, sizeY int, BC int, TC int, caption string, onClick func(*Node)) *Node {
+func CreateBtn(parent *Node, name string, x int, y int, sizeX int, sizeY int, BC uint32, TC uint32, caption string, onClick func(*Node)) *Node {
 	obj := tBtn{name: name, x: x, y: y, sizeX: sizeX, sizeY: sizeY, BC: BC, TC: TC, caption: caption, visible: true, pressed: false, enabled: true, onClick: onClick}
 	node := Node{typ: BUTTON, parent: parent, previous: nil, children: nil, obj: &obj}
 	parent.children = append(parent.children, &node)

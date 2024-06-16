@@ -194,7 +194,7 @@ func syntax(lang tLang) {
 		memNotepad.obj.(*tMemo).BC = 0x293134
 	}	
 	
-	memNotepad.obj.(*tMemo).color = make([][]int, len(memNotepad.obj.(*tMemo).list))
+	memNotepad.obj.(*tMemo).color = make([][]uint32, len(memNotepad.obj.(*tMemo).list))
 	for i := 0; i < len(memNotepad.obj.(*tMemo).list); i++ {
 		syntaxString(memNotepad.obj.(*tMemo).list[i], i, lang)
 	}
@@ -216,7 +216,7 @@ func syntaxString(str string, i int, lang tLang) {
 		keyWords2 = keyWordsAsm2
 	}
 	
-	memNotepad.obj.(*tMemo).color[i] = make([]int, len(memNotepad.obj.(*tMemo).list[i]))
+	memNotepad.obj.(*tMemo).color[i] = make([]uint32, len(memNotepad.obj.(*tMemo).list[i]))
 
 	var c int = 0
 	var r int = 0
@@ -307,7 +307,7 @@ func getLex(c int, str string, keyWords1 []string, keyWords2 []string, lang tLan
 
 
 func setColorLex(begin int, c int, i int, lex tLex, lang tLang) {
-	var color int
+	var color uint32
 	switch lang {
 	case langC, langGO:
 		switch lex {
@@ -350,7 +350,7 @@ func setColorLex(begin int, c int, i int, lex tLex, lang tLang) {
 func memNotepadKeyDown(node *Node, key int) {
 	syntaxString(memNotepad.obj.(*tMemo).list[memNotepad.obj.(*tMemo).curYR + memNotepad.obj.(*tMemo).curY], memNotepad.obj.(*tMemo).curYR + memNotepad.obj.(*tMemo).curY, syntaxLang)
 	if key == 13 {
-		memNotepad.obj.(*tMemo).color = append(memNotepad.obj.(*tMemo).color, make([]int, 0))
+		memNotepad.obj.(*tMemo).color = append(memNotepad.obj.(*tMemo).color, make([]uint32, 0))
 	}
 	switch key {
 	case 13, 46, 8:

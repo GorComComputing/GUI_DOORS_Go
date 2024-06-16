@@ -15,7 +15,7 @@ type tPanel struct{
     y int
     sizeX int
     sizeY int
-    BC int
+    BC uint32
     visible bool
     mode tMode
     align tAlign
@@ -24,7 +24,7 @@ type tPanel struct{
 }
 
 
-func CreatePanel(parent *Node, name string, x int, y int, sizeX int, sizeY int, BC int, mode tMode, onClick func(*Node)) *Node {
+func CreatePanel(parent *Node, name string, x int, y int, sizeX int, sizeY int, BC uint32, mode tMode, onClick func(*Node)) *Node {
 	obj := tPanel{name: name, x: x, y: y, sizeX: sizeX, sizeY: sizeY, BC: BC, visible: true, mode: mode, onClick: onClick}
 	node := Node{typ: PANEL, parent: parent, previous: nil, children: nil, obj: &obj}
 	parent.children = append(parent.children, &node)
@@ -34,6 +34,9 @@ func CreatePanel(parent *Node, name string, x int, y int, sizeX int, sizeY int, 
 
 func (obj *tPanel) Draw(parX int, parY int, parSizeX int, parSizeY int){
 	//SetViewPort(parX, parY, parX + parSizeX, parY + parSizeY)
+    
+    if uint8(255 & (obj.BC >> 24)) != 0xFF {
+    
     SetColor(obj.BC);
     var p []tPoint
 
@@ -51,6 +54,8 @@ func (obj *tPanel) Draw(parX int, parY int, parSizeX int, parSizeY int){
 
     FillPoly(nil, 4, p);
     
+    }
+    
     if obj.mode == TASK {
     	SetColor(0xA0DC88);
     	LinePP(nil, parX+obj.x, parY+obj.y, parX+obj.x + obj.sizeX, parY+obj.y);
@@ -64,6 +69,7 @@ func (obj *tPanel) Draw(parX int, parY int, parSizeX int, parSizeY int){
     	SetColor(0x005C00);
     	LinePP(nil, parX+obj.x, parY+obj.y + obj.sizeY, parX+obj.x + obj.sizeX, parY+obj.y + obj.sizeY);
     	LinePP(nil, parX+obj.x + obj.sizeX, parY+obj.y, parX+obj.x + obj.sizeX, parY+obj.y + obj.sizeY);
+    } else if obj.mode == NONE {
     } else {
     	SetColor(0xF8FCF8);
     	LinePP(nil, parX+obj.x, parY+obj.y, parX+obj.x + obj.sizeX, parY+obj.y);

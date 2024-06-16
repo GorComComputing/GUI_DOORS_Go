@@ -16,10 +16,10 @@ type tMemo struct{
     y int
     sizeX int
     sizeY int
-    BC int
-    TC int
+    BC uint32
+    TC uint32
     list []string
-    color [][]int
+    color [][]uint32
     visible bool
     focused bool
     enabled bool
@@ -35,7 +35,7 @@ type tMemo struct{
 }
 
 
-func CreateMemo(parent *Node, name string, x int, y int, sizeX int, sizeY int, BC int, TC int, onClick func(*Node)) *Node {
+func CreateMemo(parent *Node, name string, x int, y int, sizeX int, sizeY int, BC uint32, TC uint32, onClick func(*Node)) *Node {
 	obj := tMemo{name: name, x: x, y: y, sizeX: sizeX, sizeY: sizeY, BC: BC, TC: TC, list: []string{""}, visible: true, enabled: true, curX: 0, curY: 0, curXR: 0, curYR: 0, onClick: onClick, onKeyDown: nil}
 	node := Node{typ: MEMO, parent: parent, previous: nil, children: nil, obj: &obj}
 	parent.children = append(parent.children, &node)
