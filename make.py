@@ -156,19 +156,27 @@ elif (sys.argv[1] == "stat"):
 	del ssh, stdin, stdout, stderr
 	
 elif (sys.argv[1] == "git"):
-    # Git commit to GitHub
-    subprocess.run(["git", "add", "."])
-    print("OK: git add .")
+	# Шифрование GPG
+	subprocess.run(["gpg", "-e", "-r", "\"Eugeny Goryachev\"", "secret.go"])
+	print("OK: gpg -e -r \"Eugeny Goryachev\" secret.go")
+	subprocess.run(["gpg", "-e", "-r", "\"Eugeny Goryachev\"", "secret.py"])
+	print("OK: gpg -e -r \"Eugeny Goryachev\" secret.py")
+	subprocess.run(["gpg", "-e", "-r", "\"Eugeny Goryachev\"", "Server/secret.go"])
+	print("OK: gpg -e -r \"Eugeny Goryachev\" Server/secret.go")
+	
+	# Git commit to GitHub
+	subprocess.run(["git", "add", "."])
+	print("OK: git add .")
     
-    if len (sys.argv) < 3:
-        comment = "-//-"
-    else:
-        comment = sys.argv[2]
-    subprocess.run(["git", "commit", "-m", comment])
-    print("OK: git commit -m \"{0}\"".format(comment))
+	if len (sys.argv) < 3:
+		comment = "-//-"
+	else:
+		comment = sys.argv[2]
+	subprocess.run(["git", "commit", "-m", comment])
+	print("OK: git commit -m \"{0}\"".format(comment))
     
-    subprocess.run(["git", "push", "https://{0}@github.com/{1}/{2}.git".format(secret.tokenGit, userGit, repoGit)])
-    print("OK: git push to {0}".format(repoGit))
+	subprocess.run(["git", "push", "https://{0}@github.com/{1}/{2}.git".format(secret.tokenGit, userGit, repoGit)])
+	print("OK: git push to {0}".format(repoGit))
 
 	
 else:
