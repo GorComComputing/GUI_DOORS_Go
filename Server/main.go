@@ -89,10 +89,9 @@ var numericKeyboardPICO = tgbotapi.NewInlineKeyboardMarkup(
 
 // Инимциализация для подключения к Телеграм-боту
 func init() {
-	// https://api.telegram.org/bot6741341050:AAH5uDOLQHpMnmZxGvLBwiXljavoaA3OOms/getUpdates
 	// принимаем на входе флаг -telegrambottoken
-	flag.StringVar(&telegramBotToken, "telegrambottoken", "6741341050:AAH5uDOLQHpMnmZxGvLBwiXljavoaA3OOms", "Telegram Bot Token")
-	flag.Int64Var(&chatID, "chatid", -4265825342, "chatId to send messages")
+	flag.StringVar(&telegramBotToken, "telegrambottoken", tokenTelegram, "Telegram Bot Token")
+	flag.Int64Var(&chatID, "chatid", chatIdTelegram, "chatId to send messages")
 
 	flag.Parse()
 

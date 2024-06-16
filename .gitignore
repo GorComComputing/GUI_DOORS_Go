@@ -6,3 +6,4 @@ DOORS.wasm
 __pycache__
 secret.py
 secret.go
+Server/secret.go
