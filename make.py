@@ -157,11 +157,11 @@ elif (sys.argv[1] == "stat"):
 	
 elif (sys.argv[1] == "git"):
 	# Шифрование GPG
-	subprocess.run(["gpg", "-e", "-r", "\"Eugeny Goryachev\"", "secret.go"])
+	subprocess.run(["gpg", "-e", "-r", "Eugeny Goryachev", "secret.go"])
 	print("OK: gpg -e -r \"Eugeny Goryachev\" secret.go")
-	subprocess.run(["gpg", "-e", "-r", "\"Eugeny Goryachev\"", "secret.py"])
+	subprocess.run(["gpg", "-e", "-r", "Eugeny Goryachev", "secret.py"])
 	print("OK: gpg -e -r \"Eugeny Goryachev\" secret.py")
-	subprocess.run(["gpg", "-e", "-r", "\"Eugeny Goryachev\"", "Server/secret.go"])
+	subprocess.run(["gpg", "-e", "-r", "Eugeny Goryachev", "Server/secret.go"])
 	print("OK: gpg -e -r \"Eugeny Goryachev\" Server/secret.go")
 	
 	# Git commit to GitHub
