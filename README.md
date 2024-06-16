@@ -42,13 +42,6 @@
 ![img/Screenshot2.png](img/Screenshot2.png)
 ![img/Screenshot3.png](img/Screenshot3.png)
 
-```
-// Логин и пароль хранятся во внешнем файле secret.go в переменных:
-var loginAdmin = "********"
-var passwordAdmin = "********"
-var loginUser = "********"
-var passwordUser = "********"
-```
 
 ```
 # Для сборки и загрузки на сервер WASM
@@ -65,9 +58,6 @@ $ ./make.py stat
 
 # Для автоматческого добавление на GitHub
 $ ./make.py git "Комментарий"
-
-# Токен GitHub хранится во внешнем файле secret.py в переменной:
-# tokenGit = "********"
 ```
 
 2023-2024 Evgeny Goryachev    

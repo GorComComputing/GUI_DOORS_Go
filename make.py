@@ -177,6 +177,14 @@ elif (sys.argv[1] == "git"):
     
 	subprocess.run(["git", "push", "https://{0}@github.com/{1}/{2}.git".format(secret.tokenGit, userGit, repoGit)])
 	print("OK: git push to {0}".format(repoGit))
+	
+	# Удалить зашифрованые файлы GPG
+	subprocess.run(["rm", "secret.go.gpg"])
+	print("OK: rm secret.go.gpg")
+	subprocess.run(["rm", "secret.py.gpg"])
+	print("OK: rm secret.py.gpg")
+	subprocess.run(["rm", "Server/secret.go.gpg"])
+	print("OK: rm Server/secret.go.gpg")
 
 	
 else:
