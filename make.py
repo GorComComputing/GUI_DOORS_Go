@@ -15,6 +15,11 @@ localpathWww = "./Server/www/"
 localpathServer = "./Server/"
 
 
+# Удалить __pycache__
+def delPycache():	
+	subprocess.run(["rm", "-r", "__pycache__"])
+
+
 if len (sys.argv) < 2:
 	print ("Ошибка. Выбери один из параметров:")
 	print ("  wasm  - собрать DOORS.wasm")
@@ -23,6 +28,7 @@ if len (sys.argv) < 2:
 	print ("  stop  - остановить сервер DOORS")
 	print ("  stat  - узнать запущен ли сервер DOORS")
 	print ("  git   - commit to GitHub")
+	delPycache()
 	sys.exit (1)
 if len (sys.argv) > 3:
 	print ("Ошибка. Выбери один из параметров:")
@@ -32,6 +38,7 @@ if len (sys.argv) > 3:
 	print ("  stop  - остановить сервер DOORS")
 	print ("  stat  - узнать запущен ли сервер DOORS")
 	print ("  git   - commit to GitHub")
+	delPycache()
 	sys.exit (1)
 
 if (sys.argv[1] == "wasm"):
@@ -53,6 +60,7 @@ if (sys.argv[1] == "wasm"):
 	transport.close()
 	del transport, sftp 
 	print("OK")
+	delPycache()
 	
 elif (sys.argv[1] == "srv"):
 	# MakeFile
@@ -92,6 +100,7 @@ elif (sys.argv[1] == "srv"):
 	
 	ssh.close()
 	del ssh, stdin, stdout, stderr
+	delPycache()
 	
 elif (sys.argv[1] == "start"):
 	# Connect SSH
@@ -114,6 +123,7 @@ elif (sys.argv[1] == "start"):
 	
 	ssh.close()
 	del ssh, stdin, stdout, stderr
+	delPycache()
 	
 elif (sys.argv[1] == "stop"):
 	# Connect SSH
@@ -127,6 +137,7 @@ elif (sys.argv[1] == "stop"):
 	
 	ssh.close()
 	del ssh, stdin, stdout, stderr
+	delPycache()
 	
 elif (sys.argv[1] == "stat"):
 	# Connect SSH
@@ -154,6 +165,7 @@ elif (sys.argv[1] == "stat"):
 			
 	ssh.close()
 	del ssh, stdin, stdout, stderr
+	delPycache()
 	
 elif (sys.argv[1] == "git"):
 	# Шифрование GPG
@@ -185,6 +197,8 @@ elif (sys.argv[1] == "git"):
 	print("OK: rm secret.py.gpg")
 	subprocess.run(["rm", "Server/secret.go.gpg"])
 	print("OK: rm Server/secret.go.gpg")
+	
+	delPycache()
 
 	
 else:
@@ -195,11 +209,10 @@ else:
 	print ("  stop  - остановить сервер DOORS")
 	print ("  stat  - узнать запущен ли сервер DOORS")
 	print ("  git   - commit to GitHub")
+	delPycache()
 	sys.exit (1)
 	
-# Удалить зашифрованые файлы GPG
-subprocess.run(["rm", "-r", "__pycache__"])
-print("OK: rm -r __pycache__")
+	
 	
 	
 
