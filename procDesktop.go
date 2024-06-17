@@ -115,6 +115,12 @@ func btnLoginFlagClick(node *Node){
 		edtPasswordFlag.obj.(*tPassEdit).text = ""
 		pnlFlag1.obj.(*tPanel).visible = false
 		fmt.Println(mainUser)
+	} else {
+		mainUser = edtLoginFlag.obj.(*tEdit).text
+		edtLoginFlag.obj.(*tEdit).text = ""
+		edtPasswordFlag.obj.(*tPassEdit).text = ""
+		pnlFlag1.obj.(*tPanel).visible = false
+		fmt.Println(mainUser)
 	}
 	
 }

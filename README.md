@@ -3,7 +3,8 @@
 ![img/Screenshot5.png](img/Screenshot5.png)
 ![img/Screenshot4.png](img/Screenshot4.png)
 
-Оконный графический интерфейс операционной системы Doors. Версия для WebAssembly, запускается в браузере.
+Оконный графический интерфейс операционной системы Doors. Версия для WebAssembly, запускается в браузере.  
+Посмотреть, как работает можно по ссылке [www.gorcom.online](http://www.gorcom.online)
 
 Содержит:
 - базовую графическую библиотеку

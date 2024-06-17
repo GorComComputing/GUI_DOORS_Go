@@ -93,7 +93,7 @@ func startCOFFEE(frmMain *Node){
   	lblMoistureData = CreateLabel(pnlData, "lblMoistureData", 80, 165, 80, 20, 0xd8dcc0, 0x0, "", nil)*/
   	btnRefreshData_COFFEE = CreateBtn(pnlData_COFFEE, "btnRefreshData_COFFEE", 50, 190, 70, 24, 0xd8dcc0, 0x0, "Refresh", btnRefreshData_COFFEE_Click)
   	
-  	btnRefreshData_COFFEE_Click(btnRefreshData_COFFEE)
+  	//btnRefreshData_COFFEE_Click(btnRefreshData_COFFEE)
 }
 
 
