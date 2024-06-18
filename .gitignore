@@ -1,9 +1,8 @@
 # Ignore .exe 
 *.exe
-DOORS.wasm
-/WebServer/DOORS
-/WebServer/files
 __pycache__
 secret.py
 secret.go
-Server/secret.go
+Server/DOORS
+Server/DOORSamd64
+Server/www/DOORS.wasm
