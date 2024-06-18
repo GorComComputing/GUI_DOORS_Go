@@ -8,20 +8,10 @@ import (
 	//"strconv"
 )
 
-// Work
-//var ServerIP string = "192.168.63.60" 
-//var RootDir string = "/home/gor/WORK/Go/projects/DOORS/Server/" 
-//var DesktopDir string = "/home/gor/WORK/Go/projects/DOORS/Server/files/" // "/home/gor/WORK/Go/projects/" 
-
-// Remote
-//var ServerIP string = "172.18.0.1" 
-//var RootDir string = "/home/user/WORK/DOORS/" 
-//var DesktopDir string = "/home/user/WORK/"
 
 // Home
-//var ServerIP string = "192.168.0.10"
-//var ServerIP string = "100.97.214.127"
 //var ServerIP string = "85.113.55.171"
+//var ServerIP string = "localhost"
 //var ServerPort string = "8081"
 var ServerIP string = "www.gorcom.online"
 var ServerPort string = "80"
@@ -32,11 +22,6 @@ var ServerPort string = "80"
 //var ServerIP string = "192.168.0.254"
 var RootDir string = "/Server/"
 var DesktopDir string = "/Server/"
-
-// STV
-//var ServerIP string = "192.168.1.136"
-//var RootDir string = "/root/DOORS/"
-//var DesktopDir string = "/root/DOORS/files/"
 
 var mainUser string = ""
 

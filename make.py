@@ -73,6 +73,7 @@ elif (sys.argv[1] == "srv"):
 	ssh.connect(hostname = secret.host, username = secret.user, password = secret.password, port = port)
 	
 	# Killall DOORS
+	stdin, stdout, stderr = ssh.exec_command("killall launch.sh")
 	stdin, stdout, stderr = ssh.exec_command("killall DOORS")
 	print("Stop   SERVER OK")
 	
@@ -95,7 +96,7 @@ elif (sys.argv[1] == "srv"):
 	#print(stdout.read().decode())
 	#print("Chmod  SERVER OK")
 
-	stdin, stdout, stderr = ssh.exec_command("/root/startDOORS.sh > /dev/null 2>&1")
+	stdin, stdout, stderr = ssh.exec_command("/root/launch.sh &")
 	print("Start  SERVER OK")
 	
 	ssh.close()
@@ -109,6 +110,7 @@ elif (sys.argv[1] == "start"):
 	ssh.connect(hostname = secret.host, username = secret.user, password = secret.password, port = port)
 	
 	# Killall DOORS
+	stdin, stdout, stderr = ssh.exec_command("killall launch.sh")
 	stdin, stdout, stderr = ssh.exec_command("killall DOORS")
 	print("Stop   SERVER OK")
 	
@@ -118,7 +120,8 @@ elif (sys.argv[1] == "start"):
 	#print(stdout.read().decode())
 	#print("Chmod  SERVER OK")
 
-	stdin, stdout, stderr = ssh.exec_command("/root/startDOORS.sh > /dev/null 2>&1")
+	stdin, stdout, stderr = ssh.exec_command("/root/launch.sh &")
+	#stdin, stdout, stderr = ssh.exec_command("/root/startDOORS.sh > /dev/null 2>&1")
 	print("Start  SERVER OK")
 	
 	ssh.close()
@@ -132,6 +135,7 @@ elif (sys.argv[1] == "stop"):
 	ssh.connect(hostname = secret.host, username = secret.user, password = secret.password, port = port)
 	
 	# Killall DOORS
+	stdin, stdout, stderr = ssh.exec_command("killall launch.sh")
 	stdin, stdout, stderr = ssh.exec_command("killall DOORS")
 	print("Stop   SERVER OK")
 	

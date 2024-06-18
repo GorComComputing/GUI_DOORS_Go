@@ -13,7 +13,7 @@ ret=$(ps | grep [D]OORS | wc -l)
 		killall DOORS
 		chmod +x /Server/DOORS 
 		chmod +x /root/startDOORS.sh
-        #sleep 1  	
+        sleep 1  	
         /root/startDOORS.sh > /dev/null 2>&1
         #/Server/DOORS
         #echo "UP:   Start  SERVER:        "	
@@ -25,6 +25,8 @@ ret=$(ps | grep [D]OORS | wc -l)
 		#exit 1
 	#}
 	fi;
+	
+	sleep 1
 
 done
 
