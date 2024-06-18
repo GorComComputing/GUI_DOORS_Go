@@ -8,10 +8,10 @@ import time
 
 
 port = 22
-remotepathWww = "/Server/www/"
+#remotepathWww = "/Server/www/"
 remotepathServer = "/Server/"
-localpathWww = "./Server/www/"
-localpathServer = "./Server/"
+#localpathWww = "./Server/www/"
+#localpathServer = "./Server/"
 
 
 # Удалить __pycache__
