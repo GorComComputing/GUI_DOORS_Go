@@ -9,14 +9,17 @@ import (
 )
 
 
-var ServerIP string
-var ServerPort string
-var ServerProtocol string
+// Объявление глобальных переменных
+var (
+	ServerIP       string
+	ServerPort     string
+	ServerProtocol string
 
-var RootDir string = "/DOORS/"
-var DesktopDir string = "/DOORS/"
+	RootDir    string = "/DOORS/"
+	DesktopDir string = "/DOORS/"
 
-var mainUser string = ""
+	mainUser string = ""
+)
 
 
 // Список программ
@@ -40,23 +43,30 @@ var programs = []*tProgram{
 	
 
 func main() {
+	// Получение параметров сервера из глобального контекста JavaScript
 	ServerIP = js.Global().Get("location").Get("host").String()
 	ServerPort = js.Global().Get("location").Get("port").String()
 	ServerProtocol = js.Global().Get("location").Get("protocol").String()
 	
+	// Получение размеров окна браузера
   	BITMAP_WIDTH = js.Global().Get("innerWidth").Int()
     BITMAP_HEIGHT = js.Global().Get("innerHeight").Int()
     	
+    // Настройка графических параметров
     SIZE = BITMAP_WIDTH*BITMAP_HEIGHT 
 	GETMAX_X = BITMAP_WIDTH - 1 
 	GETMAX_Y = BITMAP_HEIGHT - 1
 	BUFFER_SIZE = BITMAP_WIDTH*BITMAP_HEIGHT * 4
 	
+	// Инициализация системы
 	initDOORS(programs)
 	
+	// Отрисовка событий
 	eventDraw()
   	
-    <-make(chan bool)
+  	// Блокировка завершения программы
+	select {}
+    //<-make(chan bool)
 }
 
 

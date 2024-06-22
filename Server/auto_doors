@@ -2,7 +2,30 @@
 # DOORS autorun
 
 START=50
+
+#start() {
+#	chmod +x /DOORS/launch.sh
+#	/DOORS/launch.sh &
+#} 
+
 start() {
-	chmod +x /DOORS/launch.sh
-	/DOORS/launch.sh &
-} 
+    # Проверка существования файла launch.sh
+    if [ -f /DOORS/launch.sh ]; then
+        # Установка прав на выполнение
+        chmod +x /DOORS/launch.sh
+        
+        # Запуск скрипта launch.sh в фоновом режиме
+        /DOORS/launch.sh &
+        
+        # Проверка успешности запуска
+        if [ $? -eq 0 ]; then
+            echo "DOORS launch script started successfully."
+        else
+            echo "Error: Failed to start DOORS launch script."
+            return 1
+        fi
+    else
+        echo "Error: /DOORS/launch.sh not found."
+        return 1
+    fi
+}

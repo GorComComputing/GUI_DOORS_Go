@@ -9,13 +9,17 @@ import (
 )
 
 
-var BITMAP_WIDTH int = 1920 // 1920 //1600 //1024 //640   
-var BITMAP_HEIGHT int = 1080 // 1080 //900 //768 //480
-var SIZE int = BITMAP_WIDTH*BITMAP_HEIGHT
-var GETMAX_X int = BITMAP_WIDTH - 1 
-var GETMAX_Y int = BITMAP_HEIGHT - 1
+// Объявление глобальных переменных
+var (
+	// Размеры экрана и параметры графики
+	BITMAP_WIDTH  int = 1920 // 1920 //1600 //1024 //640 
+	BITMAP_HEIGHT int = 1080 // 1080 //900 //768 //480
+	SIZE          int = BITMAP_WIDTH*BITMAP_HEIGHT
+	GETMAX_X      int = BITMAP_WIDTH - 1
+	GETMAX_Y      int = BITMAP_HEIGHT - 1
+	BUFFER_SIZE   int = SIZE * 4 *2
+)
 
-var BUFFER_SIZE int = SIZE * 4 *2
 var graphicsBuffer []uint8 = make([]uint8, BUFFER_SIZE, BUFFER_SIZE)
 
 
