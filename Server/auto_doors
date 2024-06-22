@@ -3,8 +3,6 @@
 
 START=50
 start() {
-  	#/Server/DOORS &
-	#/root/startDOORS.sh
-	chmod +x /root/launch.sh
-	/root/launch.sh &
+	chmod +x /DOORS/launch.sh
+	/DOORS/launch.sh &
 } 

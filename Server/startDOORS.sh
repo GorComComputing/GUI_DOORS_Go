@@ -1,6 +1,6 @@
 #!/bin/sh
 
-cd /Server/
+cd /DOORS/
 chmod +x DOORS
 ./DOORS & 
  

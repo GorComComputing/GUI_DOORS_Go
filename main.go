@@ -9,19 +9,12 @@ import (
 )
 
 
-// Home
-//var ServerIP string = "85.113.55.171"
-//var ServerIP string = "localhost"
-//var ServerPort string = "8081"
-var ServerIP string = "www.gorcom.online"
-var ServerPort string = "80"
-//var RootDir string = "/home/jon/IT/WORK/Go/projects/DOORS/Server/"
-//var DesktopDir string = "/home/jon/IT/WORK/Go/projects/"
+var ServerIP string
+var ServerPort string
+var ServerProtocol string
 
-// OpenWrt
-//var ServerIP string = "192.168.0.254"
-var RootDir string = "/Server/"
-var DesktopDir string = "/Server/"
+var RootDir string = "/DOORS/"
+var DesktopDir string = "/DOORS/"
 
 var mainUser string = ""
 
@@ -47,6 +40,10 @@ var programs = []*tProgram{
 	
 
 func main() {
+	ServerIP = js.Global().Get("location").Get("host").String()
+	ServerPort = js.Global().Get("location").Get("port").String()
+	ServerProtocol = js.Global().Get("location").Get("protocol").String()
+	
   	BITMAP_WIDTH = js.Global().Get("innerWidth").Int()
     BITMAP_HEIGHT = js.Global().Get("innerHeight").Int()
     	

@@ -9,9 +9,9 @@
 
 ```
 # Для запуска в Docker
-$ docker run -d -p 8081:8081 --rm gorcomcomputing/doors
+$ docker run -d -p 80:8081 --rm gorcomcomputing/doors
 
-# Затем в браузере перейти по ссылке localhost:8081
+# Затем в браузере перейти по ссылке localhost
 ```
 
 Содержит:
@@ -67,6 +67,15 @@ $ ./make.py stat
 
 # Для автоматческого добавление на GitHub
 $ ./make.py git "Комментарий"
+
+# Перезапустить Web-сервер DOORS
+$ ./make.py restart
+
+# Создать Docker контейнер
+$ ./make.py docker
+
+# Отправить контейнер в Docker Hub
+$ ./make.py hub
 ```
 
 2023-2024 Evgeny Goryachev    
