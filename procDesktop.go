@@ -54,7 +54,7 @@ func startDesktop(){
 	lblTime = CreateLabel(pnlTask, "lblTime", pnlTask.obj.(*tPanel).sizeX - 45, 6, 40, 20, 0x30B410, 0xF8FCF8, "", nil)
 
 	
-	listMenuStart := []tMenuList{{"Programs", bmpPrograms}, {"Settings", bmpSettings}, {"Log Out", bmpKey}}
+	listMenuStart := []tMenuList{{"Programs", bmpPrograms}, {"Settings", bmpSettings}, {"Log In", bmpKey}}
 	
 	frmMenuStart = CreateForm(&layout, "frmMenuStart", nil, 2, BITMAP_HEIGHT-len(listMenuStart)*20-20-37-50+2-30, 147, len(listMenuStart)*20+26+50+30, 0xD8DCC0, NONE, "", false, nil)
 	cnvMenuStart = CreateCanvas(frmMenuStart, "cnvMenuStart", 2, 2, 20, len(listMenuStart)*20+20+50+30, nil)
@@ -89,6 +89,7 @@ func startDesktop(){
 	cbxRAD = CreateCheckBox(frmMenuStart, "cbxRAD", 27, frmMenuStart.obj.(*tForm).sizeY - 25, 100, 16, 0xD8DCC0, 0x000000, "RAD", false, cbxRADClick)
 	
 	pnlFlag1 = CreatePanel(frmDesktop, "pnlFlag1", 0, 0, frmDesktop.obj.(*tForm).sizeX+1, frmDesktop.obj.(*tForm).sizeY+1, 0x0080C0, NONE, nil)
+	pnlFlag1.obj.(*tPanel).visible = false
 	//imgSkyFlag = CreateImage(frmDesktop, "imgSkyFlag", bmpSkyFlag, pnlFlag1.obj.(*tPanel).sizeX/2-400, pnlFlag1.obj.(*tPanel).sizeY/2-320, 800, 600, nil)
 	pnlFlag2 = CreatePanel(pnlFlag1, "pnlFlag2", pnlFlag1.obj.(*tPanel).sizeX/2-188, pnlFlag1.obj.(*tPanel).sizeY/2-220, 480, 430, 0xFF0080C0, NONE, nil)
 	cnvFlag = CreateCanvas(pnlFlag2, "cnvFlag", 0, 0, pnlFlag2.obj.(*tPanel).sizeX, pnlFlag2.obj.(*tPanel).sizeY, nil)

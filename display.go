@@ -9,39 +9,39 @@ import (
 )
 
 
-// Объявление глобальных переменных
+// Глобальные переменные для размеров экрана и буфера графики
 var (
-	// Размеры экрана и параметры графики
 	BITMAP_WIDTH  int = 1920 // 1920 //1600 //1024 //640 
 	BITMAP_HEIGHT int = 1080 // 1080 //900 //768 //480
-	SIZE          int = BITMAP_WIDTH*BITMAP_HEIGHT
+	SIZE          int = BITMAP_WIDTH * BITMAP_HEIGHT
 	GETMAX_X      int = BITMAP_WIDTH - 1
 	GETMAX_Y      int = BITMAP_HEIGHT - 1
-	BUFFER_SIZE   int = SIZE * 4 *2
+	BUFFER_SIZE   int = SIZE * 4 * 2 // Размер буфера в байтах (RGBA * 2)
 )
 
+// Глобальный буфер для графики
 var graphicsBuffer []uint8 = make([]uint8, BUFFER_SIZE, BUFFER_SIZE)
 
 
+// Функция для заполнения части буфера определенным цветом
 func FillLB(buffer []uint8, start int, count int, value uint32){
-	if buffer == nil {
-    	for i := start*4; i <= start*4 + count*4 - 1; i+=4 {
-      		graphicsBuffer[i + 0] = uint8(255 & (value >> 16)); 	// Red
-      		graphicsBuffer[i + 1] = uint8(255 & (value >> 8)); 		// Green
-      		graphicsBuffer[i + 2] = uint8(255 & (value)); 			// Blue
-      		graphicsBuffer[i + 3] = 255; 							// Alpha
-    	}
+	var buf []uint8
+    if buffer == nil {
+        buf = graphicsBuffer
     } else {
-    	for i := start*4; i <= start*4 + count*4 - 1; i+=4 {
-      		buffer[i + 0] = uint8(255 & (value >> 16)); 	// Red
-      		buffer[i + 1] = uint8(255 & (value >> 8)); 		// Green
-      		buffer[i + 2] = uint8(255 & (value)); 			// Blue
-      		buffer[i + 3] = 255;							// Alpha
-    	}
+        buf = buffer
+    }
+
+    for i := start * 4; i < (start+count)*4; i += 4 {
+        buf[i+0] = uint8(value >> 16)       // Красный
+        buf[i+1] = uint8(value >> 8)        // Зеленый
+        buf[i+2] = uint8(value)             // Синий
+        buf[i+3] = 255                      // Альфа
     }
 }
 
 
+// Функция для заполнения буфера случайными цветами
 func FillLBrnd(){
     for i := 0; i < BUFFER_SIZE; i++ {
         if graphicsBuffer[i] != 1 {
@@ -51,28 +51,29 @@ func FillLBrnd(){
 }
 
 
-func GetPixelgl(buffer []uint8, x int, y int) uint32 {
+// Функция для получения цвета пикселя по координатам
+func GetPixelgl(buffer []uint8, x int, y int) uint32 { 
     var val uint32 = 0
-    squareNumber := (y * BITMAP_WIDTH) + x;
-    squareRgbaIndex := squareNumber * 4;
-    
-    val += uint32(graphicsBuffer[squareRgbaIndex + 0]) << 16	// Red
-    val += uint32(graphicsBuffer[squareRgbaIndex + 1]) << 8		// Green
-    val += uint32(graphicsBuffer[squareRgbaIndex + 2])			// Blue
-    val += uint32(graphicsBuffer[squareRgbaIndex + 3]) << 24 	// Alpha
-      	
-    return val;
+    squareNumber := (y * BITMAP_WIDTH) + x
+    squareRgbaIndex := squareNumber * 4
+
+    val += uint32(graphicsBuffer[squareRgbaIndex+0]) << 16 // Красный
+    val += uint32(graphicsBuffer[squareRgbaIndex+1]) << 8  // Зеленый
+    val += uint32(graphicsBuffer[squareRgbaIndex+2])       // Синий
+    val += uint32(graphicsBuffer[squareRgbaIndex+3]) << 24 // Альфа
+
+    return val
 }
 
 
-// Function to return a pointer (Index) to our buffer in wasm memory
+// Функция, возвращающая указатель на буфер графики для WebAssembly
 //export getGraphicsBufferPointer
 func getGraphicsBufferPointer() *uint8 {		//*[BUFFER_SIZE]uint8
 	return &graphicsBuffer[0]
 }
 
 
-// Function to return the size of our buffer in wasm memory
+// Функция, возвращающая размер буфера графики для WebAssembly
 //export getGraphicsBufferSize
 func getGraphicsBufferSize() int {
 	return BUFFER_SIZE

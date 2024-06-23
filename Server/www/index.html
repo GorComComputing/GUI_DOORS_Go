@@ -17,7 +17,9 @@
 </head>
   
 <body>
+
 <canvas id="cnvs" width="1280" height="800"></canvas>
+
 
 <!-- My scripts --> 
 <script>
@@ -33,19 +35,59 @@
   let canvasElement = document.querySelector("canvas");
   let canvasContext = canvasElement.getContext("2d");
   let canvasImageData = canvasContext.createImageData(width, height);
-  
-  canvasContext.fillStyle = "rgb(0, 0, 0)"; 
-  canvasContext.fillRect(0, 0, width, height);
-  canvasContext.fillStyle = "rgb(255, 255, 255)";
-  canvasContext.font = "28px Courier New";
-  canvasContext.fillText("Loading...", width/2 - 100, height/2 - 40);
-  canvasContext.fillText("Please wait :)", width/2 - 100, height/2 - 10);
   	
-  const go = new Go();
+  const go = new Go(); 
+  
+  
+  // Функция для отображения индикатора прогресса
+  function drawProgressBar(progress) {
+		canvasContext.fillStyle = "rgb(17, 17, 17)";
+		canvasContext.fillRect(0, 0, width, height); // Очистка холста
+
+		canvasContext.fillStyle = "rgb(255, 50, 50)";
+		
+		canvasContext.font = "36px Courier New";
+		canvasContext.fillText("DOORS", width / 2 - 170, height / 2 - 100);
+		
+		canvasContext.fillStyle = "rgb(255, 255, 255)";
+ 		canvasContext.font = "28px Courier New";
+		canvasContext.fillText("Загружается...", width / 2 - 170, height / 2 - 40);
+		canvasContext.fillText("Пожалуйста подождите 🙂", width / 2 - 170, height / 2 - 10);
+
+		canvasContext.fillStyle = "rgb(76, 175, 80)";
+		if (progress < 100) { begin = width / 2 - 170; end = progress;}
+		else if (progress > 370) { begin = width / 2 - 170 + progress - 100; end = width / 2 - 170 + 470 - begin - 100;}
+		else {begin = width / 2 - 170 + progress - 100 ; end = 100;}
+
+		canvasContext.fillRect(begin, height / 2 + 20, end, 20); // Отрисовка индикатора прогресса
+		
+		canvasContext.font = "15px Courier New";
+		canvasContext.fillText("Нажмите F11 для просмотра в полноэкранном режиме", width / 2 - 200, height / 2 + 80);
+  }
+  
+  
+  // Обновление индикатора прогресса
+  function updateProgressBar() {
+		let progress = 0;
+		const progressInterval = setInterval(() => {
+			progress += 3;
+			if (progress > 470) {
+				progress = 0;
+			} else {
+				drawProgressBar(progress);
+			}
+		}, 25);
+		return progressInterval;
+  }
+  
 
   const runWasm = async () => {
   const importObject = go.importObject;
+  
+  const progressInterval = updateProgressBar(); // Запуск индикатора прогресса
+  
   const wasmModule = await wasmBrowserInstantiate("DOORS.wasm", importObject);
+  
   go.run(wasmModule.instance);
 
   let exports = wasmModule.instance.exports;
@@ -121,9 +163,11 @@
   addEventListener("keyup",  eventKeyUp);
   addEventListener("resize", resizeWindow);
   
+  clearInterval(progressInterval); // Остановка индикатора прогресса после загрузки
+  
   window.dispatchEvent(new Event('resize'));
   const timeoutId = setTimeout(function() {window.dispatchEvent(new Event('resize'))}, 1000);
-  const intervalId = setInterval(function() {exports.eventDraw()}, 100);
+  const intervalId = setInterval(function() {exports.eventDraw()}, 100); 
 };
 
 
